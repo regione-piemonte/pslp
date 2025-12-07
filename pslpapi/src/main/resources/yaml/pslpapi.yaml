@@ -1,0 +1,268 @@
+###
+# ========================LICENSE_START=================================
+# Copyright (C) 2025 Regione Piemonte
+# SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+# SPDX-License-Identifier: EUPL-1.2
+# =========================LICENSE_END==================================
+###
+openapi: 3.0.1
+tags:
+- description: Gestione deleghe
+  name: delega
+- description: Ping
+  name: ping
+paths:
+  /api/v1/delega/deleghe-by-cf-delegante/{cfDelegante}:
+    get:
+      operationId: findDelegheByDelegante
+      parameters:
+      - in: path
+        name: cfDelegante
+        required: true
+        schema:
+          type: string
+      responses:
+        "0":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Errore sul sistema
+        "200":
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DelegaListResponse'
+          description: elenco delle privacy dell'utente collegato
+      summary: Restituisce l'elenco delle deleghe passando come parametro l'id del
+        delegante
+      tags:
+      - delega
+  /api/v1/ping/get-current-date:
+    post:
+      operationId: getCurrentDate
+      responses:
+        "0":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Errore sul sistema
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PslpMessaggio'
+          description: Data corrente
+      summary: Restituisce la data corrente del server
+      tags:
+      - ping
+  /api/v1/ping/ping:
+    get:
+      operationId: ping
+      responses:
+        "0":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Errore sul sistema
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PslpMessaggio'
+          description: Risposta
+      summary: Restituisce l'utente per l'operatore
+      tags:
+      - ping
+components:
+  schemas:
+    ApiError:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+    ApiMessage:
+      type: object
+      properties:
+        code:
+          type: string
+        error:
+          type: boolean
+        message:
+          type: string
+        tipo:
+          type: string
+        title:
+          type: string
+    Delega:
+      type: object
+      properties:
+        codUserAggiorn:
+          type: string
+        codUserInserim:
+          type: string
+        dAggiorn:
+          type: string
+          format: date-time
+        dFine:
+          type: string
+          format: date-time
+        dInizio:
+          type: string
+          format: date-time
+        dInserim:
+          type: string
+          format: date-time
+        idDelega:
+          type: integer
+          format: int64
+        numCellulare:
+          type: string
+        pslpDTipoResponsabilita:
+          $ref: '#/components/schemas/TipoResponsabilita'
+        pslpTUtente1:
+          $ref: '#/components/schemas/Utente'
+        pslpTUtente2:
+          $ref: '#/components/schemas/Utente'
+    DelegaListResponse:
+      type: object
+      properties:
+        apiMessages:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApiMessage'
+        delega:
+          type: array
+          items:
+            $ref: '#/components/schemas/Delega'
+        esitoPositivo:
+          type: boolean
+    PslpDFunzione:
+      type: object
+      properties:
+        dsNoteFunzione:
+          type: string
+        flgAttiva:
+          type: string
+        iconaFunzione:
+          type: string
+        idFunzione:
+          type: integer
+          format: int64
+        ordinamento:
+          type: integer
+          format: int64
+        sottotitoloFunzione:
+          type: string
+        titoloFunzione:
+          type: string
+    PslpMessaggio:
+      type: object
+      properties:
+        codMessaggio:
+          type: string
+        dFine:
+          type: string
+          format: date-time
+        dInizio:
+          type: string
+          format: date-time
+        descrMessaggio:
+          type: string
+        idMessaggio:
+          type: integer
+          format: int64
+        intestazione:
+          type: string
+        pslpDTipoMessaggio:
+          $ref: '#/components/schemas/TipoMessaggio'
+        testo:
+          type: string
+    Ruolo:
+      type: object
+      properties:
+        dsRuolo:
+          type: string
+        idRuolo:
+          type: integer
+          format: int64
+        nomeRuolo:
+          type: string
+        ruoloFunzioni:
+          type: array
+          items:
+            $ref: '#/components/schemas/RuoloFunzione'
+    RuoloFunzione:
+      type: object
+      properties:
+        dFine:
+          type: string
+          format: date-time
+        dInizio:
+          type: string
+          format: date-time
+        flgWrite:
+          type: string
+        pslpDFunzione:
+          $ref: '#/components/schemas/PslpDFunzione'
+    TipoMessaggio:
+      type: object
+      properties:
+        codTipoMessaggio:
+          type: string
+        descrTipoMessaggio:
+          type: string
+    TipoResponsabilita:
+      type: object
+      properties:
+        codTipoResponsabilita:
+          type: string
+        dFine:
+          type: string
+          format: date-time
+        dInizio:
+          type: string
+          format: date-time
+        descrTipoResponsabilita:
+          type: string
+        flgMinorenne:
+          type: string
+    Utente:
+      type: object
+      properties:
+        cfUtente:
+          type: string
+        cfUtenteOld:
+          type: string
+        codUserAggiorn:
+          type: string
+        codUserInserim:
+          type: string
+        cognome:
+          type: string
+        dAggiorn:
+          type: string
+          format: date-time
+        dInserim:
+          type: string
+          format: date-time
+        idSilLavAnagrafica:
+          type: integer
+          format: int64
+        idUtente:
+          type: integer
+          format: int64
+        identificativoSap:
+          type: string
+        nome:
+          type: string
+        ruoli:
+          type: array
+          items:
+            $ref: '#/components/schemas/Ruolo'

@@ -1,0 +1,114 @@
+<!--
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ -->
+<pslpwcl-calendario *ngIf="events" (dayClicked)="dayClicked($event)" [enabledViews]="[CalendarView.Month]"
+    [view]="calendarView" [events]="events" [ultimaDataUtile]="ultimaDataUtile" [primaDataUtile]="primaDataDisponibile"
+    [dataMinimaDisponibilita]="dataMinimaDisponibilita" [dataMassimaDisponibilita]="dataMassimaDisponibilita"
+    (viewDateChange)="dateChange($event)">
+</pslpwcl-calendario>
+
+<ng-template #modalContent let-close="close"> 
+    <div class="modal-header">
+        <h5 class="modal-title">{{ modalData?.day | date: 'EEEE dd/MM/yyyy' }}</h5>
+        <button type="button" class="btn-close" (click)="close(); noteInserite = selectedSlot = null"></button>
+    </div>
+    <div class="modal-body">
+        <ng-container *ngTemplateOutlet="modalBodyGiornoTemplate; context: { closeFn: close }"></ng-container>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary"
+            (click)="close(close); noteInserite = selectedSlot = null">
+            TORNA AL CALENDARIO
+        </button>
+        <button [disabled]="!selectedSlot" type="button" class="btn btn-primary ml-auto btn-lg"
+            (click)="onClickConferma(close)">
+            CONFERMA
+        </button>
+    </div>
+</ng-template>
+<ng-template #modalBodyGiornoTemplate let-closeFn="closeFn">
+    <div class="table-container mt-3">
+        <p-table #dt dataKey="id" [value]="modalData?.listSlot" styleClass="p-datatable-customers" [rowHover]="true"
+            [rows]="10" [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50]" [loading]="false"
+            responsiveLayout="scroll" [paginator]="true"
+            currentPageReportTemplate="{first} di {last}, su {totalRecords} righe" [sortOrder]="-1">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>
+                        <div class="flex justify-content-between align-items-center">
+                            Ora inizio
+                        </div>
+                    </th>
+                    <th>
+                        <div class="flex justify-content-between align-items-center">
+                            Ora fine
+                        </div>
+                    </th>
+                    <th>
+                        <div class="flex justify-content-between align-items-center">
+                            Cpi
+                        </div>
+                    </th>
+                    <th>
+                        <div class="flex justify-content-between align-items-center">
+                            Sede
+                        </div>
+                    </th>
+                    <th>
+                        <div class="flex justify-content-between align-items-center">
+                            Modalità erogazione
+                        </div>
+                    </th>
+                    <th>
+                        <div class="flex justify-content-between align-items-center">
+                            Indirizzo
+                        </div>
+                    </th>
+                    <th style="width: auto">Prenota</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-item>
+                <tr class="p-selectable-row">
+                    <td>
+                        <span class="p-column-title">Ora inizio</span>
+                        {{item?.dataOraInizioIntervallo | date: 'HH:mm'}}
+                    </td>
+                    <td>
+                        <span class="p-column-title">Ora fine</span>
+                        {{item?.dataOraFineIntervallo | date: 'HH:mm'}}
+                    </td>
+                    <td>
+                        <span class="p-column-title">Cpi</span>
+                        {{item?.desCpi}}
+                    </td>
+                    <td>
+                        <span class="p-column-title">Sede</span>
+                        {{item?.desSedeEnte}}
+                    </td>
+                    <td>
+                        <span class="p-column-title">Modalità di erogazione</span>
+                        {{item?.flgModalErogazione}}
+                    </td>
+                    <td>
+                        <span class="p-column-title">Indirizzo</span>
+                        {{item?.indirizzoInPresenza}}
+                    </td>
+                    <td><input type="radio" name="slotSelezionato" [value]="item" [checked]="selectedSlot === item"
+                            (change)="onSlotSelected(item)" /></td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+    <div>
+        <div class="form-group">
+            <label for="noteInput">Note</label>
+
+            <textarea id="noteInput" class="form-control note-textarea-grande" rows="6" [(ngModel)]="noteInserite"
+                name="noteInput" placeholder="Inserisci eventuali note..."></textarea>
+        </div>
+    </div>
+</ng-template>

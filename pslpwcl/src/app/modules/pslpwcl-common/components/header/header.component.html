@@ -1,0 +1,101 @@
+<!--
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ -->
+<!--
+    sezione intestazione di pagina
+    con link a Lavoro Piemonte
+    e navigazione accedi / logout
+-->
+<header class="sticky-top">
+  <nav class="navbar navbar-light" aria-label="navigazione header">
+    <div class="navbar-brand">
+      <button class="navbar-toggler" (click)="burger = true" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <!-- <button class="btn btn-primary" ><span class="fas fa-2x fa-bars"></span></button> -->
+      <a  (click)="onHome()" title="Homepage"  aria-label="torna alla home">
+        <img src="assets/img/loghi/logoServiziLavoroPiemonte.svg" alt="Tu Lavoro Piemonte">
+      </a>
+    </div>
+
+
+    <!--/navbar-->
+    <div class="right">
+      <div class="row">
+        <div class="col">
+          <div (click)="displayHelp = true" class="fas fa-question-circle" [attr.aria-label]="'aiuto'"></div>
+        </div>
+        <div *ngIf="utente?.idSilLavAnagrafica" class="col">
+          <pslpwcl-campanella-notifiche></pslpwcl-campanella-notifiche>
+        </div>
+        <div class="col">
+          <div class="row" *ngIf="hasUtente">
+            <div class="col">
+              <div ngbDropdown class="d-inline-block">
+                <button type="button" class="btn btn-outline-primary" id="dropdownBasic1" aria-label="dati utente" ngbDropdownToggle>
+                  <span class="fa fa-user-circle" aria-hidden="true"></span>&nbsp;
+                  <span class="fas fa-angle-down"></span>
+                </button>
+                <div ngbDropdownMenu aria-labelledby="dropdownBasic1" class="p-3 dropdown-menu dropdown-menu-end">
+                  <p>Nome: <strong>{{nomeUtente}}</strong> </p>
+                  <p>Ruolo: <strong>{{ruoloUtente?.dsRuolo}}</strong>  </p>
+                  <p>Codice Fiscale:  <strong>{{ descrizioneUtente }} </strong></p>
+                  <hr>
+                  <button ngbDropdownItem *ngIf="canChangeRuolo" (click)="onCambiaRuolo()" aria-label="cambia ruolo">Cambia Ruolo</button>
+                  <button ngbDropdownItem *ngIf="isOperatore" (click)="openModalCambiaCittadino()" aria-label="cambia cittadino">Cambia Cittadino</button>
+                  <button ngbDropdownItem *ngIf="!isOperatore && delegaPresente" (click)="rilasciaDelega()" aria-label="torna a utente loggato">Torna a utente loggato</button>
+                  <button ngbDropdownItem (click)="openModalExit()" aria-label="esci">Esci</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="nav-item dropdown user-item" *ngIf="!hasUtente">
+            <button class="btn btn-outline-primary" (click)="onAccediLink()" aria-label="Accedi ai servizi di Tu Lavoro Piemonte">
+              <span class="fa fa-user-circle" aria-hidden="true"></span>
+               Accedi
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </nav>
+    <!--container-->
+</header>
+<nav *ngIf="!isPslpHome" class="header-title" aria-label="nav-comune">
+  <div class="container mt-0">
+    <div class="row">
+      <div class="col-lg-12">
+          <h2>{{titolo}}</h2>
+        </div>
+      </div>
+    </div>
+</nav>
+
+
+<p-sidebar [(visible)] ="burger"
+          [baseZIndex]="10000"
+            styleClass="p-sidebar-md"
+       [showCloseIcon]="false">
+    <pslpwcl-sidebar-left [(navburger)]="burger"
+                      [subheaderContent]="subheaderContent"
+                            [elencoCard]="elencoCard"
+                       [typeApplication]="typeApplication"></pslpwcl-sidebar-left>
+</p-sidebar>
+
+<p-dialog header="Informazioni / Aiuto"
+          [(visible)]="displayHelp"
+          [modal]="true"
+          [style]="{width: '70vw'}"
+          [maximizable]="true"
+          [baseZIndex]="10000"
+          [draggable]="false"
+          [resizable]="false">
+    <div class="grey mb-5 text-left body" [innerHTML]="testoHelp"></div>
+
+</p-dialog>

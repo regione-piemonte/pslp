@@ -1,0 +1,90 @@
+<!--
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ -->
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-annulla-title">{{title}}</h4>
+  <!-- <button type="button" class="close" aria-label="Close" (click)="callback(modal)">
+    <span aria-hidden="true">&times;</span>
+  </button> -->
+</div>
+<div class="modal-body">
+  <form [formGroup]="form">
+    <label small class="text-muted">Inserire almeno uno dei due campi obbligatori contrassegnati con <span class="oblg">*</span></label>
+    <div class="row custom-text-form">
+      <div class="mb-3 col-sm-12 col-md-4">
+        <label for="denominazione">Denominazione<span *ngIf="f?.denominazione?.errors?.required" class="oblg">*</span></label>
+        <input pInputText type="text" (keyup)="setValidatorRequired()"  silplibwclIsRequiredClass class="form-control"
+          formControlName="denominazione" oninput="this.value = this.value.toUpperCase()" id="denominazione" maxlength="70">
+          <div *ngIf="f?.denominazione?.errors" class="text-danger">
+            <div *ngIf="f?.denominazione?.errors?.minlength">{{getMessageByCod("100021")}}</div>
+        </div>
+      </div>
+      <div class="mb-3 col-sm-12 col-md-4">
+          <label for="codiceFiscale">Codice fiscale<span *ngIf="f?.codiceFiscale?.errors?.required" class="oblg">*</span></label>
+          <input pInputText type="text"(keyup)="setValidatorRequired()"  class="form-control" silplibwclIsRequiredClass
+            formControlName="codiceFiscale" oninput="this.value = this.value.toUpperCase().trim()" id="codiceFiscale"
+            maxlength="16">
+            <div *ngIf="f?.codiceFiscale?.errors" class="text-danger">
+              <div *ngIf="f?.codiceFiscale?.errors?.minlength">{{getMessageByCod("100021")}}</div>
+          </div>
+        </div>
+    </div>
+  </form>
+  <div class="row">
+    <div class="col">
+      <button type="button" class="btn btn-outline-secondary btn-sm" (click)="form.reset()">{{"rimuovi filtri" |uppercase }}</button>
+    </div>
+    <div class="col-auto">
+      <button (click)="onSubmit()" type="button" class="btn btn-primary ml-auto btn-lg"
+        [disabled]="!form?.valid">{{"cerca" | uppercase}}</button>
+    </div>
+  </div>
+  <div *ngIf="ricercaEffettuata" class="mt-5 scrollbar-table scrollbar-primary">
+    <form [formGroup]="formRicercaSediAzienda">
+      <table aria-describedby="tabDescr"  class="table table-bordered table-striped table-hover table-sortable" id="infoTable">
+        <!-- [pagedResponse]="pagedResponse"
+        (changePaginationData)="onChangePaginationData($event)" #pagedTable [columnNumber]="7"
+        [limit]="pagedResponse.recordPage"> -->
+        <thead>
+          <tr>
+            <th scope="col" >Sel.</th>
+            <th scope="col" >Denominazione</th>
+            <th scope="col" >Codice fiscale</th>
+            <th scope="col">Indirizzo</th>
+            <th scope="col" >Stato</th>
+            <th scope="col" >Cpi di competenza</th>
+            <th scope="col">Sede</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <ng-container *ngIf="this.pagedResponse.list.length!=0">
+          <tr *ngFor="let el of this.pagedResponse.list">
+            <td class="align-middle">
+              <label for="{{el?.idSilAziSede}}" class="sr-only">selezionare</label>
+              <input [value]="el" formControlName="azienda" type="radio" id="{{el?.idSilAziSede}}">
+            </td>
+            <td class="align-middle">{{el?.descrDenominazione | uppercase}}</td>
+            <td class="align-middle">{{el?.aziAnagrafica?.codFiscale | uppercase}}</td>
+            <td class="align-middle">{{(el?.toponimo ? el?.toponimo?.dsSilTToponimo : '')+ " "
+              +(el?.descrIndirizzo || '')+ " "
+              +(el?.descrNumCivico || '')}}</td>
+            <td class="align-middle">{{el?.silTStatoAzienda ? el?.silTStatoAzienda.dsSilTStatoAzienda : '' | uppercase}}</td>
+            <td class="align-middle">{{el?.silTCpi ? el?.silTCpi?.dsSilTCpi : '' | uppercase}}</td>
+            <td class="align-middle">{{el?.silTSede ? el?.silTSede.dsSilTSede : '' | uppercase}}</td>
+          </tr>
+          </ng-container>
+        </tbody>
+      </table>
+    </form>
+  </div>
+</div>
+<div class="modal-footer">
+  <button type="button" (click)="callback(modal)" class="btn btn-outline-secondary btn-sm">{{"chiudi" | uppercase}}</button>
+  <button type="button" class="btn btn-primary ml-auto btn-lg" [disabled]="!formRicercaSediAzienda?.valid"
+    (click)="onClickOk()">OK</button>
+</div>

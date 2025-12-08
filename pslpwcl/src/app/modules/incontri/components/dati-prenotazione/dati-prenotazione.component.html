@@ -1,0 +1,171 @@
+<!--
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ -->
+<div class="row">
+    <h3>ANAGRAFICA CITTADINO</h3>
+</div>
+<div class="row">
+    <dl class="mb-3 col-4">
+        <dt>Codice fiscale</dt>
+        <dd>{{incontro?.codFiscaleAnagrafica}}
+        </dd>
+    </dl>
+    <dl class="mb-3 col-4">
+        <dt>Cognome</dt>
+        <dd>{{incontro?.cognomeAnagrafica}}
+        </dd>
+    </dl>
+    <dl class="mb-3 col-4">
+        <dt>Nome</dt>
+        <dd>{{incontro?.nomeAnagrafica}}</dd>
+    </dl>
+</div>
+<div class="row">
+    <dl class="mb-5 col-sm-12 col-md-4">
+        <dt>Mail</dt>
+        <dd>{{incontro?.mailAnagrafica}}</dd>
+    </dl>
+    <dl class="mb-3 col-sm-12 col-md-4">
+        <dt>Cellulare</dt>
+        <dd>{{incontro?.cellulareAnagrafica}}</dd>
+    </dl>
+    <dl class="mb-3 col-sm-12 col-md-4">
+        <dt>Ente promotore della SAP</dt>
+        <dd>{{incontro?.desCpiPromotoreAnagrafica}}</dd>
+    </dl>
+</div>
+<div class="row">
+    <h3>SERVIZIO</h3>
+</div>
+<div class="row">
+    <dl class="mb-3 col-4">
+        <dt>Categoria</dt>
+        <dd>{{incontro?.desSilwebTIncServCateg}}</dd>
+    </dl>
+    <dl class="mb-3 col-4">
+        <dt>Servizio</dt>
+        <dd>{{incontro?.desSilwebTIncServizi}}</dd>
+    </dl>
+</div>
+<div class="row">
+    <dl class="mb-3 col-12">
+        <dt>Descrizione estesa servizio</dt>
+        <dd>{{incontro?.desEstesaSilwebTIncServizi}}</dd>
+    </dl>
+</div>
+<div class="row">
+    <dl class="mb-3 col-6">
+        <dt>Modalità comunicazione</dt>
+        <dd style="display: inline" *ngFor="let msg of servizio?.listaMsgCanale; let isLast = last">
+            {{msg?.desSilwebDMsgCanale}}<span *ngIf="!isLast">; </span>
+        </dd>
+    </dl>
+    <dl class="mb-3 col-6">
+        <dt>Modalità erogazione</dt>
+        <dd>{{incontro?.desSilTInContattoErogaz}}</dd>
+    </dl>
+</div>
+<div class="row">
+    <dl class="col-12">
+        <dt>Fonte</dt>
+        <dd>{{incontro?.desFontedatoIncontro}}</dd>
+    </dl>
+</div>
+<div>
+    <div class="row">
+        <h3>DATA INCONTRO</h3>
+    </div>
+    <div class="row mb-3">
+        <dl class="mb-3 col-2">
+            <dt>Appuntamento in data</dt>
+            <dd>{{incontro?.dataIncontro | date: 'dd/MM/yyyy'}}</dd>
+        </dl>
+        <dl class="mb-3 col-2">
+            <dt>Alle ore</dt>
+            <dd>{{incontro?.oraIncontro}}</dd>
+        </dl>
+        <div class="mb-3 col-2">
+            <label for="statoInc" class="form-label">Stato</label>
+            <dd>{{incontro?.desSilTStatoIncontro}}</dd>
+        </div>
+        <dl class="mb-3 col-2">
+            <dt>Durata prevista</dt>
+            <dd>{{incontro?.durataPrevistaIncontroMinuti}}</dd>
+        </dl>
+        <div class="mb-3 col-2">
+            <label for="durataEffettiva">Durata effettiva</label>
+            <dd>{{incontro?.durataEffettivaIncontroMinuti}}</dd>
+        </div>
+    </div>
+    <div class="row">
+        <dl class="col-6">
+            <dt>Motivazione</dt>
+            <dd>{{incontro?.desSilTInMotivazione}}</dd>
+        </dl>
+        <dl class="col-6">
+            <dt>Note</dt>
+            <dd>{{incontro?.dsNoteIncontro}}</dd>
+        </dl>
+    </div>
+    <div class="row">
+        <dl class="col-6">
+            <dt>Cpi operatore</dt>
+            <dd>{{incontro?.desCpiOperatore}}</dd>
+        </dl>
+    </div>
+    <div class="row">
+        <h3>SEDE INCONTRO</h3>
+    </div>
+    <div class="row">
+        <dl class="mb-3 col-6">
+            <dt>Cpi</dt>
+            <dd>{{incontro?.desSedeCpiIncontro}}</dd>
+        </dl>
+        <dl class="mb-3 col-6">
+            <dt>Tipo</dt>
+            <dd>{{incontro?.desSilDTipoSedeIncontro}}</dd>
+        </dl>
+    </div>
+    <div class="row">
+        <dl class="mb-3 col-6">
+            <dt>Denominazione</dt>
+            <dd>{{incontro?.desSedeIncontro}}</dd>
+        </dl>
+    </div>
+    <div class="row">
+        <dl class="mb-3 col-6">
+            <dt>Indirizzo</dt>
+            <dd>{{getIndirizzo()}}</dd>
+        </dl>
+        <dl class="mb-3 col-4">
+            <dt>Comune</dt>
+            <dd>{{incontro?.desComuneSedeIncontro}}</dd>
+        </dl>
+        <dl class="mb-3 col-2">
+            <dt>Provincia</dt>
+            <dd>{{incontro?.desProvinciaSedeIncontro}}</dd>
+        </dl>
+    </div>
+    <div class="row">
+        <dl class="mb-3 col-6">
+            <dt>Come raggiungere la sede</dt>
+            <dd>{{incontro?.desComeRaggiungereSedeIncontro}}</dd>
+        </dl>
+        <dl class="mb-3 col-4">
+            <dt>Telefono</dt>
+            <dd>{{incontro?.telefonoSedeIncontro}}</dd>
+        </dl>
+        <dl class="mb-3 col-2">
+            <dt>Altro telefono</dt>
+            <dd>{{incontro?.altroTelefonoSedeIncontro}}</dd>
+        </dl>
+        <dl class="mb-3 col-2">
+            <dt>E-mail</dt>
+            <dd>{{incontro?.mailSedeIncontro}}</dd>
+        </dl>
+    </div>
+</div>

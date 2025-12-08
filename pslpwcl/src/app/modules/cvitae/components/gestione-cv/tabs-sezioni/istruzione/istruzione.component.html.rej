@@ -1,0 +1,10 @@
+diff a/src/app/modules/cvitae/components/gestione-cv/tabs-sezioni/istruzione/istruzione.component.html b/src/app/modules/cvitae/components/gestione-cv/tabs-sezioni/istruzione/istruzione.component.html	(rejected hunks)
+@@ -252,7 +252,7 @@
+ 
+         <div formGroupName="blpTComuneIst" class="mb-5 col-sm-12 col-md-3">
+           <label for="comuneEnteIst">Comune</label>
+-          <p-dropdown inputId="comuneEnteIst" [filter]="true" (onFilter)="onFilterComune($event)"
++          <p-dropdown inputId="comuneEnteIst" [filter]="true"
+             [emptyMessage]="'Nessun dato trovato'" [autoDisplayFirst]="false" [options]="comuniIst" formControlName="id"
+             ariaLabel="comune istituto" class=" p-form-select" placeholder="" optionLabel="descr" optionValue="id">
+             <!-- (search)="onSearchComune($event)"  -->

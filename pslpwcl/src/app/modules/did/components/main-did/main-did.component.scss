@@ -1,0 +1,70 @@
+/*
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ */
+@media (min-width: 992px) {
+    .col-lg-6 {
+        flex: 0 0 auto;
+        width: 100%;
+    }
+}
+
+h3{
+    color: #0072E5;
+}
+@media screen{
+    .myDivToPrint{
+        visibility: hidden;
+    }
+}
+@media print{
+    @page {
+        margin-top: 0;
+        margin-bottom: 0;
+    }
+    .stampa {
+        font-size: 1.5em;
+        line-height: 2em;
+        h2{
+            font-size: 2em;
+        }
+        p{
+            text-align: justify;
+        }
+        .firma{
+            padding-top: 4em;
+            padding-bottom: 1em;
+            font-size: 1.5em;
+        }
+        .header{
+            margin-bottom: 1in;
+            .regione{
+                background-image: url("../../../../../assets/img/loghi/RegionePiemonte-logo.png");
+                background-size:contain;
+                background-repeat: no-repeat;
+                height: 3em;
+            }
+            .centri{
+                background-image: url("../../../../../assets/img/loghi/APL_logo_colore.svg");
+                background-size: contain;
+                background-repeat: no-repeat;
+                height: 3em;
+            }
+            
+        }
+        .footer{
+            padding-top: 4em;
+            .logo{
+                background-image: url("../../../../../assets/img/loghi/APL_logo_colore.svg");
+                background-size: contain;
+                background-repeat: no-repeat;
+                height: 4em;
+            }
+        }
+
+    }
+    
+}

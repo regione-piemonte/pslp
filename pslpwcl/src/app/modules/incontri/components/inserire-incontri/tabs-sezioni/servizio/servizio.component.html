@@ -1,0 +1,236 @@
+<!--
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ -->
+<form [formGroup]="form">
+    <div class="card mb-3">
+        <div class="card-body">
+            <p class="text-muted mt-3">I campi contrassegnati con <span class="oblg">*</span> sono obbligatori</p>
+
+            <!-- Dati anagrafici -->
+            <div class="row">
+                <dl class="mb-3 col-sm-12 col-md-4">
+                    <dt>Codice fiscale</dt>
+                    <dd>{{codFiscaleLavoratore}}</dd>
+                </dl>
+                <dl class="mb-3 col-sm-12 col-md-4">
+                    <dt>Cognome</dt>
+                    <dd>{{cognomeLavoratore}}</dd>
+                </dl>
+                <dl class="mb-3 col-sm-12 col-md-4">
+                    <dt>Nome</dt>
+                    <dd>{{nomeLavoratore}}</dd>
+                </dl>
+            </div>
+
+            <div class="row">
+                <dl class="mb-3 col-sm-12 col-md-4">
+                    <dt>Mail<span *ngIf="contattiRequired" class="oblg">*</span></dt>
+                    <dd>{{mailLavoratore}}</dd>
+                    <div *ngIf="form.get('dsMail')?.invalid && form.get('dsMail')?.touched" class="text-danger">
+                        Campo obbligatorio
+                    </div>
+                </dl>
+                <dl class="mb-3 col-sm-12 col-md-4">
+                    <dt>Cellulare<span *ngIf="contattiRequired" class="oblg">*</span></dt>
+                    <dd>{{telefonoLavoratore}}</dd>
+                    <div *ngIf="form.get('dsTelefonoCell')?.invalid && form.get('dsTelefonoCell')?.touched"
+                        class="text-danger">
+                        Campo obbligatorio
+                    </div>
+                </dl>
+                <dl class="mb-3 col-sm-12 col-md-4">
+                    <dt>CpI di competenza legato al domicilio</dt>
+                    <dd>{{entePromotoreSAP}}</dd>
+                </dl>
+            </div>
+
+            <!-- Categoria servizio -->
+            <div class="row">
+                <div class="mb-3 col">
+                    <label for="categServ">Categoria servizio<span class="oblg">*</span></label>
+                    <p-dropdown inputId="categoria" [emptyMessage]="'Nessun dato trovato'" [filter]="true"
+                        (onChange)="onChangeidSilwebTIncServCateg()" formControlName="idSilwebTIncServCateg"
+                        [autoDisplayFirst]="false" [options]="categoriaServizi" class="p-form-select" placeholder=""
+                        optionLabel="descr" optionValue="id" labelForId="categServ" [showClear]="true">
+                    </p-dropdown>
+                    <div *ngIf="form.get('idSilwebTIncServCateg')?.invalid && form.get('idSilwebTIncServCateg')?.touched"
+                        class="text-danger">
+                        Campo obbligatorio
+                    </div>
+                </div>
+            </div>
+
+            <!-- Servizio -->
+            <div class="row">
+                <div class="mb-3 col">
+                    <label for="soc">Servizio<span class="oblg">*</span></label>
+                    <p-dropdown inputId="servizio" [emptyMessage]="'Nessun dato trovato'" [filter]="true"
+                        (onChange)="onChangeServizio()" [autoDisplayFirst]="false" [options]="listaIncServizi"
+                        formControlName="idSilwebTIncServizi" class="p-form-select" placeholder=""
+                        optionLabel="descrSilwebTIncServizi" optionValue="idSilwebTIncServizi" labelForId="soc"
+                        [showClear]="true">
+                    </p-dropdown>
+                    <div *ngIf="form.get('idSilwebTIncServizi')?.invalid && form.get('idSilwebTIncServizi')?.touched"
+                        class="text-danger">
+                        Campo obbligatorio
+                    </div>
+                </div>
+            </div>
+
+            <!-- Descrizione servizio -->
+            <div class="row">
+                <dl class="mb-3 col-sm-12 col-md-3">
+                    <dt *ngIf="form?.get('idSilwebTIncServizi')?.value">Durata</dt>
+                    <dd>{{getIncServiziById(form?.get('idSilwebTIncServizi')?.value)?.durataMinutiIncontro ? getIncServiziById(form?.get('idSilwebTIncServizi')?.value)?.durataMinutiIncontro + ' ' + 'minuti' : ' '}}</dd>
+                </dl>
+                <dl class="col-6">
+                    <div class="d-flex justify-content-center">
+                        {{getIncServiziById(form?.get('idSilwebTIncServizi')?.value)?.descrEstSilwebTIncServizi}}
+                    </div>
+                </dl>
+            </div>
+            <!-- Modalità erogazione -->
+            <h3>Modalità erogazione</h3>
+            <div class="row">
+                <div class="col-2">
+                    <fieldset>
+                        <div class="col-6">
+                            <div class="form-check">
+                                <input type="checkbox" (change)="onClickFlgPresenza()" class="form-check-input"
+                                    formControlName="flgPresenza" id="presenza">
+
+                                <label class="form-check-label" for="presenza">
+                                    In Presenza<span *ngIf="!this.form.get('flgRemoto').value" class="oblg">*</span>
+                                </label>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+                <div class="col-6 mb-3">
+                    <p-dropdown inputId="presenza" [emptyMessage]="'Nessun dato trovato'" [filter]="true"
+                        [autoDisplayFirst]="false" [options]="listaModalitaErogazionePresenzaFiltrata"
+                        formControlName="listaModalitaErogazionePresenza" class="p-form-select" placeholder=""
+                        optionLabel="descr" optionValue="id" labelForId="presenza" [showClear]="true">
+                    </p-dropdown>
+                    <div *ngIf="form.get('listaModalitaErogazionePresenza')?.invalid && form.get('listaModalitaErogazionePresenza')?.touched"
+                        class="text-danger">
+                        Campo obbligatorio
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-2">
+                    <fieldset>
+                        <div class="mb-3 col-6">
+                            <div class="form-check">
+                                <input type="checkbox" (change)="onClickFlgRemoto()" class="form-check-input"
+                                    formControlName="flgRemoto" id="remoto">
+
+                                <label class="form-check-label" for="remoto">
+                                    Da remoto<span *ngIf="!this.form.get('flgPresenza').value" class="oblg">*</span>
+                                </label>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+                <div class="col-6 mb-3">
+                    <!-- <label>Remoto<span class="oblg">*</span></label> -->
+                    <p-dropdown inputId="remoto" [emptyMessage]="'Nessun dato trovato'" [filter]="true"
+                        [autoDisplayFirst]="false" [options]="listaModalitaErogazioneRemotoFiltrata"
+                        formControlName="listaModalitaErogazionRemoto" class="p-form-select" placeholder=""
+                        optionLabel="descr" optionValue="id" labelForId="remoto" [showClear]="true">
+                    </p-dropdown>
+                    <div *ngIf="form.get('listaModalitaErogazionRemoto')?.invalid && form.get('listaModalitaErogazionRemoto')?.touched"
+                        class="text-danger">
+                        Campo obbligatorio
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modalità comunicazione -->
+            <div class="row mb-3">
+                <dl class="col-4">
+                    <dt>Modalità di erogazione servizio</dt>
+                    <dd style="display: inline"
+                        *ngFor="let tipoContatto of getIncServiziById(form?.get('idSilwebTIncServizi')?.value)?.listaModalitaErogazione; let isLast = last">
+                        {{tipoContatto?.dsSilTInTipoContatto}}<span *ngIf="!isLast">; </span>
+                    </dd>
+                </dl>
+                <dl class="col-4">
+                    <dt>Modalità di comunicazione del servizio</dt>
+                    <dd style="display: inline"
+                        *ngFor="let msg of getIncServiziById(form?.get('idSilwebTIncServizi')?.value)?.listaMsgCanale; let isLast = last">
+                        {{msg?.desSilwebDMsgCanale}}<span *ngIf="!isLast">; </span>
+                    </dd>
+                </dl>
+                <dl class="col-4">
+                    <dt>Servizio prenotabile in base al Domicilio</dt>
+                    <dd *ngIf="getIncServiziById(form?.get('idSilwebTIncServizi')?.value)" style="display: inline">
+                        {{(getIncServiziById(form?.get('idSilwebTIncServizi')?.value)?.flgProvincia) === 'S'
+                        ? 'Si' : 'No'}}
+                    </dd>
+                </dl>
+            </div>
+
+            <div class="row justify-content-center">
+                <div class="col-auto">
+                  <label for="oraI" class="form-label">Ora desiderata</label>
+                  <ngb-timepicker #timePicker formControlName="orarioIncontro" id="oraI"></ngb-timepicker>
+                </div>
+            </div>
+            <div class="row justify-content-center mb3">
+                <div *ngIf="form?.invalid" class="col-auto">
+                  <div *ngIf="form?.errors?.['oraInizioMin']" class="text-danger">
+                    L'ora desiderata non può essere minore delle {{ oraMinima }}.
+                  </div>
+                  <div *ngIf="form?.errors?.['oraInizioMax']" class="text-danger">
+                    L'ora desiderata non può essere maggiore delle{{ oraMassima }}.
+                  </div>
+                </div>
+              </div>
+
+            <!-- Sedi CPI -->
+            <!-- <div class="row">
+                <div class="mb-3 col-12">
+                    <label for="sedeCpi" class="form-label">Sedi cpi</label>
+                    <select formControlName="idSilwebTSedeEnte" id="sedeCpi" class="form-select">
+                        <option [value]=""></option>
+                        <option *ngFor="let sedeCpi of listaSediCpi" [value]="sedeCpi?.id">{{sedeCpi?.descr}}</option>
+                    </select>
+                </div>
+            </div> -->
+
+        </div>
+    </div>
+
+    <!-- Bottoni -->
+    <div class="row">
+        <div class="col">
+            <button type="button" (click)="onClickReset()" class="btn btn-outline-secondary btn-sm me-2">PULISCI
+                CAMPI</button>
+        </div>
+        <div class="col-auto">
+
+            <button [disabled]="form?.invalid" (click)="onClickDispCpi()" type="button"
+                class="btn btn-sm btn-primary me-2">DISPONIBILITA'
+                DOMICILIO</button>
+
+
+
+            <button [disabled]="form?.invalid" (click)="onClickEstendiProvincia()" type="button"
+                class="btn btn-sm btn-primary me-2">ESTENDI
+                PROVINCIA</button>
+
+
+
+            <button
+                [disabled]="form?.invalid || getIncServiziById(form?.get('idSilwebTIncServizi')?.value)?.flgProvincia === 'S'"
+                (click)="onClickEstendiRegione()" type="button" class="btn btn-sm btn-primary">ESTENDI REGIONE</button>
+
+        </div>
+    </div>
+</form>

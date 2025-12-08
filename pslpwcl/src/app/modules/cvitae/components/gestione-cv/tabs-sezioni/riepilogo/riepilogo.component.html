@@ -1,0 +1,153 @@
+<!--
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ -->
+<ngb-accordion #accordionRiepilogo activeIds="panelRiepilogo"
+  id="accordion-riepilogo" [closeOthers]="false" [destroyOnHide]="false">
+  <ngb-panel title="RIEPILOGO" id="panelRiepilogo">
+    <ng-template ngbPanelContent let-opened="opened">
+        <p-card *ngIf="!stampa">
+            <div class="row">
+                <div class="col">
+                    <h3>Titolo CV: <strong>{{cvitae?.titoloCv}}</strong></h3>
+                </div>
+                <div class="col-auto">
+                    <button type="button" *ngIf="canModifica && cvitae?.flgGeneratoDaSistema!='S'"  class="btn btn-primary btn-lg" (click)="validareCv()">Validare CV</button>
+
+                </div>
+            </div>
+        </p-card>
+
+        <div class="row myDivToPrint mt-5" id="cvitae">
+            <div class="col-4 pb-3 stampa" [ngStyle]="{'background-color': colorBg}" id="laterale">
+                <figure *ngIf = "fotoVisibile" class="m-5">
+                    <img *ngIf="foto" [src]="foto" alt="foto" id='foto' style="max-height: 7rem;">
+                    <!-- <img *ngIf="!foto" src="assets/img/user_card.png" alt="foto" style="border: #2d86c2 3px solid;
+                    max-height: 7rem;
+                    transform: scale(1.5);
+                    border-radius: 50%;"> -->
+                </figure>
+                <h3>{{cvitae?.idLavAnagrafica?.dsNome}} {{cvitae?.idLavAnagrafica?.dsCognome}}</h3>
+                <div class="dato" *ngIf="cvitae?.idLavAnagrafica?.eMail"><strong>E-mail: </strong>{{cvitae?.idLavAnagrafica?.eMail}}</div>
+                <div class="dato" *ngIf="cvitae?.idLavAnagrafica?.numTelefono"><strong>Telefono: </strong>{{cvitae?.idLavAnagrafica?.numTelefono }}</div>
+                <div class="dato" *ngIf="cvitae?.idLavAnagrafica?.numCellulare"><strong>Cellulare: </strong>{{cvitae?.idLavAnagrafica?.numCellulare}}</div>
+                <div class="dato"><strong>Indirizzo: </strong>{{cvitae?.idLavAnagrafica?.dsIndirizzoDom}} </div>
+                <div class="dato">{{cvitae?.idLavAnagrafica?.capDom}}</div>
+                <div class="dato">{{cvitae?.idLavAnagrafica?.idComuneDomicilio?.dsComune}}</div>
+                <div class="dato"> <strong>Data di nascita: </strong>{{cvitae?.idLavAnagrafica?.dNascita| date: "dd/MM/yyyy"}}</div>
+
+                <div *ngIf="patentiPossedute?.length" class="mt-5">
+                    <h4>Patenti</h4>
+                    <div class="dato" >
+                        <span *ngFor="let patente of patentiPossedute; let last = index">{{ patente?.descr }}{{last!=patentiPossedute.length - 1 ? ', ' : ''}}</span>
+                    </div>
+                </div>
+
+                <div *ngIf="patentiniPossedute?.length" class="mt-5">
+                    <h4>Patentini</h4>
+                    <div class="dato">
+                        <span *ngFor="let patente of patentiniPossedute; let last = index">{{ patente?.descr }}{{last!=patentiniPossedute.length - 1 ? ', ' : ''}}</span>
+                    </div>
+                </div>
+
+                <div *ngIf="cvitae?.iscrizioneAlboDichList?.length" class="mt-5">
+                    <h4>Albi</h4>
+                    <div class="dato">
+                        <span *ngFor="let albi of cvitae?.iscrizioneAlboDichList; let last = index">{{ albi?.idAlbo?.descrAlbo }}{{last!=cvitae?.iscrizioneAlboDichList.length - 1 ? ', ' : ''}}</span>
+                    </div>
+                </div>
+                <br>
+                <div class="dato" *ngIf="cvitae?.flgTrasferte"><strong>Disponibile a trasferte: </strong>{{cvitae?.flgTrasferte == 'S'? 'SI':'NO'}}</div><br>
+                <div class="dato" *ngIf="cvitae?.flgMezzoProprio"><strong>Uso mezzo proprio: </strong>{{cvitae?.flgMezzoProprio == 'S'? 'SI':'NO'}}</div><br>
+                <div *ngIf="appartineCategoria">{{messagioCattProt?.testo}}</div>
+
+
+            </div>
+            <div class="col-8 pt-5 pb-5 pl-3 stampa" id="corpo" >
+
+                <div class="dato" *ngIf="cvitae?.incentiviEQualita">
+                    <h2 class="mb-3">Incentivi e qualità</h2>
+                    <span>{{cvitae?.incentiviEQualita}}</span>
+                </div>
+
+                <!-- Esperienze di lavoro -->
+                <div *ngIf="cvitae?.esperienzaLavList?.length!=0">
+                    <h2 class="mb-3">Esperienze di lavoro</h2>
+                    <div class="dato" *ngFor="let esperienza of cvitae?.esperienzaLavList; index as i">
+                        <div>
+                            <span><strong>Periodo: </strong>{{esperienza?.dInizioRapporto| date: "dd/MM/yyyy"}} - {{!esperienza?.dFineRapporto ? "In corso" : esperienza?.dFineRapporto  | date: "dd/MM/yyyy"}}</span><br>
+                            <span *ngIf="esperienza?.idQualifica">{{esperienza?.idQualifica?.descrQualifica}}<br></span>
+                            <span *ngIf="esperienza?.dsDatoreLavoro">{{esperienza?.dsDatoreLavoro}}{{esperienza?.dsIndirizzoDatoreLavoro?', '+esperienza?.dsIndirizzoDatoreLavoro:''}}</span><br>
+                            <span>{{esperienza?.dsMansioniResponsabil | titlecase}}</span><br><br>
+                        </div>
+                    </div>
+                </div>
+                <!-- Istruzione -->
+                <div *ngIf="cvitae?.istruzioneDichList?.length">
+                    <h2 class="mb-3">Istruzione</h2>
+                    <div class="dato" *ngFor="let istruzione of cvitae?.istruzioneDichList">
+                        <span><strong>Periodo: </strong>{{istruzione?.dInizio | date: "dd/MM/yyyy"}} - {{(istruzione.flgInCorso && istruzione.flgInCorso=="S")?"In corso": istruzione.dFine| date: "dd/MM/yyyy"}}<br></span>
+                        <span>{{istruzione?.idLivelloStudio?.descrLivelloStudio}}</span><br>
+                        <!-- <span *ngIf="istruzione?.votazioneConseguita &&  istruzione?.votazioneConseguita!='null/null'">Votazione conseguita: {{istruzione?.votazioneConseguita}}<br></span> -->
+                        <span *ngIf="istruzione?.nomeIstituto"> {{istruzione?.nomeIstituto}}, {{istruzione?.idComuneSedeIstituto?.dsComune || istruzione?.idNazioneSedeIstituto?.descrNazione}}<br></span>
+                        <span *ngIf="istruzione?.flgStagePcto">{{istruzione?.flgStagePcto=='S'?"Effettuato stage":""}}</span><br><br>
+                    </div>
+                </div>
+
+                <!-- Formazione -->
+                <div *ngIf="cvitae?.formazioneList?.length">
+                    <h2>Formazione</h2>
+                    <div class="dato" *ngFor="let formazione of cvitae?.formazioneList">
+                        <span ><strong>Periodo: </strong>{{formazione?.dInizio | date: "dd/MM/yyyy"}} - {{formazione?.flgInCorso=='S'?"In corso":formazione?.dFine| date: "dd/MM/yyyy"}} <ng-container *ngIf="formazione?.durata">  , {{formazione?.durata}} {{formazione?.idUnitaMisuraDurata?.descrUnitaMisuraDurata}}</ng-container></span><br>
+                        <span > {{formazione?.dsCorso| uppercase}}</span><br>
+                        <span *ngIf="formazione?.denominazioneAziendaFormazione"> {{formazione?.denominazioneAziendaFormazione}} <br>
+                            {{formazione.indirizzoSedeCorso? formazione.idToponimoSedeCorso?.descrToponimo + ' ' + formazione.indirizzoSedeCorso + ' ' + formazione.numCivicoSedeCorso: '' | uppercase}}
+                            {{formazione.idComuneSedeCorso?.dsComune?', '+ formazione.idComuneSedeCorso?.dsComune:''}} {{formazione.idComuneSedeCorso?.idProvincia?.dsProvincia?','+ formazione.idComuneSedeCorso?.idProvincia?.dsProvincia:''}}<br></span>
+                        <span *ngIf="formazione?.idQualificaAcquisita"> {{formazione?.idQualificaAcquisita?.descrQualifica}}<br></span>
+                        <span *ngIf="formazione?.dsQualificaAcquisita"> {{formazione?.dsQualificaAcquisita}}<br></span>
+                        <span *ngIf="formazione?.idAttestazione?.descrAttestazione"> {{formazione?.idAttestazione?.descrAttestazione}}<br></span>
+                        <span *ngIf="formazione?.flgTirocinioCurriculare=='S'">{{formazione?.flgTirocinioCurriculare=="S"?"Effettuato tirocino":""}}</span><br><br>
+                    </div>
+                </div>
+
+                <!-- Conoscenze linguistiche -->
+                <div *ngIf="lingueConosciute?.length || msgLingueMadri">
+                    <h2>Conoscenze linguistiche</h2>
+                    <div class="dato" *ngIf="msgLingueMadri?.length"><strong>Lingue madri: </strong>{{msgLingueMadri}}</div>
+                    <div class="dato mt-2" *ngIf="lingueConosciute?.length"><strong>Lingue conosciute: </strong></div>
+                    <li class="dato mt-2" style="list-style-type: none;" *ngFor="let lingua of lingueConosciute">
+                        - <span><strong>{{lingua?.codLingua?.descrLingua}}:</strong> {{lingua?.codGradoConLingua?.descrGradoConLingua}}. </span><br>
+                        <span *ngIf="lingua?.flgCertificazioneAcquisita=='S'">Certificazione: {{lingua?.flgCertificazioneAcquisita ? "Si":"No"}} <span *ngIf="lingua.tipoCertificazione"> , Tipo certificato: {{lingua.tipoCertificazione}}</span></span>
+                    </li>
+                </div>
+
+                <!-- Conoscenze informatiche -->
+                 <div *ngIf="cvitae?.informaticaDichList?.length">
+                    <h2>Conoscenze informatiche</h2>
+                    <div class="dato" *ngFor="let informatica of cvitae?.informaticaDichList">
+                        <span>{{informatica?.dsTipoConoscenza}} - {{informatica?.dsSpecifiche}}
+                             <span *ngIf="informatica?.livelloConoscenza">  <strong>Livello: </strong>{{informatica?.livelloConoscenza=="U"?"Di base":"Specialistica"}}</span></span><br><br>
+                    </div>
+                 </div>
+
+                 <!-- Ulteriori informazioni -->
+                <div *ngIf="cvitae?.ulterioriInformazioni?.length">
+                    <h2>Ulteriori informazioni</h2>
+                    <div class="dato">
+                        <span>{{cvitae?.ulterioriInformazioni}}</span><br><br>
+                    </div>
+                </div>
+
+
+                <div>
+                    {{autorizzo}}
+                </div>
+            </div>
+        </div>
+    </ng-template>
+  </ngb-panel>
+</ngb-accordion>
+

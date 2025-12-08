@@ -1,0 +1,108 @@
+<!--
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ -->
+<div class="container">
+    <div class="container-body">
+        <ngb-accordion #accordionControlli id="accordion-controlli" [closeOthers]="true" [destroyOnHide]="false"
+            activeIds="panelControlli">
+            <ngb-panel title="DATI DOCUMENTAZIONE" id="panelControlli">
+                <ng-template ngbPanelContent let-opened="opened">
+                    <div class="row">
+                        <div class="mb-5 col-sm-12 col-md-4">
+                            <label for="dataRichiesta">Data richiesta<span class="oblg">*</span></label>
+                            <div class="valore">{{this.richiestaDocumenti?.documentazioneRichiesta?.dataInvio | date:
+                                'dd/MM/yyyy'}}</div>
+                        </div>
+                        <div class="mb-5 col-sm-12 col-md-4">
+                            <label for="tipoDocumento">Tipo documento<span class="oblg">*</span></label>
+                            <div class="valore">
+                                {{this.richiestaDocumenti?.documentazioneRichiesta?.silwebTTipoDocume?.desSilwebTTipoDocume
+                                | uppercase }}</div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div *ngIf="this.richiestaDocumenti?.documentazioneRichiesta?.silwebTStatoDocume?.idSilwebTStatoDocume === 4"
+                            class="mb-5 col-sm-12 col-md-4">
+                            <label for="entePromotore">Ente Promotore SAP<span class="oblg">*</span></label>
+                            <div class="valore">
+                                {{this.richiestaDocumenti?.documentazioneRichiesta?.silTCpiEntePromotore?.dsSilTCpi |
+                                uppercase }}</div>
+                        </div>
+                        <div *ngIf="this.richiestaDocumenti?.documentazioneRichiesta?.silwebTStatoDocume?.idSilwebTStatoDocume === 4"
+                            class="mb-5 col-sm-12 col-md-4">
+                            <label for="operatore">Operatore<span class="oblg">*</span></label>
+                            <div class="valore">
+                                {{this.richiestaDocumenti?.documentazioneRichiesta?.silOperatore?.dsSilOperatore |
+                                uppercase }}</div>
+                        </div>
+                        <div *ngIf="this.richiestaDocumenti?.documentazioneRichiesta?.silwebTStatoDocume?.idSilwebTStatoDocume === 4"
+                            class="mb-5 col-sm-12 col-md-4">
+                            <label for="cpiOperatore">Cpi Operatore<span class="oblg">*</span></label>
+                            <div class="valore">
+                                {{this.richiestaDocumenti?.documentazioneRichiesta?.silTCpiOperatore?.dsSilTCpi |
+                                uppercase }}</div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="mb-3 col-sm-12 col-md-4">
+                            <label for="statoRichiesta">Stato<span class="oblg">*</span></label>
+                            <div class="valore">
+                                {{this.richiestaDocumenti?.documentazioneRichiesta?.silwebTStatoDocume?.desSilwebTStatoDocume
+                                |
+                                uppercase }}</div>
+                        </div>
+                        <div class="mb-3 col-sm-12 col-md-4">
+                            <label for="dataStatoRichiesta">Data stato<span class="oblg">*</span></label>
+                            <div *ngIf="this.richiestaDocumenti?.documentazioneRichiesta?.silwebTStatoDocume?.idSilwebTStatoDocume === 1"
+                                class="valore">
+                                {{this.richiestaDocumenti?.documentazioneRichiesta?.dataInvio | date:
+                                'dd/MM/yyyy' }}</div>
+                            <div *ngIf="this.richiestaDocumenti?.documentazioneRichiesta?.silwebTStatoDocume?.idSilwebTStatoDocume === 2"
+                                class="valore">
+                                {{this.richiestaDocumenti?.documentazioneRichiesta?.dataPresaInCarico | date:
+                                'dd/MM/yyyy' }}</div>
+                            <div *ngIf="this.richiestaDocumenti?.documentazioneRichiesta?.silwebTStatoDocume?.idSilwebTStatoDocume === 3"
+                                class="valore">
+                                {{this.richiestaDocumenti?.documentazioneRichiesta?.dataAccettazione| date:
+                                'dd/MM/yyyy' }}</div>
+                            <div *ngIf="this.richiestaDocumenti?.documentazioneRichiesta?.silwebTStatoDocume?.idSilwebTStatoDocume === 4"
+                                class="valore">
+                                {{this.richiestaDocumenti?.documentazioneRichiesta?.dataRifiuto| date:
+                                'dd/MM/yyyy' }}</div>
+                            <div *ngIf="this.richiestaDocumenti?.documentazioneRichiesta?.silwebTStatoDocume?.idSilwebTStatoDocume === 5"
+                                class="valore">
+                                {{this.richiestaDocumenti?.documentazioneRichiesta?.dataScaduto| date:
+                                'dd/MM/yyyy' }}</div>
+                        </div>
+                        <div class="mb-3 col-sm-12 col-md-4">
+                            <div
+                                *ngIf="this.richiestaDocumenti?.documentazioneRichiesta?.silwebTStatoDocume?.idSilwebTStatoDocume === 4">
+                                <label for="motivoRifiuto">Comunicazioni<span class="oblg">*</span></label>
+                                <div class="valore">
+                                    {{this.richiestaDocumenti?.documentazioneRichiesta?.silwebDMotivo?.desSilwebDMotivo
+                                    | uppercase }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </ng-template>
+            </ngb-panel>
+        </ngb-accordion>
+        <div class="d-flex justify-content-between">
+            <button type="button" (click)="onClickIndietro()" class="btn btn-outline-secondary btn-lg"
+                aria-label="torna all'elenco">
+                INDIETRO
+            </button>
+        
+            <button *ngIf="richiestaDocumenti?.documentazioneRichiesta?.silwebTStatoDocume?.idSilwebTStatoDocume === 3"
+                (click)="onClickStampaRichiesta(this.richiestaDocumenti?.documentazioneRichiesta?.idSilwebTDocumeRichiesti)"
+                type="button" class="btn btn-lg btn-primary">
+                {{"scarica" | uppercase}}
+            </button>
+        </div>
+        
+    </div>
+</div>

@@ -1,0 +1,116 @@
+<!--
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ -->
+<div class="container">
+
+  <ng-container>
+    <!-- Messaggio -->
+    <div role="alert"
+         class="alert alert-info ng-star-inserted">
+      <p [innerHTML]="messaggioIntestazione?.testo"></p>
+    </div>
+
+    <div class="row mb-3">
+      <pslpwcl-card-info-utente
+        [sezione] = 'sezione'>
+      </pslpwcl-card-info-utente>
+    </div>
+
+    <div class="row" *ngIf="areaTestoVisibile">
+      <p-card class="mb-3">
+        <content>
+          <p *ngFor="let messaggio of messaggiList"><span [innerHTML]="messaggio"></span> </p>
+        </content>
+      </p-card>
+
+    </div>
+
+    <div class="row">
+      <p-card>
+        <header>
+          <h3>La tua ultima DID</h3>
+        </header>
+        <content>
+          <p>Stato: <strong>{{ultimaDid?.statoDid | uppercase }}</strong></p>
+          <p>Età: <strong>{{ultimaDid?.eta|| "--"}}</strong></p>
+          <p>DID n°: <strong>{{ultimaDid?.numDid || "--"}}</strong> del <strong>{{ultimaDid?.dataDid | date:'dd/MM/yyyy' || "--"}}</strong></p>
+          <p>Ultima variazione stato: <strong>{{ultimaDid?.ultimaVariazioneStato| date:'dd/MM/yyyy' || "--"}}</strong></p>
+          <p>Denominazione CPI: <strong>{{ultimaDid?.denominazioneCpi|| "--"}}</strong></p>
+          <p>Ultimo profiling aggiornato: <strong>{{ultimaDid?.ultimoProfilingAggiornato| date:'dd/MM/yyyy' || "--"}}</strong></p>
+        </content>
+
+      </p-card>
+    </div>
+
+    <div class="row mt-5">
+
+<span style="color: red;" *ngIf="messaggioErroreStampa">{{messaggioErroreStampa}}</span>
+    </div>
+
+    <div class="row justify-content-md-center mt-3">
+      <div class="col mb-3 ">
+        <button type="button" class="btn btn-outline-primary btn-lg w-100"
+        aria-label="Nuova did"
+        [attr.aria-disabled]="(areaTestoVisibile || !canInsert)"
+        [disabled]="(areaTestoVisibile  || !canInsert)"
+        (click)="navigateToInserireDid()">NUOVA DID
+        </button>
+      </div>
+      <div class="col mb-3 align-self-center">
+        <button type="button" class="btn btn-outline-primary btn-lg w-100"
+          aria-label="Stampa attestato iscrizione"
+          [disabled]="stampaDisabled"
+          (click)="onStampa()">STAMPA ATTESTATO ISCRIZIONE
+        </button>
+      </div>
+
+    </div>
+
+
+
+
+  </ng-container>
+
+    <!-- <router-outlet>
+    </router-outlet> -->
+  </div>
+  <div class="myDivToPrint d-print-block">
+    <div class="stampa">
+      <div class="header row">
+        <div class="stampa col-8 regione"></div>
+        <div class="stampa col-4 centri"></div>
+      </div>
+      <div class="row justify-content-md-center">
+        <h2 style="text-align: center;">Attestazione dello stato di disoccupazione</h2>
+      </div>
+
+      <p>Al <strong>{{dataOggi | date:'dd/MM/yyyy'}}</strong> , <strong>{{utente.cognome}} {{utente.nome}} ({{utente.cfUtente}})</strong>, risulta in stato di disoccupazione, in base alle informazioni
+        presenti nel Sistema Informativo Lavoro Piemonte, per aver rilasciato la Dichiarazione di Immediata Disponibilità (DID) in data
+        <strong> {{ultimaDid?.dataDid | date:'dd/MM/yyyy'}}</strong>.
+      </p>
+      <p>Alla data di oggi, la durata della disoccupazione è pari a <strong> {{ultimaDid?.numGiorniDisoccupazioneCalcolati}} giorni</strong>.</p>
+      <div class="row firma">
+        <div class="col-6"></div>
+        <div class="col-5">
+         <div class="row justify-content-md-center" > <h4 style="text-align: center;">Agenzia Piemonte Lavoro</h4></div>
+         <div class="row justify-content-md-center" > <h4 style="text-align: center;">Direzione generale</h4></div>
+        </div>
+      </div>
+      <p>La presente attestazione è rilasciata ai sensi e per gli usi previsti dalla normativa vigente.</p>
+      <p>Si informa che la durata della disoccupazione è calcolata in giorni.</p>
+      <p>Ai fini del calcolo della durata di disoccupazione, ogni riferimento normativo a 6 mesi è ricondotto a
+        180 giorni mentre 12 mesi equivalgono a 365 giorni di disoccupazione.</p>
+      <p>Lo stato di disoccupazione è sospeso in caso di rapporto di lavoro subordinato di durata fino a sei mesi (ossia 180 giorni)</p>
+
+      <div class="footer">
+        <div class="row logo"></div>
+        <p>Data e ora di stampa del documento: <strong>{{dataOggi | date:'dd/MM/yyyy - HH:mm:ss'}}</strong></p>
+      </div>
+    </div>
+
+  </div>
+

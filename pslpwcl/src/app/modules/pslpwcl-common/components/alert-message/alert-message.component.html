@@ -1,0 +1,19 @@
+<!--
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ -->
+<div *ngIf="messages$ | async as messages" class="alert-container">
+
+  <div *ngFor="let msg of messages" class="alert" [ngClass]="getAlertClass(msg)" role="alert">
+    
+    <span [innerHTML]="msg.message"></span>
+    
+    <button type="button" class="close" aria-label="Close" (click)="closeAlert()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+
+  </div>
+</div>

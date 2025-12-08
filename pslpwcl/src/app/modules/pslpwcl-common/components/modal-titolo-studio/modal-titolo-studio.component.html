@@ -1,0 +1,134 @@
+<!--
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ -->
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-annulla-title">{{title}}</h4>
+  <!-- <button type="button" class="close" aria-label="Close" (click)="callback(modal)">
+    <span aria-hidden="true">&times;</span>
+  </button> -->
+</div>
+
+
+
+<div *ngIf="form" class="modal-body">
+
+
+  <form [formGroup]="form">
+    <label small class="mb-3 text-muted">I campi contrassegnati con <span class="oblg">*</span> sono obbligatori</label>
+    <div class="row">
+
+
+      <div class="mb-5 col-sm-12 col-md-8">
+        <label for="titoloStudio">Titolo di studio<span class="oblg">*</span></label>
+        <p-dropdown  inputId="dropdown"  [filter]="true" (onFilter)="onFilter($event)" [emptyMessage]="'Nessun dato trovato'" [autoDisplayFirst]="false"
+          [options]="titoliStudio" formControlName="idSilTStudio" style="padding: 0px;" (onChange)="onChangeTitoloStudio()"
+          class=" p-form-select" placeholder="" optionLabel="descr" optionValue="id" [filter]="true">
+          <!-- ng-invalid ng-dirty  -->
+        </p-dropdown>
+
+
+      </div>
+
+
+      <div class="mb-5 col-sm-12 col-md-6">
+        <label for="gradoTitolo">Grado titolo studio</label><br>
+        <span class="valore">{{titoloStudioSelected?.silTGradoStudio?.dsSilTGradoStudio}}</span>
+      </div>
+
+    </div>
+
+
+
+    <div class="row">
+      <div class="mb-5 col-sm-12 col-md-4">
+        <label for="tipoScuola">Tipo scuola</label><br>
+        <span class="valore">{{titoloStudioSelected?.dsTipoScuola}}</span>
+      </div>
+      <div class="mb-5 col-sm-12 col-md-4">
+        <label for="descrizione">Descrizione</label>
+        <input pInputText type="text" class="form-control" formControlName="descr" id="descr">
+      </div>
+      <div class="mb-5 col-sm-12 col-md-4">
+        <label for="stato">Stato</label>
+        <div class="row">
+          <div class="mb-3 col-auto">
+            <label class="form-check-label" for="RadioSi">Completato</label>
+            <input (change)="onClickCompletato()" formControlName="completato" type="checkbox" class="form-cv" id="stato">
+          </div>
+          <div *ngIf="!form?.get('completato')?.value" class="error">
+            Non e' possibile inserire il titolo, in quanto non e' completato.
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+
+      <div class="mb-5 col-sm-12 col-md-2">
+        <label for="anno">Anno</label>
+        <input pInputText type="text" pslpwclOnlyNumber class="form-control" formControlName="anno" id="annoTtitolo"
+          maxlength="4">
+        <div *ngIf="form?.get('anno')?.errors" class="text-danger">
+          <div *ngIf="form?.get('anno')?.errors['min'] && form?.get('anno').value.length> 3">Non è possibile inserire una data minore o uguale all'anno di nascita.</div>
+          <div *ngIf="form?.get('anno')?.errors['max']">L'anno non può essere maggiore dell'anno corrente</div>
+        </div>
+      </div>
+
+      <div class="mb-5 col-sm-12 col-md-1">
+        <label for="laude">Laude </label><br>
+        <input formControlName="laude" type="checkbox" class="form-cv" id="lode">
+      </div>
+
+      <div class="mb-5 col-sm-12 col-md-2">
+        <label for="riconoscimentoItalia">Riconosciuto in Italia<span class="oblg">*</span></label>
+        <div class="row">
+          <div *ngFor="let item of [{key:'Si',value:'S'},{key:'No',value:'N'}]" class="mb-3 col-auto">
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" [value]="item.value" formControlName="radioRiconoscimento"
+                (change)="onChangeFormControl()" id="RadioSi">
+              <label class="form-check-label" for="RadioSi">{{item.key}}</label>
+            </div>
+          </div>
+          <div *ngIf="noOptionSelected" class="error">
+            Se non e' riconosciuto in Italia, il titolo non potra' partecipare al calcolo del profiling quantitativo.
+          </div>
+        </div>
+      </div>
+      <div class="mb-5 col-sm-12 col-md-2">
+        <label for="cv">CV</label><br>
+        <input type="checkbox" formControlName="cv" class="form-cv" id="curriculum">
+      </div>
+    </div>
+    <div class="row">
+      <div class="mb-5 col-sm-12 col-md-2">
+        <label for="voto">Voto<span *ngIf="form?.get('voto')?.value?.length > 0 || form?.get('valore')?.value?.length > 0" class="oblg">*</span></label>
+
+          <input pInputText (keyup)="votoValoreRequired()" type="text" pslpwclOnlyNumber class="form-control" formControlName="voto" id="voto" maxlength="3">
+          <div *ngIf="form?.get('voto')?.hasError('valoreMax')" class="text-danger">
+            Il Voto non puo' essere maggiore del Valore massimo
+          </div>
+      </div>
+      <div class="mb-3 col-sm-12 col-md-2">
+        <label for="valore">Valore massimo<span *ngIf="form?.get('voto')?.value?.length > 0 || form?.get('valore')?.value?.length > 0" class="oblg">*</span></label>
+          <input pInputText (keyup)="votoValoreRequired()" type="text" pslpwclOnlyNumber class="form-control" formControlName="valore" id="valore" maxlength="3">
+      </div>
+    </div>
+  </form>
+</div>
+
+
+
+<div class="modal-footer row">
+  <div class="col">
+    <button type="button" (click)="callback(modal)" class="btn btn-outline-secondary btn-sm"
+    aria-label="Anulla inserimento">ANNULLA</button>
+  </div>
+  <div class="col-auto">
+    <button type="button" class="btn btn-primary ml-auto btn-lg" (click)="onClickInserisciTitoloStudio()"
+    aria-label="Inserisci titolo stutio"
+    [disabled]="!form?.get('completato')?.value || !form?.valid">INSERISCI TITOLO STUDIO</button>
+  </div>
+</div>

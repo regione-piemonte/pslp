@@ -1,0 +1,19 @@
+{
+  "APP": {
+    "LOADING": null
+  },
+  "ERROR": {
+    "ERROR_TITLE": null
+  },
+  "PAGINATED_TABLE": {
+    "LABEL": {
+      "END": null,
+      "ITEMS_FOR_PAGE": null,
+      "NEXT": null,
+      "NO_DATA": null,
+      "PREV": null,
+      "START": null
+    }
+  },
+  "PIPPO": null
+}

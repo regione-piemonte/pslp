@@ -1,0 +1,75 @@
+<!--
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ -->
+<div class="modal-header">
+    <h4 class="modal-title" id="modal-annulla-title">Lingua conosciuta</h4>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+
+<div class="modal-body"> 
+    <div class="mt-3 row">
+        <h3>DETTAGLIO LINGUE STRANIERE CONOSCIUTE</h3>
+        <form [formGroup]="form">
+            <div class="row">
+                <!-- lingua -->
+                <div formGroupName="lingua" class="mb-5 col-sm-12 col-md-4">
+                    <label for="lingua">Lingua<span class="oblg">*</span></label>
+                    <p-dropdown  inputId="lingua" [emptyMessage]="'Nessun dato trovato'" [autoDisplayFirst]="false"
+                    [options]="linguaDecodifiche" formControlName="id" ariaLabel="seleziona lingua"
+                    class=" p-form-select" placeholder=""optionLabel="descr" optionValue="id">
+                    </p-dropdown>
+                </div>
+                <!-- certificato -->
+                <div class="mb-5 col-8">
+                    <label for="certificato">Certificato</label>
+                    <input type="checkbox" id="certificato" aria-label="con certificazione" formControlName="certificato" class="form-check-input ml-3">
+                </div>
+
+
+                <!-- Letta -->
+                <div formGroupName="letto" class="mb-5 col-sm-12 col-md-4">
+                    <label for="letto">Letta<span class="oblg">*</span></label>
+                    <p-dropdown  inputId="letto" ariaLabel="grado competenza di lettura" [emptyMessage]="'Nessun dato trovato'" [autoDisplayFirst]="false"
+                    [options]="gradoConoscenzaLingua" formControlName="id"
+                    class=" p-form-select" placeholder=""optionLabel="descr" optionValue="id">
+                    </p-dropdown>
+                </div>
+                <!-- Scritta -->
+                <div formGroupName="scritto" class="mb-5 col-sm-12 col-md-4">
+                    <label for="scritto">Scritta<span class="oblg">*</span></label>
+                    <p-dropdown  inputId="scritto" ariaLabel="grado competenza di scrittura" [emptyMessage]="'Nessun dato trovato'" [autoDisplayFirst]="false"
+                    [options]="gradoConoscenzaLingua" formControlName="id"
+                    class=" p-form-select" placeholder=""optionLabel="descr" optionValue="id">
+                    </p-dropdown>
+                </div>
+                <!-- Parlata -->
+                <div formGroupName="parlato" class="mb-5 col-sm-12 col-md-4">
+                    <label for="parlato">Parlata<span class="oblg">*</span></label>
+                    <p-dropdown  inputId="parlato" ariaLabel="grado competenza di dialogo" [emptyMessage]="'Nessun dato trovato'" [autoDisplayFirst]="false"
+                    [options]="gradoConoscenzaLingua" formControlName="id"
+                    class=" p-form-select" placeholder=""optionLabel="descr" optionValue="id">
+                    </p-dropdown>
+                </div>
+
+                <!-- Modalità di aprendimento -->
+                <div formGroupName="modalitaApprendimento" class="mb-5 col-sm-12 col-md-4">
+                    <label for="modalitaApprendimento">Modalità di apprendimento<span class="oblg">*</span></label>
+                    <p-dropdown  inputId="modalitaApprendimento" ariaLabel="modalità di apprendimento" [emptyMessage]="'Nessun dato trovato'" [autoDisplayFirst]="false"
+                    [options]="modalitaAprrendimentoLinguaDecodifica" formControlName="id"
+                    class=" p-form-select" placeholder=""optionLabel="descr" optionValue="id">
+                    </p-dropdown>
+                </div>
+
+            </div>
+
+        </form>
+
+
+    </div>
+</div>

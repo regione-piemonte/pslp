@@ -1,0 +1,131 @@
+<!--
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ -->
+<ng-container>
+    <h3>LE MIE CANDIDATURE</h3>
+    <div class="row mt-3">
+        <p-table #dt dataKey="id" [value]="candidatureList" styleClass="p-datatable-customers"
+            [rowHover]="true" [rows]="10" [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50]"
+            [loading]="false" responsiveLayout="scroll" [paginator]="true"
+            currentPageReportTemplate="{first} di {last}, su {totalRecords} righe" [sortField]="'dataInvio'"
+            [sortOrder]="-1">
+
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>
+                        <div class="flex justify-content-between align-items-center">
+                            Data candidatura
+                        </div>
+                    </th>
+                    <th>
+                        <div class="flex justify-content-between align-items-center">
+                            Pubblicato da
+                        </div>
+                    </th>
+                    <th>
+                        <div class="flex justify-content-between align-items-center">
+                            Titolo annuncio
+                        </div>
+                    </th>
+                    <th>
+                        <div class="flex justify-content-between align-items-center">
+                            Numero annuncio
+                        </div>
+                    </th>
+                    <th>
+                        <div class="flex justify-content-between align-items-center">
+                            Stato annuncio
+                        </div>
+                    </th>
+                    <th>
+                        <div class="flex justify-content-between align-items-center">
+                            Stato candidatura
+                        </div>
+                    </th>
+                    <th>
+                        <div class="flex justify-content-between align-items-center">
+                            Data stato
+                        </div>
+                    </th>
+                    <th style="width: auto">Azioni</th>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-el>
+                <tr class="p-selectable-row">
+                    <td>
+                        <span class="p-column-title">Data candidatura</span>
+                        {{el.d_vacancy_candidatura | date: 'dd/MM/yyyy' }}
+                    </td>
+                    <td>
+                        <span class="p-column-title">Pubblicato da</span>
+                        {{el.datiAnnuncio.pubblicatoDa}}
+                    </td>
+                    <td>
+                        <span class="p-column-title">Titolo annuncio</span>
+                        {{el.datiAnnuncio.titoloAnnuncio}}
+                    </td>
+                    <td>
+                        <span class="p-column-title">Numero annuncio</span>
+                        {{el.datiAnnuncio.numeroAnnuncio ? el.datiAnnuncio.numeroAnnuncio : '' }}
+                    </td>
+                    <td><span class="p-column-title">Stato annuncio</span>
+                        {{getStatoAnnuncio(el) | uppercase}}
+                    </td>
+                    <td><span class="p-column-title">
+                            Stato candidatura</span>{{getStatoCandidatura(el)| uppercase}}
+                    </td>
+                    <td><span class="p-column-title">
+                            Data stato</span>{{getDataStatoCorrente(el) | date: "dd/MM/yyy"}}
+                    </td>
+                    <td>
+                        <a *ngIf="showRifiutareAccettare(el)" tabindex="0" style="color: #B91818"
+                            (click)="onClickRifiuta(el)" aria-label="Azione: Rifiuta candidatura"
+                            title="Rifiuta candidatura">
+                            <i class="fas fa-trash-alt"></i>
+                        </a>
+                        <a *ngIf="showRitirare(el)" tabindex="0" style="color: #016CB4" (click)="onClickRitira(el)"
+                            aria-label="Azione: Ritira candidatura" title="Ritira candidatura">
+                            <i class="fas fa-file-export"></i>
+                        </a>
+                        <a *ngIf="showRifiutareAccettare(el)" tabindex="0" style="color: #016CB4"
+                            (click)="onClickAccetta(el)" aria-label="Azione: Accetta candidatura"
+                            title="Accetta candidatura">
+                            <i class="fas fa-user-check"></i>
+                        </a>
+                    </td>
+                </tr>
+            </ng-template>
+
+            <ng-template *ngIf="candidatureList?.length === 0" pTemplate="emptymessage">
+                <tr>
+                    <td colspan="8" class=" text-center no-results-warning">
+                        Nessun risultato trovato
+                    </td>
+                </tr>
+            </ng-template>
+
+
+        </p-table>
+
+
+    </div>
+
+    <div *ngIf="candidatureList?.length > 0"  class="row">
+        <div class="col-auto">
+            <button type="button" (click)="onClickEsportaFile('pdf')" class="btn btn-primary ml-auto btn-lg">
+                ESPORTA PDF
+            </button>
+        </div>
+        <div class="col-8">
+            <button type="button" (click)="onClickEsportaFile('xls')" class="btn btn-primary ml-auto btn-lg">
+                ESPORTA EXCEL
+            </button>
+        </div>
+    </div>
+
+</ng-container>

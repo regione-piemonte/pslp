@@ -1,0 +1,63 @@
+<!--
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ -->
+
+<!--
+    pagina home
+    portale pslp
+    cittadino / operatore
+-->
+<div class="row subheader align-items-center">
+  <div class="col align-self-center">
+    <h2 class="container text-center">{{ subheaderContent }}</h2>
+  </div>
+
+</div>
+<div class="container" *ngIf="flgAccesso; else noAccesso">
+
+  <!-- Messaggio di caricamento -->
+  <div *ngIf="isLoadingUser" class="alert alert-info text-center mt-3" role="alert">
+    <i class="fas fa-spinner fa-spin me-2"></i>
+    <strong>Caricamento in corso...</strong> Attendere prego.
+  </div>
+
+  <div class="mt-40  row justify-content-start gap-2">
+
+    <div class="col-md-6 col-lg-4 d-flex p-0 elenco-card" *ngFor="let el of elencoCard" style="min-height: 210px;">
+      <a href="javascript:void(0)"
+         style="color: black;"
+         (click)="onGotoLink(el)"
+         [attr.aria-label]="'vai a ' + el.titolo"
+         [class.disabled-link]="isLoadingUser"
+         [style.pointer-events]="isLoadingUser ? 'none' : 'auto'"
+         [style.opacity]="isLoadingUser ? '0.6' : '1'"
+         class="Card" >
+        <div class="card-block row">
+          <!-- <i [ngClass]="el.icon" class="col-2 pb-2"></i> -->
+          <img class="col-4" src="assets/img/{{el.icon}}" alt="user_privacy_deleghe" style="width: 5em;
+          border-radius: 5px;">
+          <h4 class="card-title pb-2 col-8" [innerHTML]="el.titolo"></h4>
+          <p class="card-text col-12 mt-3" [innerHTML]="el.testoCard"></p>
+        </div>
+        <div class="card-footer row align-items-end" *ngIf="el.flgAccessoAutenticato && !hasUtente">
+          <p class="lock">Servizio ad accesso autenticato  <i class="fas fa-lock"></i> </p>
+        </div>
+      </a>
+    </div>
+
+  </div>
+  &nbsp;<br>
+</div>
+
+
+<ng-template #noAccesso>
+  <div class="col-md-12 col-lg-10">
+    <div class="alert alert-warning valign-middle" role="alert">
+      <h5 class="col-md-9 text-center"> - {{ msgAccesso }} - </h5>
+    </div>
+  </div>
+</ng-template>

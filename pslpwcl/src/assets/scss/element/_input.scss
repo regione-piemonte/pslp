@@ -1,0 +1,66 @@
+/*
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ */
+.input-agg-delega{
+  min-width: 20rem;
+  .p-dropdown{
+    min-width: 20rem;
+  }
+}
+
+.p-form-date{
+  display: block;
+  width: 100%;
+  padding: 0 2.25rem 0.375rem 0.75rem;
+  .p-calendar{
+    width: 100%;
+  }
+}
+
+.p-form-select {
+  display: block;
+  width: 100%;
+  padding: 0.375rem 2.25rem 0.375rem 0.75rem;
+  .p-dropdown{
+    width: 100%;
+  }
+
+  &:disabled {
+    color: $form-select-disabled-color;
+    background-color: $form-select-disabled-bg;
+    border-color: $form-select-disabled-border-color;
+  }
+
+  // Remove outline from select box in FF
+  &:-moz-focusring {
+    color: transparent;
+    text-shadow: 0 0 0 $form-select-color;
+  }
+}
+
+// .form-select-sm {
+//   padding-top: $form-select-padding-y-sm;
+//   padding-bottom: $form-select-padding-y-sm;
+//   padding-left: $form-select-padding-x-sm;
+//   @include font-size($form-select-font-size-sm);
+//   @include border-radius($form-select-border-radius-sm);
+// }
+
+// .form-select-lg {
+//   padding-top: $form-select-padding-y-lg;
+//   padding-bottom: $form-select-padding-y-lg;
+//   padding-left: $form-select-padding-x-lg;
+//   @include font-size($form-select-font-size-lg);
+//   @include border-radius($form-select-border-radius-lg);
+// }
+
+.p-element:disabled{
+  background: #e9ecef;
+}
+.p-disabled, .p-calendar-disabled{
+    background: #e9ecef;
+}

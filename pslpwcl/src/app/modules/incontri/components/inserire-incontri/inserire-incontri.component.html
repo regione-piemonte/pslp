@@ -1,0 +1,60 @@
+<!--
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ -->
+<div class="torna">
+	<button (click)="onClickTornaElenco()" type="button" class="btn btn-outline-secondary btn-sm">
+    {{testoBtnTorna}}
+  </button>
+</div>
+<div class="container-fluid">
+    <ul ngbNav [roles]="false" #nav="ngbNav" (navChange)="onClickNavChange($event)" [(activeId)]="active" class="stepper mb-3">
+        <li [disabled]=" active === 2" [ngbNavItem]="0">
+            <a class="nav-link" ngbNavLink><span>1</span> Servizio</a>
+            <ng-template ngbNavContent>
+                <pslpwcl-servizio
+                    *ngIf="ricercaSlotLiberiPrenotabiliRequest"
+                        (ricercaEmitter)="verificaVincoliServizio()"
+                        [incontro]="incontro"
+                        [oraMinima]="oraMinima"
+                        [oraMassima]="oraMassima"
+                        [listaModalitaErogazionePresenza]="listaModalitaErogazionePresenza" 
+                        [listaModalitaErogazionRemoto]="listaModalitaErogazionRemoto"
+                        [initialRicercaSlotLiberiPrenotabiliRequest]="initialRicercaSlotLiberiPrenotabiliRequest"
+                        [ricercaSlotLiberiPrenotabiliRequest]="ricercaSlotLiberiPrenotabiliRequest"
+                        [elencoCpi]="elencoCpi" 
+                        [form]="form"
+                        [categoriaServizi]="categoriaServizi">                    
+                </pslpwcl-servizio>
+            </ng-template>
+        </li> 
+        <li [disabled]="active !== 1" [ngbNavItem]="1">
+            <a class="nav-link" ngbNavLink><span>2</span> Appuntamento</a>
+            <ng-template ngbNavContent>
+                <pslpwcl-appuntamento
+                    *ngIf="primaRicercaSlotLiberiPrenotabiliResponse?.esitoPositivo"
+                    [form]="form"
+                    [dettaglioIncontro]="dettaglioIncontro"
+                    (salvataggioIncontroEmitter)="dettaglioIncontro = $event; incontro = dettaglioIncontro?.incontro; active = 2"
+                    [ricercaSlotLiberiPrenotabiliResponse]="primaRicercaSlotLiberiPrenotabiliResponse"
+                    [ricercaSlotLiberiPrenotabiliRequest]="ricercaSlotLiberiPrenotabiliRequest">
+                </pslpwcl-appuntamento>
+            </ng-template>
+        </li>
+        <li [disabled]="active < 2" [ngbNavItem]="2">
+            <a  class="nav-link" ngbNavLink><span>3</span> Riepilogo</a>
+            <ng-template ngbNavContent>
+                <div class="container-fluid">
+                    <div class="card p-3 shadow-sm">
+                        <pslpwcl-dati-prenotazione *ngIf="incontro" [servizio]="dettaglioIncontro?.servizio" [incontro]="incontro"></pslpwcl-dati-prenotazione>
+                    </div>
+                </div>
+            </ng-template>
+        </li>
+    </ul>
+    <div [ngbNavOutlet]="nav"></div>
+</div>
+

@@ -1,0 +1,145 @@
+<!--
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ -->
+
+
+<ngb-accordion #acc="ngbAccordion" activeIds="elencoRapporti,elencoEsperienza">
+  <ngb-panel title="ELENCO RAPPORTI DI LAVORO" id="elencoRapporti">
+    <ng-template ngbPanelContent>
+      <p-table
+    #dt
+    [value]="rapportoList"
+    dataKey="id"
+    styleClass="p-datatable-customers"
+    [rowHover]="true"
+
+    [rows]="5"
+    [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[5,10,25,50]"
+
+    [loading]="false"
+    responsiveLayout="scroll"
+    [paginator]="true"
+    currentPageReportTemplate="{first} di {last}, su {totalRecords} righe">
+
+      <ng-template pTemplate="header">
+          <tr>
+            <th scope="col">Data inizio</th>
+            <th scope="col">Denominazione azienda</th>
+            <th scope="col">Data fine</th>
+            <th scope="col">Contratto</th>
+            <th scope="col">PT</th>
+            <th scope="col">Durata</th>
+            <th scope="col">Cessato</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rapporto >
+          <ng-container *ngIf="rapportoList?.length; else noData">
+            <tr class="p-selectable-row">
+              <td class="align-middle">{{rapporto.dataInizioRapporto | date:'dd/MM/yyyy' }}</td>
+              <td class="align-middle">{{rapporto.denominazioneAzienda | uppercase}}</td>
+              <td class="align-middle">{{rapporto.dataFine | date:'dd/MM/yyyy' }}</td>
+              <td class="align-middle">{{rapporto.contratto | uppercase}}</td>
+              <td class="align-middle">{{rapporto.partTime ? (rapporto.partTime=="S"? "SI":"NO") : "-"}}</td>
+              <td class="align-middle">{{rapporto.durata}}</td>
+              <td class="align-middle">{{rapporto.flgRapportoCessato}}</td>
+            </tr>
+          </ng-container>
+          <ng-template #noData>
+            <tr>
+              <td colspan="7">Non ci sono dati</td>
+            </tr>
+          </ng-template>
+        </ng-template>
+      </p-table>
+    </ng-template>
+  </ngb-panel>
+  <ngb-panel title="ELENCO ESPERIENZE PROFESSIONALI" id="elencoEsperienza">
+    <ng-template ngbPanelContent>
+      <p-table
+    #dt
+    [value]="esperienzeProfessionali"
+    dataKey="id"
+    styleClass="p-datatable-customers"
+    [rowHover]="true"
+
+    [rows]="5"
+    [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[5,10,25,50]"
+
+    [loading]="false"
+    responsiveLayout="scroll"
+    [paginator]="true"
+    currentPageReportTemplate="{first} di {last}, su {totalRecords} righe">
+    <ng-template pTemplate="header">
+        <tr>
+          <th scope="col">Data assunzione</th>
+          <th scope="col">Data cessazione</th>
+          <th scope="col">Tipo</th>
+          <th scope="col">PT</th>
+          <th scope="col">Azione</th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-esperienza >
+          <ng-container *ngIf="esperienzeProfessionali?.length; else noData">
+            <tr class="p-selectable-row">
+              <td class="align-middle">{{esperienza?.dataAssunzione | date:'dd/MM/yyyy' }}</td>
+              <td class="align-middle">{{esperienza?.dataCessazione | date:'dd/MM/yyyy' }}</td>
+              <td class="align-middle">{{esperienza?.tipoEsperienza?.descr | uppercase}}</td>
+              <td class="align-middle">{{esperienza.flgPT}}</td>
+              <td class="align-middle">
+                <a pTooltip="visualizza dettaglio dell'esperienza professionale"  tooltipPosition="top" (click)="toggleDettaglioEsperienzeProfessionali('view', esperienza)"
+                 style="color: #016CB4"
+                [attr.aria-label]="'visualizza dettaglio dell\'esperienza professionale presso '+(esperienza?.lavEsperienzaLavoro?.dsDenominazioneAu??esperienza?.lavEsperienzaLavoro?.dsDenominazioneDl)">
+                  <i class="fas fa-eye"></i>
+
+              </a>
+                <a pTooltip="modifica dati esperienza professionale"  tooltipPosition="top" (click)="toggleDettaglioEsperienzeProfessionali('edit',esperienza)"
+                 style="color: #016CB4"
+                [attr.aria-label]="'modifica dati esperienza professionale presso '+(esperienza?.lavEsperienzaLavoro?.dsDenominazioneAu??esperienza?.lavEsperienzaLavoro?.dsDenominazioneDl)">
+                  <i class="fas fa-edit"></i></a>
+                <a pTooltip="elimina l'esperienza professionale"  tooltipPosition="top" (click)="onClickEliminaEsperienzeProfessionale(esperienza)"
+
+                [attr.aria-label]="'elimina l\'esperienza professionale presso '+(esperienza?.lavEsperienzaLavoro?.dsDenominazioneAu??esperienza?.lavEsperienzaLavoro?.dsDenominazioneDl)">
+                    <i class="fas fa-trash-alt"></i></a>
+
+
+            </td>
+            </tr>
+          </ng-container>
+
+          <ng-template #noData>
+            <tr>
+              <td colspan="5">Non ci sono dati</td>
+            </tr>
+          </ng-template>
+
+    </ng-template>
+      </p-table>
+      <div class="row mt-8">
+        <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3">
+          <button type="button" class="btn btn-primary btn-lg" (click)="openEsperienza()" aria-label="inserisci esperienza professionale">INSERISCI ESPERIENZA PROFESSIONALE</button>
+        </div>
+      </div>
+
+
+      <pslpwcl-inserisci-esperienza-lavoro [hidden]="!showEsperienzeProfessionali" #espLav
+        [idSilLavAnagrafica]="idSilLavAnagrafica"
+        [esperienzaSelected]="esperienzaSelected"
+        [mod]="mod"
+
+        (annulla)="hideEsperienzeProfessionali()"
+        (updateList)="updateList($event)">
+      </pslpwcl-inserisci-esperienza-lavoro>
+
+
+    </ng-template>
+  </ngb-panel>
+</ngb-accordion>
+
+
+

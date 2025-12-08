@@ -1,0 +1,74 @@
+<!--
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ -->
+
+
+<div class="row vertical-center">
+
+  <div class="scrollbar-table scrollbar-primary col-sm-12 col-md-12 col-lg-6 col-xl-6 ">
+    <table aria-describedby="tabDescr"  class="table table-bordered table-striped table-hover table-sortable" id="infoTable">
+      <ng-template
+          [ngIf]="!utenteACarico"
+          [ngIfElse]="elseBlock">
+        <thead>
+          <tr>
+            <th scope="col">Privacy</th>
+            <th scope="col">Stato</th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+          <tbody>
+          <tr *ngFor="let privacy of elencoPrivacyUtente">
+            <td class="align-middle">{{privacy?.pslpDPrivacy?.descPrivacy}}</td>
+            <td  [ngClass]="{'text-center': true,
+              'align-middle': true,
+              'table-success': !!privacy?.pslpTUtente1 || !!privacy?.pslpTUtente2 ? true: false }">
+             <strong>{{ !!privacy?.pslpTUtente1 || !!privacy?.pslpTUtente2 ?"Confermata":"Da confermare" }}</strong>
+              </td>
+            <td class="text-center" class="text-nowrap">
+              <button title="Privacy" class="btn btn-outline-primary"
+              [disabled]="!pulsantiAbilitati"
+              (click)="onVedi(privacy)">
+                VEDI
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </ng-template>
+
+      <ng-template #elseBlock>
+        <thead>
+          <tr>
+            <th scope="col">Privacy responsabile</th>
+            <th scope="col">Stato</th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+          <tbody>
+          <tr *ngFor="let lePrivacy of elencoPrivacyMinore">
+            <td class="align-middle">{{lePrivacy.descr_ambito}}</td>
+            <td  [ngClass]="{'text-center': true,
+            'align-middle': true,
+              'table-success': lePrivacy.stato}">
+              <strong>
+                PROVA
+              </strong>
+              </td>
+            <td class="text-nowrap">
+              <button title="Privacy"
+                class="btn btn-outline-primary"
+                [disabled]="!pulsantiAbilitati">
+                VEDI
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </ng-template>
+
+    </table>
+  </div>
+</div>

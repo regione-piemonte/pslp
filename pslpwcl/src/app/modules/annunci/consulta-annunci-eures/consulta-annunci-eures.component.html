@@ -1,0 +1,167 @@
+<!--
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ -->
+<div class="container">
+    <div role="alert" class="alert alert-info ng-star-inserted">
+        <p [innerHTML]="messaggioIntestazione?.testo"></p>
+    </div>
+
+    <form [formGroup]="form">
+        <div class="container-body">
+            <div class="card">
+                <div class="card-body mt-3">
+                    <h2 class="title">Consulta annunci EURES</h2>
+                    <p class="text-muted mt-3">I campi contrassegnati con <span class="oblg">*</span> sono obbligatori
+                    </p>
+                    <div class="row">
+                        <div class="mb-4 col-sm-12 col-md-8">
+                            <div class="d-flex align-items-center">
+                                <input type="text" id="paroleRicercate" minlength="4" aria-label="parole ricercate"
+                                    pInputText class="form-control me-2" formControlName="paroleRicercate"
+                                    placeholder="Professione, Azienda, Luogo di lavoro...">
+                                <span class="text-danger">*</span>
+                            </div>
+
+
+                            <div *ngIf="f?.paroleRicercate.invalid && (f?.paroleRicercate.dirty || f?.paroleRicercate.touched)"
+                                class="text-danger">
+                                <p *ngIf="f?.paroleRicercate.errors?.minlength">Inserire almeno 4 caratteri</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div formGroupName="comune" class="mb-5 col-sm-12 col-md-3">
+                            <label for="comune">Comune </label>
+                            <p-dropdown inputId="comune" [emptyMessage]="'Nessun dato trovato'" [filter]="true"
+                                (onFilter)="onCercaComune($event)" [autoDisplayFirst]="false" [options]="comuni"
+                                formControlName="id" class="p-form-select" placeholder="" optionLabel="descr"
+                                optionValue="id" labelForId="comune" ariaLabel="seleziona comune di lavoro"
+                                [showClear]="true">
+                            </p-dropdown>
+
+                        </div>
+                        <div formGroupName="stato" class="mb-5 col-sm-12 col-md-3">
+                            <label for="stato">Stato Estero </label>
+                            <p-dropdown inputId="stato" [emptyMessage]="'Nessun dato trovato'"
+                                [autoDisplayFirst]="false" [options]="statiEsteri" formControlName="id"
+                                class="p-form-select" placeholder="" optionLabel="descr" optionValue="id"
+                                labelForId="stato" ariaLabel="seleziona stato estero di lavoro" [showClear]="true">
+                            </p-dropdown>
+                        </div>
+                    </div>
+
+                </div>
+                <div *ngIf="form" class="row">
+                    <div class="col mt-3">
+                        <button type="button" (click)="onClickAnnulla()" class="btn btn-outline-secondary btn-lg"
+                            aria-label="annulla inserimento">INDIETRO</button>
+                    </div>
+                    <div class="col-auto mt-3">
+                        <button type="button" (click)="onClickCerca()" class="btn btn-primary ml-auto btn-lg"
+                            [disabled]="!form?.valid" [attr.aria-disabled]="!form?.valid"
+                            aria-label="Cerca annunci">CERCA</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </form>
+    <ng-container>
+        <div *ngIf="showRicerca" class="mt-5" #anchorRicerca>
+            <h3>CONSULTA ANNUNCI</h3>
+            <div class="row mt-5">
+                <p-table #dt dataKey="id" [value]="annunciEURESList" styleClass="p-datatable-customers"
+                    [rowHover]="true" [rows]="10" [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50]"
+                    [loading]="false" responsiveLayout="scroll" [paginator]="true"
+                    currentPageReportTemplate="{first} di {last}, su {totalRecords} righe" [sortField]="'dataInvio'"
+                    [sortOrder]="-1">
+
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>
+                                <div class="flex justify-content-between align-items-center">
+                                    Pubblicato da
+                                    <p-sortIcon></p-sortIcon>
+                                </div>
+                            </th>
+                            <th pSortableColumn="titoloVacancy">
+                                <div class="flex justify-content-between align-items-center">
+                                    Titolo annuncio
+                                    <p-sortIcon field="titoloVacancy"></p-sortIcon>
+                                </div>
+                            </th>
+                            <th pSortableColumn="idAnnuncio">
+                                <div class="flex justify-content-between align-items-center">
+                                    Numero annuncio
+                                    <p-sortIcon field="idAnnuncio"></p-sortIcon>
+                                </div>
+                            </th>
+                            <th pSortableColumn="dsProfiloIstat">
+                                <div class="flex justify-content-between align-items-center">
+                                    Contratto offerto
+                                    <p-sortIcon field="dsProfiloIstat"></p-sortIcon>
+                                </div>
+                            </th>
+                            <th pSortableColumn="descrComuneSede">
+                                <div class="flex justify-content-between align-items-center">
+                                    Sede di lavoro
+                                    <p-sortIcon field="descrComuneSede"></p-sortIcon>
+                                </div>
+                            </th>
+                            <th style="width: auto">Azioni</th>
+                        </tr>
+                    </ng-template>
+
+                    <ng-template pTemplate="body" let-el>
+                        <tr class="p-selectable-row">
+                            <td>
+                                <span class="p-column-title">Pubblicato da</span>
+                                {{getPubblicatoDa(el)}}
+                            </td>
+                            <td>
+                                <span class="p-column-title">Titolo annuncio</span>
+                                {{el.titoloVacancy}}
+                            </td>
+                            <td>
+                                <span class="p-column-title">Numero annuncio</span>
+                                {{el.numAnnuncio}}
+                            </td>
+                            <td>
+                                <span class="p-column-title">Contratto offerto</span>
+                                {{el?.contratto}}
+                            </td>
+                            <td>
+                                <span class="p-column-title">Sede di lavoro</span>
+                                {{el?.descrComuneSede ? el?.descrComuneSede : el?.descrNazioneSede}}
+                            </td>
+                            <td>
+                                <a tabindex="0" style="color: #016CB4" (click)="onGoToAnnuncio(el.idAnnuncio)"
+                                    aria-label="Azione: visualizzare dettaglio richiesta"
+                                    title="Visualizzare dettaglio richiesta">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    </ng-template>
+
+                    <ng-template *ngIf="annunciEURESList?.length === 0" pTemplate="emptymessage">
+                        <tr>
+                            <td colspan="6" class=" text-center no-results-warning">
+                                Nessun risultato trovato
+                            </td>
+                        </tr>
+                    </ng-template>
+
+
+                </p-table>
+
+
+            </div>
+        </div>
+
+    </ng-container>
+</div>

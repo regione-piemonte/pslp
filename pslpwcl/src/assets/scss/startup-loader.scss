@@ -1,0 +1,150 @@
+/*
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ */
+
+@import "base/index";
+@import "element/index";
+
+.p-component, .p-dropdown-label, .p-inputtext, .p-placeholder{
+  font-size: 14px;
+}
+
+#startup-loader {
+  background-color: rgb(51,51,51);
+  background-color: rgba(51,51,51,0.8);
+  z-index: 99999;
+  position: fixed;
+  opacity: 1;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+
+  .loader {
+    display: block;
+    font-size: 0;
+    color: #fff;
+    width: 64px;
+    height: 64px;
+    top: 50%;
+    left: 50%;
+    margin: 0;
+    position: absolute;
+    transform: translate(-50%, -50%);
+
+    & > div {
+      display: inline-block;
+      float: none;
+      border: 4px solid currentColor;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      margin: 0;
+      background: 0 0;
+      border-radius: 100%;
+      box-sizing: border-box;
+      animation: 1s ease-in-out infinite startup-loader-rotate;
+
+      &:first-child {
+        width: 64px;
+        height: 64px;
+        position: absolute;
+        border-right-color: transparent;
+        border-left-color: transparent;
+      }
+      &:last-child {
+        width: 32px;
+        height: 32px;
+        border-top-color: transparent;
+        border-bottom-color: transparent;
+        animation-duration: .5s;
+        animation-direction: reverse;
+      }
+    }
+  }
+
+  .loading-text {
+    position: absolute;
+    top: 60%;
+    left: 50%;
+    transform: translate(-50%, -60%);
+    z-index: 99999;
+
+    p {
+      font-size: 20px;
+      color: white;
+    }
+  }
+}
+@-webkit-keyframes startup-loader-rotate {
+  0% {
+    transform: translate(-50%, -50%) rotate(0);
+  }
+  50% {
+    transform: translate(-50%, -50%) rotate(180deg);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+@keyframes startup-loader-rotate {
+  0% {
+    transform: translate(-50%, -50%) rotate(0);
+  }
+  50% {
+    transform: translate(-50%, -50%) rotate(180deg);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+
+
+}
+#app-pslp{
+  -webkit-print-color-adjust:exact !important;
+  print-color-adjust:exact !important;
+}
+@media print {
+  @page {
+    size: A4;
+  }
+  #app-pslp{
+    *:not(.stampa) {
+
+      visibility: hidden;
+    }
+    .not-stampa {
+      display: none;
+    }
+   
+
+    .myDivToPrint {
+      visibility: visible;
+      width: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      margin: 0;
+      padding: 15px;
+      font-size: 14px;
+      line-height: 18px;
+
+      button{
+        display: none;
+      }
+      *{
+        visibility: visible;
+      }
+
+      #laterale{
+        background-color: red;
+      }
+    }
+  }
+}
+

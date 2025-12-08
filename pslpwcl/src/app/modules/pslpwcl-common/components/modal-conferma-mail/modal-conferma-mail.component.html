@@ -1,0 +1,30 @@
+<!--
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ -->
+<div class="modal-header">
+    <h4 class="modal-title" id="modal-annulla-title">{{title}}</h4>
+    <!-- <button type="button" class="close" aria-label="Close" (click)="callback(modal)">
+    <span aria-hidden="true">&times;</span>
+    </button> -->
+</div>
+
+<div class="modal-body">
+    <form [formGroup]="formMail">
+        <div class="row">
+            <div class="col-12">
+                <label for="mail">Mail</label>
+                <input type="text" class="form-control" formControlName="mail" id="mail" aria-label="mail">
+                <span style="color: red;"> <app-control-messages
+                    [control]="formMail.get('mail')"></app-control-messages></span>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="onClickConferma()" [disabled]="formMail.invalid">Conferma</button>
+</div>

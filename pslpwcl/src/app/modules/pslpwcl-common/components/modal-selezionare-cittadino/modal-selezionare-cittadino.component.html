@@ -1,0 +1,107 @@
+<!--
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ -->
+<div class="modal-header">
+    <h4 class="modal-title" id="modal-annulla-title">{{title}}</h4>
+    <!-- <button type="button" class="close" aria-label="Close" (click)="callback(modal)">
+        <span aria-hidden="true">&times;</span>
+    </button> -->
+  </div>
+
+  <div class="modal-body">
+
+<form [formGroup]="form">
+  <div class="container py-3">
+    <div class="row gap-5 align-items-end">
+      <div class="col">
+        
+        <label for="float-input">Codice fiscale*</label>
+        <input id="float-input"
+              style="min-width: 30rem;
+                     text-transform: uppercase;"
+              type="text"
+              formControlName="codiceFiscale"
+              pInputText
+              (input)="onChangeCf()"
+              maxlength="16">
+      </div>
+      <div class="col">
+        <button type="button"
+                [disabled]="messaggioErrore"
+                class="btn btn-primary "
+                (click)="onCerca()">
+          CERCA SOGGETTO</button>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col mb-3">
+        <span style="color: red;"> <app-control-messages
+          [control]="form.get('codiceFiscale')"></app-control-messages></span>
+      </div>
+    </div>
+    <!-- Messaggio -->
+    <div  role="alert" *ngIf="messaggioErrore"
+         class="alert alert-danger ng-star-inserted">
+
+        <span style="font-size: medium;">
+          <strong>{{titoloErrore}}. </strong>
+        </span>
+
+      <span  [innerHTML]="messaggioErrore"></span>
+    </div>
+
+    <!-- Messaggio -->
+    <div role="alert" *ngIf="isUtenteNuovo"
+         class="alert alert-info ng-star-inserted">
+      <p [innerHTML]="info9?.testo"></p>
+    </div>
+
+    <div class="row gap-5 mb-5">
+      <div class="col">
+        <label for="nome">Nome {{isUtenteNuovo? '*' : ''}}</label>
+        <input id="nome" class="input-agg-delega" type="text" formControlName="nome" pInputText>
+        <span style="color: red;"> <app-control-messages
+          [control]="form.get('nome')"></app-control-messages></span>
+        </div>
+      <div class="col">
+        <label for="cognome">Cognome {{isUtenteNuovo? '*' : ''}}</label>
+        <input id="cognome" class="input-agg-delega" type="text" formControlName="cognome" pInputText>
+        <span style="color: red;"> <app-control-messages
+          [control]="form.get('cognome')"></app-control-messages></span>
+        </div>
+      <div class="col">
+
+        <!-- Data di nascita -->
+
+          <label for="dataNascita">Data di nascita</label>
+          <p-calendar (change)="form?.controls['dataNascita']?.updateValueAndValidity()"
+            class="p-form-date" id="dataNascita" placeholder="Data nascita" formControlName="dataNascita"
+            [minDate]="minDate" dateFormat="dd/mm/yy" [maxDate]="sysDate" aria-labelledby="dataNascita"
+            ariaLabelledBy="dataNascita">
+
+          </p-calendar>
+          <span style="color: red;"> <app-control-messages
+              [control]="form.get('dataNascita')"></app-control-messages></span>
+
+          </div>
+    </div>
+
+    </div>
+    </form>
+
+  </div>
+
+  <div class="modal-footer row justify-content-md-center">
+    <div class="col col-md-4">
+        <button type="button" (click)="callback(modal)" class="btn btn-outline-secondary btn-lg w-100"
+        aria-label="Anulla inserimento patente">{{"annulla" | uppercase}}</button>
+    </div>
+    <div class="col col-md-4">
+        <button type="button" (click)="onClickSelezionaCittadino()" [disabled]="!selezionaCittadinoAttivo" class="btn btn-primary btn-lg w-100"
+        aria-label="Seleziona cittadino" >{{"seleziona cittadino"| uppercase}}</button>
+    </div>
+  </div>

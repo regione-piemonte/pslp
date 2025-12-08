@@ -1,0 +1,56 @@
+<!--
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ -->
+<div class="modal-header">
+    <h4 class="modal-title" id="modal-annulla-title">{{title}}</h4>
+    <!-- <button type="button" class="close" aria-label="Close" (click)="callback(modal)">
+    <span aria-hidden="true">&times;</span>
+    </button> -->
+</div>
+
+<div class="container-fluid">
+    <form [formGroup]="formOtp">
+    <div class="row justify-content-center" >
+        
+            <div class="mb-5 m-2 col-1">
+                <input pInputText maxlength="1" type="text"  class="form-control" formControlName="n1" id="n1" (keyup)="onKeyUp(1)">
+            </div>
+            <div class="mb-5 m-2 col-1">
+                <input pInputText maxlength="1" type="text" class="form-control" formControlName="n2" id="n2" (keyup)="onKeyUp(2)">
+            </div>
+            <div class="mb-5 m-2 col-1">
+                <input pInputText maxlength="1" type="text"  class="form-control" formControlName="n3" id="n3" (keyup)="onKeyUp(3)">
+            </div>
+            <div class="mb-5 m-2 col-1">
+                <input pInputText maxlength="1" type="text"  class="form-control" formControlName="n4" id="n4" (keyup)="onKeyUp(4)">
+            </div>
+            <div class="mb-5 m-2 col-1">
+                <input pInputText maxlength="1" type="text"  class="form-control" formControlName="n5" id="n5" (keyup)="onKeyUp(5)">
+            </div>
+            <div class="mb-5 m-2 col-1">
+                <input pInputText maxlength="1" type="text"  class="form-control" formControlName="n6" id="n6">
+            </div>
+        
+    </div>
+    </form>
+</div>
+
+<div class="modal-footer row">
+    <div class="col">
+        <button type="button" (click)="callback(modal)" class="btn btn-outline-secondary btn-sm">{{"annulla" | uppercase
+            }}</button>
+    </div>
+    <div class="col-auto">
+        <button name="verifica" [disabled]="!formOtp.valid" type="button" class="btn btn-primary ml-auto btn-lg"
+            (click)="onClickVerificaOtp()">{{"verifica" | uppercase}}</button>
+    </div>
+    <div class="col-auto">
+        <button type="button" class="btn btn-primary ml-auto btn-lg"
+            (click)="onClickRinviaOtp()">{{"rinvia otp" | uppercase}}</button>
+    </div>
+  </div>
+

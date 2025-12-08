@@ -1,0 +1,210 @@
+<!--
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ -->
+<form [formGroup]="form">
+
+  <!-- START PRIMO ACCORDION -->
+  <ngb-accordion formGroupName="datiPersonali" #accordionDatiPersonali activeIds="panelDatiPersonali0"
+    id="accordion-dati-personali" [closeOthers]="true" [destroyOnHide]="false">
+    <ngb-panel title="DATI PERSONALI" id="panelDatiPersonali0">
+      <ng-template ngbPanelContent let-opened="opened">
+        <div class="row">
+
+
+          <!-- CodiceFiscale -->
+          <div class="mb-5 col-sm-12 col-md-3">
+            <label>Codice fiscale</label>
+            <input type="text" pInputText class="form-control" formControlName="codiceFiscale"
+              oninput="this.value = this.value.toUpperCase().trim()" id="codiceFiscale" maxlength="16"
+              aria-label="codice fiscale">
+          </div>
+
+          <!-- Cognome -->
+          <div class="mb-5 col-sm-12 col-md-3">
+            <label for="cognome">Cognome</label>
+            <input type="text" pInputText oninput="this.value = this.value.toUpperCase()" class="form-control"
+              formControlName="cognome" id="cognome" maxlength="70" silplibwclOnlyStrings>
+          </div>
+
+          <!-- Nome -->
+          <div class="mb-5 col-sm-12 col-md-3">
+            <label for="nome">Nome</label>
+            <input type="text" pInputText oninput="this.value = this.value.toUpperCase()" class="form-control"
+              formControlName="nome" id="nome" maxlength="70" silplibwclOnlyStrings>
+          </div>
+
+
+
+          <!-- Data di nascita -->
+          <div class="mb-5 col-sm-12 col-md-3">
+            <label for="dataNascita">Data di nascita</label>
+            <input type="text" pInputText oninput="this.value = this.value.toUpperCase()" id="dataNascita" class="form-control"
+              formControlName="dataDiNascita"  maxlength="70" silplibwclOnlyStrings>
+          </div>
+
+      </div>
+      </ng-template>
+    </ngb-panel>
+  </ngb-accordion>
+
+  <ngb-accordion formGroupName="domicilio" #accordionDomicilio activeIds="panelDomicilio" id="accordion-domicilio">
+    <ngb-panel title="DOMICILIO" id="panelDomicilio">
+      <ng-template ngbPanelContent let-opened="opened">
+
+        <ng-container formGroupName="indirizzo">
+      <div class="row">
+          <ng-container formGroupName="luogo">
+
+              <div formGroupName="comune" class="mb-5 col-sm-12 col-md-3">
+                <label for="comuneDomicilio">Comune </label>
+                <input pInputText id="comuneDomicilio"  formControlName="id" class=" form-control"
+                  labelForId="comuneDom"
+                  ariaLabel="comune di domicilio">
+                </div>
+
+          </ng-container>
+
+
+
+            <div class="mb-5 col-sm-12 col-md-7">
+              <label for="indirizzoDomicilio">Indirizzo</label>
+              <input type="text" pInputText class="form-control" formControlName="indirizzo"
+                oninput="this.value = this.value.toUpperCase().trim()" id="indirizzoDomicilio" maxlength="100"
+                silplibwclOnlyStrings aria-label="indirizzo del domicilio">
+            </div>
+
+
+
+            <div class="mb-5 col-sm-12 col-md-2">
+              <label for="capDomicilio">CAP</label>
+              <input type="text" pInputText class="form-control" pslpwclOnlyNumber formControlName="cap"
+                oninput="this.value = this.value.toUpperCase().trim()" id="capDomicilio" maxlength="5"
+                aria-label="cap domocilio">
+            </div>
+          </div>
+        </ng-container>
+      </ng-template>
+    </ngb-panel>
+  </ngb-accordion>
+
+  <ngb-accordion formGroupName="recapito" #accordionRecapiti activeIds="panelRecapiti" id="accordion-recapiti">
+    <ngb-panel title="RECAPITI" id="panelRecapiti">
+      <ng-template ngbPanelContent let-opened="opened">
+        <ng-container>
+          <div class="row">
+            <div class="mb-5 col-sm-12 col-md-3">
+              <label for="cellulare1">Cellulare</label>
+              <input pInputText type="text" class="form-control" pslpwclOnlyNumber formControlName="cellulare"
+                id="cellulare1" maxlength="15" aria-label="numero di cellulare">
+            </div>
+            <div class="mb-5 col-sm-12 col-md-3">
+              <label for="cellulare2">Telefono</label>
+              <input pInputText type="text" class="form-control" pslpwclOnlyNumber formControlName="cellulare2"
+                id="cellulare2" maxlength="15" aria-label="numero di cellulare alternativo">
+            </div>
+            <div class="mb-5 col-sm-12 col-md-6">
+              <label for="email">Mail</label>
+              <input pInputText type="text" class="form-control" formControlName="email"
+                oninput="this.value = this.value.trim()" id="email" maxlength="50" aria-label="indirizzo email">
+            </div>
+          </div>
+        </ng-container>
+      </ng-template>
+    </ngb-panel>
+  </ngb-accordion>
+
+  <ngb-accordion formGroupName="altreInfo" #accordionAltreInfo activeIds="panelAltreInfo" id="accordion-altre-info">
+    <ngb-panel title="ALTRE INFORMAZIONI" id="panelAltreInfo">
+      <ng-template ngbPanelContent let-opened="opened">
+        <ng-container>
+          <div class="row">
+            <div class="col-3" style=" display: flex;
+            justify-content: center;
+            align-items: center;"  >
+              <!-- <i class="far fa-user-circle" style="transform: scale(6);"></i> -->
+              <img *ngIf="imageUrl" [src]="imageUrl" alt="foto CV" style="border: #2d86c2 3px solid;
+              max-height: 7rem;
+              transform: scale(1.5);
+              border-radius: 50%;">
+            </div>
+            <div class="col-9">
+              <div class="row">
+                <div class="col-7">
+                  <label for="titolocv">Titolo CV<span class="oblg">*</span></label>
+                  <input pInputText type="text" class="form-control" formControlName="titoloCv"
+                     id="titolocv" maxlength="50" aria-label="titolo cv">
+                  <div *ngIf="formAltreInfo.controls['titoloCv']?.invalid" class="text-danger">
+                    <span style="color: red;"> <app-control-messages
+                        [control]="formAltreInfo.controls['titoloCv']"></app-control-messages></span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-9 mt-2">
+                  <fieldset>
+                    <legend>Appartenente alle categorie di persone con disabilità (L.68/99)</legend>
+                    <ng-container *ngFor="let item of [{key:'Si',value:'S'},{key:'No',value:'N'}]" >
+                      <div class="form-check d-inline-block mr-2">
+                        <input class="form-check-input" type="radio" [value]="item.value" formControlName="flgL68"
+                          id="flgL68{{item.key}}" aria-label="Appartenente alle categorie di persone con disabilità "
+                          (change)="onChangeFlg68l()">
+                        <label class="form-check-label" for="flgL68{{item.key}}">{{item.key}}</label>
+                      </div>
+                    </ng-container>
+                  </fieldset>
+                </div>
+                <div class="col-3 mt-2">
+                  <fieldset>
+                    <legend>Da stampare</legend>
+                    <ng-container *ngFor="let item of [{key:'Si',value:'S'},{key:'No',value:'N'}]" >
+                      <div class="form-check  d-inline-block mr-2">
+                        <input class="form-check-input" type="radio" [value]="item.value" formControlName="flgStampaL68"
+                          id="flgStampaL68{{item.key}}" aria-label="aggiungere informazioni su disabilità a cv " >
+                        <label class="form-check-label" for="flgStampaL68{{item.key}}">{{item.key}}</label>
+                      </div>
+                    </ng-container>
+                  </fieldset>
+                </div>
+              </div>
+
+              <!-- <div class="row mb-5">
+                <div class="col-9 mt-2">
+                  <fieldset>
+                    <legend>Disponibile ad utilizzare il mezzo proprio?</legend>
+                    <ng-container *ngFor="let item of [{key:'Si',value:'S'},{key:'No',value:'N'}]" >
+                      <div class="form-check d-inline-block mr-2">
+                        <input class="form-check-input" type="radio" [value]="item.value" formControlName="flgL68"
+                          id="flgL68{{item.key}}" aria-label="Appartenente alle categorie di persone con disabilità "
+                          (change)="onChangeFlg68l()">
+                        <label class="form-check-label" for="flgL68{{item.key}}">{{item.key}}</label>
+                      </div>
+                    </ng-container>
+                  </fieldset>
+                </div>
+                <div class="col-3 mt-2">
+                  <fieldset>
+                    <legend>Da stampare</legend>
+                    <ng-container *ngFor="let item of [{key:'Si',value:'S'},{key:'No',value:'N'}]" >
+                      <div class="form-check  d-inline-block mr-2">
+                        <input class="form-check-input" type="radio" [value]="item.value" formControlName="flgStampaL68"
+                          id="flgStampaL68{{item.key}}" aria-label="aggiungere informazioni su disabilità a cv " >
+                        <label class="form-check-label" for="flgStampaL68{{item.key}}">{{item.key}}</label>
+                      </div>
+                    </ng-container>
+                  </fieldset>
+                </div>
+              </div> -->
+
+            </div>
+          </div>
+
+        </ng-container>
+      </ng-template>
+    </ngb-panel>
+  </ngb-accordion>
+</form>

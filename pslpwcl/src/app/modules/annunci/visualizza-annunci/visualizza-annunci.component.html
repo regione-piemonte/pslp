@@ -1,0 +1,106 @@
+<!--
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ -->
+<div class="details-node">
+    <section class="views-section details-headed">
+        <div class="container">
+            <button class="btn btn-outline-primary mb-4" (click)="tornaAiRisultati()" aria-label="Torna ai risultati">
+                TORNA ALLA RICERCA
+            </button>
+
+            <div class="row">
+                <!-- SIDEBAR SINISTRA -->
+                <aside class="col-md-4 sidebar bg-light p-4" role="complementary" aria-label="Dati utili">
+                    <h3 class="title-before">RIEPILOGO</h3>
+                    <dl>
+                        <div>
+                            <i class="fas fa-building fa-lg icon-space"></i><strong>{{getPubblicatoDa()}}</strong>
+                        </div>
+                        <div>
+                            <dd>
+                                <ng-container
+                                    *ngIf="annuncio?.condLavorativaOffertaList[0]?.idNazioneSedeLavoro; else altraSede"><i
+                                        class="fas fa-map-marker-alt fa-lg icon-space"></i><strong>{{annuncio?.condLavorativaOffertaList[0]?.idNazioneSedeLavoro?.descrNazione}}</strong></ng-container>
+                                <ng-template #altraSede><i
+                                        class="fas fa-map-marker-alt fa-lg icon-space"></i><strong>{{annuncio?.condLavorativaOffertaList[0]?.idComuneSedeLavoro?.idProvincia?.dsProvincia}}
+                                        ,
+                                        {{annuncio?.condLavorativaOffertaList[0]?.idComuneSedeLavoro?.dsComune}}</strong></ng-template>
+                            </dd>
+                        </div>
+                        <div *ngIf="annuncio?.condLavorativaOffertaList[0]?.idIntervalloRal">
+                            <dd><i
+                                    class="fas fa-euro-sign fa-lg icon-space"></i><strong>{{annuncio?.condLavorativaOffertaList[0]?.idIntervalloRal?.descrIntervalloRal}}</strong>
+                            </dd>
+                        </div>
+                        <div *ngIf="annuncio?.condLavorativaOffertaList[0]?.idTipoRapportoLavoro">
+                            <dd><i
+                                    class="fas fa-briefcase fa-lg icon-space"></i><strong>{{annuncio?.condLavorativaOffertaList[0]?.idTipoRapportoLavoro?.descrTipoRapportoLavoro}}</strong>
+                            </dd>
+                        </div>
+                        <div *ngIf="annuncio?.condLavorativaOffertaList[0]?.idModalitaLavoro">
+                            <dd><i
+                                    class="fas fa-clock fa-lg icon-space"></i><strong>{{annuncio?.condLavorativaOffertaList[0]?.idModalitaLavoro?.descrModalitaLavoro}}</strong>
+                            </dd>
+                        </div>
+                    </dl>
+                    <h3 class="title-before">MANIFESTAZIONI</h3>
+                    <dl *ngIf="annuncio?.vacancyManifestazioneList">
+                        <dd>
+                            <ng-container *ngFor="let manifestazione of annuncio.vacancyManifestazioneList">
+                                <i
+                                    class="fas fa-calendar-alt fa-lg icon-space icon-black"></i><strong>{{manifestazione.idManifestazione.nomeManifestazione}}</strong>
+                            </ng-container>
+                        </dd>
+                    </dl>
+                    <hr>
+                    <div>
+                        <h3 class="title-before mb-3">MODALITA' DI CANDIDATURA</h3>
+
+
+                        <ol class="aside-list" style="padding-left: 1rem;">
+                            <li class="mb-3">Clicca sul pulsante <strong>‘CANDIDATI’</strong>.</li>
+                            <li class="mb-3">Se l’azienda sarà interessata, riceverai un invito per un appuntamento.
+                            </li>
+                        </ol>
+
+                        <div class="link col-12 mt-4">
+                            <button href="#" class="btn btn-primary d-block"
+                                (click)="onClickInserisci()">CANDIDATI</button>
+                        </div>
+                    </div>
+
+                </aside>
+
+                <!-- CONTENUTO DESTRO -->
+                <div class="col-md-8">
+                    <div class="box-content py-4 px-3">
+
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <i class="far fa-check-circle fa-lg icon-space"></i>
+                            <h2 class="title-icon profilo-icon m-0">Profilo professionale richiesto</h2>
+                        </div>
+                        <p class="preserve-whitespace">{{annuncio?.testoProfiloProfessionale}}</p>
+
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <i class="fas fa-file-alt fa-lg icon-space"></i>
+                            <h2 class="title-icon requisiti-icon m-0">Requisiti</h2>
+                        </div>
+                        <p class="preserve-whitespace">{{annuncio?.testoRequisiti}}</p>
+
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <i class="fas fa-file-signature fa-lg icon-space"></i>
+                            <h2 class="title-icon condizioni-icon m-0">Condizioni lavorative offerte</h2>
+                        </div>
+                        <p class="preserve-whitespace">{{annuncio?.testoCondizioniLavorative}}</p>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+</div>

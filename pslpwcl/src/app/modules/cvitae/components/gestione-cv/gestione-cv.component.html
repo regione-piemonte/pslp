@@ -1,0 +1,61 @@
+<!--
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ -->
+<div style="padding: 15px;">
+    <div class="row">
+        <!-- Stepper tab -->
+         <div class="col-12 areaSteper mb-5">
+          <p-steps  [model]="items" [(activeIndex)]="activeIndex" [readonly]="!cvAttuale">
+          </p-steps>
+         </div>
+
+        <ng-container [ngTemplateOutlet]="stepTemplates[activeIndex] ||stepDatiGenerali"></ng-container>
+
+        <div class="row mt-8">
+          <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3">
+            <button type="button" class="btn btn-outline-primary btn-lg" [attr.aria-label]="'torna a '+prevStepLabel" [hidden]="activeIndex === 0" (click)="prev()">INDIETRO</button>
+          </div>
+          <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3 text-right">
+            <button type="button" class="btn btn-primary btn-lg" [attr.aria-label]="'vai a '+nextStepLabel" [hidden]="activeIndex === items.length - 1" (click)="next()">AVANTI</button>
+          </div>
+        </div>
+
+        <ng-template #stepDatiGenerali ngbNavContent>
+          <pslpwcl-dati-generali></pslpwcl-dati-generali>
+        </ng-template>
+        <ng-template #stepDatiAnagrafici ngbNavContent >
+          <pslpwcl-dati-anagrafici #DATI_ANAGRAFICI></pslpwcl-dati-anagrafici>
+        </ng-template>
+        <ng-template #stepEsperienzeLavoro ngbNavContent>
+          <pslpwcl-esperienze-lavoro></pslpwcl-esperienze-lavoro>
+        </ng-template>
+        <ng-template #stepIstruzione ngbNavContent>
+          <pslpwcl-istruzione></pslpwcl-istruzione>
+        </ng-template>
+        <ng-template #stepFormazioneProfessionale ngbNavContent>
+          <pslpwcl-formazione-professionale></pslpwcl-formazione-professionale>
+        </ng-template>
+        <ng-template #stepConoscenzeLinguistiche ngbNavContent>
+          <pslpwcl-conoscenze-linguistiche></pslpwcl-conoscenze-linguistiche>
+        </ng-template>
+        <ng-template #stepConoscenzeInformatiche ngbNavContent>
+          <pslpwcl-conoscenze-informatiche></pslpwcl-conoscenze-informatiche>
+        </ng-template>
+        <ng-template #stepAbilitazionePatenti ngbNavContent>
+          <pslpwcl-abilitazione-patenti></pslpwcl-abilitazione-patenti>
+        </ng-template>
+        <ng-template #stepUlterioreInformazioni ngbNavContent>
+          <pslpwcl-ulteriore-informazioni></pslpwcl-ulteriore-informazioni>
+        </ng-template>
+        <ng-template #stepProfessioneDesiderata ngbNavContent>
+          <pslpwcl-professione-desiderata></pslpwcl-professione-desiderata>
+        </ng-template>
+        <ng-template #stepRiepilogo ngbNavContent>
+          <pslpwcl-riepilogo></pslpwcl-riepilogo>
+        </ng-template>
+    </div>
+</div>

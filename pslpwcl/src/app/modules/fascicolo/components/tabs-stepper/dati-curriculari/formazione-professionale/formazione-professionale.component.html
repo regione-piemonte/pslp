@@ -1,0 +1,85 @@
+<!--
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ -->
+<div class="table-container mt-5">
+    <h3>Corsi di formazione piemontese</h3>
+    <table   class="table table-bordered table-striped table-hover table-sortable" >
+        <thead>
+          <tr>
+            <th>Codice</th>
+            <th>Anno gestione</th>
+            <th>Denominazione corso</th>
+            <th>Ambito disciplinare</th>
+            <th>CV</th>
+            <th>Azione</th>
+          </tr>
+        </thead>
+          <tbody>
+          <ng-container *ngIf="formazioneProfessionaleList?.length; else noData">
+            <tr *ngFor="let formazioneProfessionale of formazioneProfessionaleList">
+              <td class="align-middle">{{formazioneProfessionale.codice }}</td>
+              <td class="align-middle">{{formazioneProfessionale.annoGestione}}</td>
+              <td class="align-middle">{{formazioneProfessionale.denominazioneCorso| uppercase }}</td>
+              <td class="align-middle">{{formazioneProfessionale.ambitoDisciplinare?.descr  | uppercase }}</td>
+              <td class="align-middle">{{formazioneProfessionale.flgCv ? "SI":"NO"}}</td>
+              <td>
+                <a pTooltip="visualizzare dettaglio"  tooltipPosition="top" aria-label="Azione: visualizzare dettaglio" 
+                 (click)="viewFormazione(formazioneProfessionale)"  style="color: #016CB4">
+                 <i class="fas fa-eye"></i></a>
+              </td>
+            </tr>
+          </ng-container>
+          <ng-template #noData>
+            <tr>
+              <td colspan="7">Non ci sono dati</td>
+            </tr>
+          </ng-template>
+        </tbody>
+      </table>
+</div>
+
+<div *ngIf="showDettaglio">
+  <br>
+    <div class="mt-3 row">
+        <h3>DETTAGLIO CORSO FORMAZIONE</h3>
+        <div class="card-mb-5">
+            <div class="row">
+                <div class="mb-5 col-sm-12 col-md-3">
+                    <h4>Data inizio</h4>
+                    <span pInputText class="form-control disabled">{{formazioneProfessionale?.lavCorsoForm?.dInizioCorso | date: 'dd/MM/yyyy' }}</span>
+                </div>
+                <div class="mb-5 col-sm-12 col-md-3">
+                    <h4>Data fine</h4>
+                    <span pInputText class="form-control disabled">{{formazioneProfessionale?.lavCorsoForm?.dFineCorso | date: 'dd/MM/yyyy' }}</span>
+                </div>
+                <div class="mb-5 col-sm-12 col-md-12">
+                    <h4>Denominazione corso</h4>
+                    <span pInputText class="form-control disabled">{{formazioneProfessionale?.denominazioneCorso}}</span>
+                </div>
+                <div class="mb-5 col-sm-12 col-md-3">
+                    <h4>Certificazione finale</h4>
+                    <span pInputText class="form-control disabled">{{formazioneProfessionale?.lavCorsoFormAltro?.silTCertifCorso?.dsSilTCertifCorso | uppercase}}</span>
+                </div>
+                <div class="mb-5 col-sm-12 col-md-3">
+                    <h4>Altra certificazione</h4>
+                    <span pInputText class="form-control disabled">{{formazioneProfessionale?.lavCorsoFormAltro?.dsAltraCertif | uppercase}}</span>
+                </div>
+                <div class="mb-5 col-sm-12 col-md-3">
+                    <h4>Stage finale</h4>
+                    <span pInputText class="form-control disabled">{{formazioneProfessionale?.lavCorsoFormAltro?.flgStageFinale == "S" ? "SI" : "NO"}}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+      <div class="col mt-3">
+        <button type="button" (click)="onClickAnnullaVisualizza()" class="btn btn-outline-secondary btn-sm"
+          aria-label="annulla inserimento">ANNULLA</button>
+      </div>
+    </div>
+</div>
+

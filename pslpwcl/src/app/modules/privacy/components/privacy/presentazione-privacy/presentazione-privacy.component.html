@@ -1,0 +1,32 @@
+<!--
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ -->
+
+<pslpwcl-privacy-template
+  (loaded)="checkDataLoaded(1)"
+  [isReady]="checkInformativaPrivacy"
+  [privacy]="privacy"
+  (privacyDefinita)="checkInformativaPrivacy=$event">
+</pslpwcl-privacy-template>
+
+<div class="row mt-8">
+  <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3">
+    <button type="button" class="btn btn-outline-primary btn-lg" (click)="indietro()">INDIETRO</button>
+  </div>
+  <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3 text-right">
+    <button type="button"
+            class="btn btn-primary btn-lg"
+            [hidden]="isDettaglio"
+            [disabled]="!checkInformativaPrivacy"
+            (click)="comincia()">CONFERMA</button>
+  </div>
+</div>
+
+
+
+
+

@@ -1,0 +1,25 @@
+<!--
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ -->
+<!-- <router-outlet *ngIf="loaded"> -->
+<div class="container">
+
+  <ng-container>
+    <!-- Messaggio -->
+    <div *ngIf="this.ruoloUtente?.idRuolo !== 7" role="alert" class="alert alert-info ng-star-inserted">
+      <p [innerHTML]="messaggio?.testo"></p>
+    </div>
+
+    <div class="row mb-3" *ngIf="isAutenticato">
+      <pslpwcl-card-info-utente [sezione]='sezione'>
+      </pslpwcl-card-info-utente>
+    </div>
+  </ng-container>
+
+  <router-outlet>
+  </router-outlet>
+</div>

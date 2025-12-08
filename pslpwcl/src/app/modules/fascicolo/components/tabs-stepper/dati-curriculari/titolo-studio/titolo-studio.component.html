@@ -1,0 +1,555 @@
+<!--
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ -->
+<div class="table-container mt-5">
+  <h3>Titolo studio</h3>
+  <p-table
+    #dt
+    [value]="titoloDiStudioList"
+    dataKey="id"
+    styleClass="p-datatable-customers"
+    [rowHover]="true"
+
+    [rows]="5"
+    [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[5,10,25,50]"
+
+    [loading]="false"
+    responsiveLayout="scroll"
+    [paginator]="true"
+    currentPageReportTemplate="{first} di {last}, su {totalRecords} righe">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Grado di studio</th>
+        <th>Codice</th>
+        <th>Descrizione</th>
+        <th>Completato</th>
+        <th>Anno</th>
+        <th>Voto</th>
+        <th>Azione</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-titoloDiStudio >
+      <ng-container *ngIf="titoloDiStudioList?.length; else noData">
+        <tr class="p-selectable-row">
+          <td class="align-middle">{{titoloDiStudio.gradoStudio.descr| uppercase }}</td>
+          <td class="align-middle">{{titoloDiStudio.codice | uppercase}}</td>
+          <td class="align-middle">{{titoloDiStudio.descrizioneTitolo | uppercase }}</td>
+          <td class="align-middle">{{titoloDiStudio.completato == 'S' ? "SI" : "NO" | uppercase}}</td>
+          <td class="align-middle">{{titoloDiStudio.annoCompletato }}</td>
+          <td class="align-middle">{{(titoloDiStudio.voto == "null/null" || titoloDiStudio.voto == "null") ? "-/-": titoloDiStudio.voto || "-/-"}}</td>
+          <td class="align-middle" style="min-width: 90px;">
+            <a pTooltip="visualizzare dettaglio titolo di studio"  tooltipPosition="top" tabindex="0" (click)="viewTitolo(titoloDiStudio)" (keydown.enter)="viewTitolo(titoloDiStudio)"
+              style="color: #016CB4" aria-label="Azione: visualizzare dettaglio titolo di studio"
+              title="Visualizzare dettaglio titolo di studio">
+              <i class="fas fa-eye"></i>
+            </a>
+            <a pTooltip="modificare titolo studio"  tooltipPosition="top" tabindex="0" (click)="toggleFormTitoloStudio('edit',titoloDiStudio)"
+              (keydown.enter)="toggleFormTitoloStudio('edit',titoloDiStudio)" style="color: #016CB4"
+              aria-label="Azione: modificare titolo studio" title="Modificare titolo studio">
+              <i class="fas fa-edit"></i>
+            </a>
+            <a pTooltip="eliminare titolo di studio"  tooltipPosition="top" tabindex="0" (click)="onClickEliminaTitolo(titoloDiStudio)"
+              (keydown.enter)="onClickEliminaTitolo(titoloDiStudio)" style="color: #016CB4"
+              aria-label="Azione: eliminare titolo di studio" title="Eliminare titolo di studio">
+              <i class="fas fa-trash-alt"></i>
+            </a>
+          </td>
+        </tr>
+      </ng-container>
+      <ng-template #noData>
+        <tr>
+          <td colspan="7">Non ci sono dati</td>
+        </tr>
+      </ng-template>
+    </ng-template>
+  </p-table>
+</div>
+
+<div>
+  <button [hidden]="showForm" (click)="toggleFormTitoloStudio()" type="button" class="btn btn-primary btn-lg"
+    aria-label="inserisci titolo di studio">INSERISCI TITOLO DI STUDIO</button>
+</div>
+
+<div *ngIf="showForm">
+  <em data-scroll-marker="formTitoloStudio"></em>
+
+  <!-- TITOLI DI STUDIO -->
+
+  <div class="mt-3 row">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" (change)="onChangeForm()">
+      <p-card header="TITOLO DI STUDIO">
+        <!-- TITOLO DI STUDIO - CODICE -->
+        <div class="row" formGroupName="lavTitoloStudio">
+          <div class="mb-5 col-sm-12 col-md-10" formGroupName="silTStudio">
+            <label for="titoloStudio">Titolo di studio<span class="oblg">*</span></label>
+            <p-dropdown inputId="titoloStudio" [filter]="true" (onFilter)="onFilter($event)"
+              [emptyMessage]="'Nessun dato trovato'" [autoDisplayFirst]="false" [options]="titoliStudios"
+              formControlName="id" (onChange)="onChangeTitoloStudio($event)" class=" p-form-select" placeholder=""
+              optionLabel="descr" optionValue="id" ariaLabel="seleziona titolo di studio">
+
+            </p-dropdown>
+          </div>
+          <div class="mb-5 col-sm-12 col-md-4">
+            <label>Codice</label><br>
+            <input type="text" pInputText class="form-control" disabled="true" value="{{titoloStudioSelected?.codMinistero}}">
+          </div>
+          <div class="mb-5 col-sm-12 col-md-6">
+            <label>Grado titolo studio</label><br>
+            <input type="text" pInputText class="form-control" disabled="true" value="{{titoloStudioSelected?.silTGradoStudio?.dsSilTGradoStudio}}">
+          </div>
+        </div>
+
+        <!-- GRADO TIT STUDIO - TIPO SCUOLA - SELEZIONABILE -->
+        <div class="row" formGroupName="lavTitoloStudio">
+          <div class="mb-5 col-sm-12 col-md-6">
+            <label>Tipo scuola</label><br>
+            <input type="text" pInputText class="form-control" disabled="true" value="{{titoloStudioSelected?.dsTipoScuola}}">
+          </div>
+          <div class="mb-5 col-sm-12 col-md-4">
+            <label>Selezionabile per il profiling quantitativo</label><br>
+            <input type="text" style="max-width: 100px;" pInputText class="form-control" disabled="true" value="{{(titoloStudioSelected ? titoloStudioSelected?.flgSelezInput : '') ? 'Si':'No'}}">
+          </div>
+        </div>
+
+        <!-- Completato -->
+        <div class="row" formGroupName="lavTitoloStudio">
+          <div class="mb-5 col-sm-12 col-md-2">
+            <fieldset>
+              <legend>Completato</legend><br>
+              <div *ngFor="let item of [{key:'Si',id:'S'},{key:'No',id:'N'}]"
+                class="mb-3 col-auto form-check form-check-inline">
+                <input class="form-check-input" (change)="onChangeFlgCompletato()" name="flgCompletato"
+                  formControlName="flgCompletato" [value]="item.id" type="radio" id="completato{{item.id}}"
+                  [attr.aria-label]="'completato{{item.id}}'">
+                <label class="form-check-label" for="completato{{item.id}}">{{item.key}}</label>
+              </div>
+            </fieldset>
+          </div>
+        </div>
+    <!--data inizio/fine-->
+    <div class="row" formGroupName="lavTitoloStudio">
+      <div class="mb-5 col-sm-12 col-md-3">
+        <label for="dataInizio">Data di inizio<span class="oblg">*</span></label>
+        <p-calendar class="p-form-date" id="dataInizio" placeholder="Data inizio" formControlName="dataInizio"
+          dateFormat="dd/mm/yy" [maxDate]="sysDate" aria-labelledby="dataInizio" ariaLabelledBy="dataInizio">
+
+        </p-calendar>
+        <span style="color: red;"> <app-control-messages
+          [control]="form.get('lavTitoloStudio.dataInizio')"></app-control-messages></span>
+      </div>
+      <div class="mb-5 col-sm-12 col-md-3">
+
+        <label for="dataFine">Data fine</label>
+        <p-calendar class="p-form-date" id="dataFine" placeholder="Data fine" formControlName="dataFine"
+          dateFormat="dd/mm/yy"  aria-labelledby="dataFine" ariaLabelledBy="dataFine">
+
+        </p-calendar>
+        <span style="color: red;"> <app-control-messages
+          [control]="form.get('lavTitoloStudio.dataFine')"></app-control-messages></span>
+        </div>
+      </div>
+        <!-- Anno - Voto - VotoM - Laude -->
+        <div class="row" formGroupName="lavTitoloStudio">
+          <div class="mb-5 col-sm-12 col-md-2">
+            <label for="annoTtitolo">Anno</label>
+            <input pInputText type="text" class="form-control" formControlName="dsAnnoCompletato"
+              id="annoTtitolo" maxlength="4" aria-label="anno di conseguimento">
+            <div *ngIf="form.get('lavTitoloStudio.dsAnnoCompletato')?.errors" class="text-danger">
+              <div *ngIf="form.get('lavTitoloStudio.dsAnnoCompletato')?.errors['max']">L'anno non può essere maggiore
+                dell'anno corrente</div>
+            </div>
+          </div>
+
+          <div class="mb-5 col-sm-12 col-md-2">
+            <label for="dsVoto">Voto<span *ngIf="VotoValoreRequired" class="oblg">*</span></label>
+            <input pInputText type="text" (keyup)="votoValoreRequired()" (change)="votoValoreRequired()" pslpwclOnlyNumber maxlength="3"
+            class="form-control" formControlName="dsVoto"
+              id="voto" aria-label="voto">
+          </div>
+          <div class="mb-3 col-sm-12 col-md-2">
+            <label for="valore">Valore massimo<span *ngIf="VotoValoreRequired" class="oblg">*</span></label>
+            <input pInputText type="text" (keyup)="votoValoreRequired()" pslpwclOnlyNumber (change)="votoValoreRequired()" class="form-control"
+              formControlName="valoreMassimo" id="valore" aria-label="valore massimo" maxlength="3">
+              <div *ngIf="form.get('lavTitoloStudio.valoreMassimo')?.hasError('valoreMax') ? true :false" class="text-danger">
+                Il Valore massimo non puo' essere minore del Voto
+              </div>
+          </div>
+          <div class="mb-5 col-sm-12 col-md-2">
+            <fieldset>
+              <legend>Laude</legend><br>
+              <div *ngFor="let item of [{key:'Si',id:'S'},{key:'No',id:'N'}]"
+                class="mb-3 col-auto form-check form-check-inline">
+                <input class="form-check-input" name="flgCumLaude" formControlName="flgCumLaude" [value]="item.id"
+                  type="radio" id="laude{{item.id}}" [attr.aria-labelledby]="'laude'+item.id">
+                <label class="form-check-label" for="laude{{item.id}}">
+                  {{item.key}}
+                </label>
+              </div>
+            </fieldset>
+          </div>
+        </div>
+
+        <!-- In Corso/Abbandon - anni frequentati - UltimoAnnoFrequenza- ultClassefrq -esamiSostenuti -->
+        <div class="row" formGroupName="lavTitoloStudio">
+          <div class="mb-5 col-sm-12 col-md-3">
+            <label for="statoTitoloStudio">In corso/abbandono</label>
+            <p-dropdown inputId="dropdown" [emptyMessage]="'Nessun dato trovato'" [autoDisplayFirst]="false"
+              inputId="statoTitoloStudio" ariaLabel="stato titolo di studio" [options]="statiTitoloStudio"
+              formControlName="idSilTTStatoTitoloStudio" class=" p-form-select" placeholder="" optionLabel="descr"
+              optionValue="id">
+              <!--   -->
+            </p-dropdown>
+          </div>
+
+          <div class="mb-5 col-sm-12 col-md-3">
+            <label for="NAnniFreq">N. anni frequentati</label>
+            <input pInputText type="text" pslpwclOnlyNumber class="form-control" formControlName="numAnniFrequentati"
+              id="NAnniFreq" maxlength="2" aria-label="numero anni frequentati">
+          </div>
+
+          <div class="mb-5 col-sm-12 col-md-3">
+            <label for="ultimoAnnoFreq">Ultimo anno frequentato</label>
+            <input pInputText type="text" pslpwclOnlyNumber formControlName="annoDiFrequenza" class="form-control"
+              id="ultimoAnnoFreq" aria-labelledby="ultimoAnnoFreq" maxlength="4">
+            <div *ngIf="form.get('lavTitoloStudio.annoDiFrequenza')?.errors" class="text-danger">
+              <div *ngIf="form?.get('anno')?.errors['min']">Non è possibile inserire una data minore o uguale all'anno di nascita.</div>
+              <div *ngIf="form.get('lavTitoloStudio.annoDiFrequenza')?.errors['max']">L'anno non può essere maggiore dell'anno corrente</div>
+            </div>
+          </div>
+        </div>
+        <div class="row" formGroupName="lavTitoloStudio">
+
+          <div class="mb-5 col-sm-12 col-md-3">
+            <label for="ultimaClasseFreq">Ultima classe frequentata</label>
+            <input pInputText type="text" class="form-control" formControlName="ultimaClasseFrequentata"
+              id="ultimaClasseFreq" aria-labelledby="ultimaClasseFreq" maxlength="20">
+          </div>
+
+          <div class="mb-5 col-sm-12 col-md-3">
+            <label for="NesamiSostenuti">N. esami sostenuti</label>
+            <input pInputText type="text" pslpwclOnlyNumber class="form-control" formControlName="numEsamiSostenuti"
+              id="NesamiSostenuti" aria-label="numero di esami sostenuti" maxlength="2">
+          </div>
+        </div>
+
+        <!-- Descrizione -->
+        <div class="row" formGroupName="lavTitoloStudio">
+          <div class="mb-5 col-sm-12 col-md-9">
+            <label for="descrizione">Descrizione</label>
+            <input pInputText type="text" class="form-control" formControlName="dsTitoloStudioSap" maxlength="100"
+              id="descrizione" aria-labelledby="descrizione">
+          </div>
+        </div>
+
+        <!-- Riconosciuta in Italia - Se conseguito in apprendistato.. -->
+        <div class="row" formGroupName="lavTitoloStudio">
+          <div class="mb-5 col-sm-12 col-md-2">
+            <fieldset>
+              <legend>Riconosciuto in Italia</legend><br>
+              <div *ngFor="let item of [{key:'Si',id:'S'},{key:'No',id:'N'}]"
+                class="mb-3 col-auto form-check form-check-inline">
+                <input class="form-check-input" name="flgRiconosciutoItalia" formControlName="flgRiconosciutoItalia"
+                  [value]="item.id" type="radio" id="riconosciuto{{item.id}}"
+                  [attr.aria-labelledby]="'riconosciuto'+item.id">
+                <label class="form-check-label" for="riconosciuto{{item.id}}">{{item.key}}</label>
+              </div>
+            </fieldset>
+          </div>
+          <div class="mb-4 col-sm-12 col-md-6" formGroupName="silTTipoApprendistato">
+            <label for="tipoAppr">Se conseguito in apprendistato, selezionare il tipo</label>
+            <p-dropdown inputId="tipoAppr" ariaLabelledBy="tipoAppr" [emptyMessage]="'Nessun dato trovato'"
+              [autoDisplayFirst]="false" [options]="tipoApprendistati" formControlName="idSilTTipoApprendistato"
+              class=" p-form-select" placeholder="" optionLabel="descr" optionValue="id">
+              <!--   -->
+            </p-dropdown>
+          </div>
+        </div>
+      </p-card>
+
+
+
+      <!-- INFORMAZIONI AGGIUNTIVE - ISTITUTO  -->
+      <div class="row mt-5"></div>
+      <p-card header="INFORMAZIONI AGGIUNTIVE - ISTITUTO">
+        <!-- Denominazione -->
+        <div class="row" formGroupName="lavTitoloStudioAltro">
+          <div class="mb-5 col-sm-12 col-md-9">
+            <label for="denomIstituto">Denominazione</label>
+            <input pInputText type="text" class="form-control" formControlName="dsDenominazioneIst" maxlength="305"
+              id="denomIstituto" aria-label="denominazione istituto">
+          </div>
+        </div>
+
+        <pslpwcl-stradario
+          [comuni]="comuniIst"
+          [province]="province"
+          [form]="formLuogoIstituto"
+          [statosEstero]="nazioniEstere"
+          [toponimos]="toponimos"
+          [idChiamante]="'titStudio'"
+        >
+
+        </pslpwcl-stradario>
+
+        <!-- Titolo Tesi - Relatore -->
+        <div class="row" formGroupName="lavTitoloStudioAltro">
+          <div class="mb-5 col-sm-12 col-md-4">
+            <label for="titolotesi">Titolo tesi</label>
+            <input pInputText type="text" class="form-control" formControlName="dsTitoloTesi"
+              oninput="this.value = this.value.toUpperCase()" id="titolotesi" aria-label="titolo tesi">
+          </div>
+          <div class="mb-5 col-sm-12 col-md-4">
+            <label for="dsRelatore">Relatore</label>
+            <input pInputText type="text" class="form-control" formControlName="dsRelatore"
+              oninput="this.value = this.value.toUpperCase()" id="dsRelatore" aria-label="relatore">
+          </div>
+        </div>
+
+        <!-- Stage finale -->
+        <div class="row" formGroupName="lavTitoloStudioAltro">
+          <div class="mb-5 col-sm-12 col-md-2">
+            <fieldset>
+              <legend>Stage finale</legend><br>
+              <div *ngFor="let item of [{key:'Si',id:'S'},{key:'No',id:'N'}]"
+                class="mb-3 col-auto form-check form-check-inline">
+                <input class="form-check-input" name="flgStageFinale" formControlName="flgStageFinale" [value]="item.id"
+                  type="radio" id="stageFinale{{item.id}}" [attr.aria-labelledby]="'stageFinale'+item.id">
+                <label class="form-check-label" for="stageFinale{{item.id}}">{{item.key}}</label>
+              </div>
+            </fieldset>
+          </div>
+        </div>
+      </p-card>
+
+
+      <!-- AZIENDA STAGE/TIROCINIO -->
+      <div class="row mt-5"></div>
+      <p-card header="AZIENDA STAGE/TIROCINIO">
+        <!-- Denominazione - Durata - TipoDurata -->
+        <div class="row" formGroupName="lavTitoloStudioAltro">
+          <div class="mb-5 col-sm-12 col-md-4">
+            <label for="denom">Denominazione</label>
+            <input pInputText type="text" class="form-control" aria-label="denominazione azienda stage o tirocinio"
+              formControlName="dsDenominazioneAziStage" id="denom">
+          </div>
+          <div class="mb-5 col-sm-12 col-md-2">
+            <label for="durata">Durata<span *ngIf="durataStageIsRequired" class="oblg">*</span></label>
+            <input pInputText type="text" pslpwclOnlyNumber class="form-control" (keyup)="onChangeDurataStage()"
+              formControlName="durataStage" id="durata" maxlength="5" aria-label="durata in ore">
+          </div>
+          <div class="mb-5 col-sm-12 col-md-3" >
+            <label for="cert">Tipo durata<span *ngIf="durataStageIsRequired" class="oblg">*</span></label>
+              <p-dropdown inputId="codice" ariaLabelledBy="tipoAppr" [emptyMessage]="'Nessun dato trovato'"
+                [autoDisplayFirst]="false" [options]="tipoDurata" formControlName="codTipologiaDurataStage"
+                (onChange)="onChangeDurataStage()"
+                class=" p-form-select" placeholder="" optionLabel="descr" optionValue="id">
+                <!--   -->
+              </p-dropdown>
+
+          </div>
+        </div>
+
+        <pslpwcl-stradario
+          [comuni]="comuniAz"
+          [province]="province"
+          [form]="formLuogoAziStage"
+          [statosEstero]="nazioniEstere"
+          [toponimos]="toponimos"
+          [idChiamante]="'titStudio'"
+        >
+
+        </pslpwcl-stradario>
+      </p-card>
+
+      <div class="row">
+        <div class="col mt-3">
+          <button type="button" (click)="onClickAnnulla()" class="btn btn-outline-secondary btn-sm"
+            aria-label="annulla inserimento">ANNULLA</button>
+        </div>
+        <div class="col-auto mt-3">
+          <button type="submit" class="btn btn-primary ml-auto btn-lg" [disabled]="form?.invalid || formLuogoAziStage?.invalid || formLuogoIstituto?.invalid"
+            aria-label="salva i dati inseriti">CONFERMA</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+
+<div *ngIf="showDettaglio">
+  <div class="mt-3 row">
+
+    <h3 class="mb-3 title">DETTAGLIO TITOLI DI STUDIO</h3>
+    <div class="card-mb-5">
+
+      <div class="card-body">
+
+        <ul ngbNav [roles]="false" #nav="ngbNav" class="nav-tabs">
+
+          <li [ngbNavItem]="0">
+            <a ngbNavLink>Titolo di studio</a>
+            <ng-template ngbNavContent>
+              <div class="row">
+                <div class="mb-5 col-sm-12 col-md-6">
+                  <h4>Grado</h4>
+                  <input type="text" pInputText class="form-control" disabled="true" value="{{titoloDiStudio?.gradoStudio.descr | uppercase}}">
+                </div>
+                <div class="mb-5 col-sm-12 col-md-4">
+                  <h4>Codice</h4>
+                  <input type="text" pInputText class="form-control" disabled="true" value="{{titoloDiStudio?.codice}}">
+                </div>
+                <div class="mb-5 col-sm-12 col-md-6">
+                  <h4>Descrizione</h4>
+                  <input type="text" pInputText class="form-control" disabled="true" value="{{titoloDiStudio?.lavTitoloStudio.silTStudio.descr | uppercase}}">
+                </div>
+                <div class="mb-5 col-sm-12 col-md-6">
+                  <h4>Tipo scuola</h4>
+                  <input type="text" pInputText class="form-control" disabled="true" value="{{titoloDiStudio?.lavTitoloStudio.silTStudio.dsTipoScuola | uppercase}}">
+                </div>
+                <div class="mb-5 col-sm-12 col-md-3" hidden="true">
+                  <h4>Selezionabile per profiling</h4>
+                  <input type="text" pInputText class="form-control" disabled="true" value="{{(titoloDiStudio?.flgProfQuant =='S'?'SI':'NO')}}">
+                </div>
+                <div class="mb-5 col-sm-12 col-md-3">
+                  <h4>Anno</h4>
+                  <input type="text" pInputText class="form-control" disabled="true" value='{{titoloDiStudio?.lavTitoloStudio.dsAnnoCompletato || "--"}}'>
+                </div>
+                <!-- qua qua -->
+                <div class="mb-5 col-sm-12 col-md-3">
+                  <h4>Voto</h4>
+                  <input type="text" pInputText class="form-control" disabled="true" value='{{titoloDiStudio?.lavTitoloStudio.dsVoto || "--"}}'>
+                </div>
+                <div class="mb-5 col-sm-12 col-md-3">
+                  <h4>Laude</h4>
+                  <input type="text" pInputText class="form-control" disabled="true" value='{{titoloDiStudio?.lavTitoloStudio.flgCumLaude ? (titoloDiStudio?.lavTitoloStudio.flgCumLaude =="S"?"SI":"NO") : "--"}}'>
+                </div>
+                <div class="mb-5 col-sm-12 col-md-3">
+                  <h4>In corso/abbandono</h4>
+                  <input type="text" pInputText class="form-control" disabled="true" value='{{titoloDiStudio?.lavTitoloStudio.flgCompletato!="S" ? (titoloDiStudio?.lavTitoloStudio.idSilTTStatoTitoloStudio =="A"?"ABBANDONO":"IN CORSO") : "--"}}'>
+                </div>
+                <div class="mb-5 col-sm-12 col-md-3">
+                  <h4>Ultimo anno freq./Anno di freq.</h4>
+                  <input type="text" pInputText class="form-control" disabled="true" value='{{titoloDiStudio.lavTitoloStudio.annoDiFrequenza || "--"}}'>
+                </div>
+                <div class="mb-5 col-sm-12 col-md-3">
+                  <h4>N. ann. freq.</h4>
+                  <input type="text" pInputText class="form-control" disabled="true" value='{{titoloDiStudio.lavTitoloStudio.numAnniFrequentati || "--"}}'>
+                </div>
+                <div class="mb-5 col-sm-12 col-md-3">
+                  <h4>Ultima classe freq.</h4>
+                  <input type="text" pInputText class="form-control" disabled="true" value='{{titoloDiStudio.lavTitoloStudio.ultimaClasseFrequentata || "--" | uppercase}}'>
+                </div>
+                <div class="mb-5 col-sm-12 col-md-3">
+                  <h4>N. esami sostenuti</h4>
+                  <input type="text" pInputText class="form-control" disabled="true" value='{{titoloDiStudio.lavTitoloStudio.numEsamiSostenuti || "--"}}'>
+                </div>
+                <div class="mb-5 col-sm-12 col-md-3">
+                  <h4>Riconosciuto in Italia</h4>
+                  <input type="text" pInputText class="form-control" disabled="true" value='{{titoloDiStudio.lavTitoloStudio.flgRiconosciutoItalia ? (titoloDiStudio.lavTitoloStudio.flgRiconosciutoItalia =="S"?"SI":"NO") : "--"}}'>
+                </div>
+                <div class="mb-5 col-sm-12 col-md-3">
+                  <h4>Tipo apprendistato</h4>
+                  <input type="text" pInputText class="form-control" disabled="true" value='{{titoloDiStudio?.lavTitoloStudio.silTTipoApprendistato?.dsBreveTipoApprendistato || "--" | uppercase}}'>
+                </div>
+              </div>
+            </ng-template>
+          </li>
+
+
+          <li [ngbNavItem]="1">
+            <a ngbNavLink>Informazioni aggiuntive</a>
+            <ng-template ngbNavContent>
+              <!--INFORMAZIONE AGGIUNTIVE-->
+              <div class="row">
+                <div class="mb-5 col-sm-12 col-md-3">
+                  <h4>Denominazione</h4>
+                  <input type="text" pInputText class="form-control" disabled="true" value='{{lavTitoloStudioAltro?.dsDenominazioneIst || "--" | uppercase}}'>
+                </div>
+                <div class="mb-5 col-sm-12 col-md-3">
+                  <h4>Luogo</h4>
+                  <input type="text" pInputText class="form-control" disabled="true" value='{{lavTitoloStudioAltro?.flgLuogoIst=="E"?"Estero":"Italia" | uppercase}}'>
+                </div>
+                <div class="mb-5 col-sm-12 col-md-3">
+                  <h4>Comune</h4>
+                  <input type="text" pInputText class="form-control" disabled="true" value='{{lavTitoloStudioAltro?.silTComuneIst?.descr || "--" | uppercase}}'>
+                </div>
+                <div class="mb-5 col-sm-12 col-md-3">
+                  <h4>Stato estero</h4>
+                  <input type="text" pInputText class="form-control" disabled="true" value='{{lavTitoloStudioAltro?.silTNazioneIst?.dsSilTNazione || "--" | uppercase}}'>
+                </div>
+                <div class="mb-5 col-sm-12 col-md-3">
+                  <h4>Indirizzo</h4>
+                  <input type="text" pInputText class="form-control" disabled="true" value='{{lavTitoloStudioAltro?.silTToponimoIst?.dsSilTToponimo || "" | uppercase}} {{lavTitoloStudioAltro?.dsIndirizzoIst || "--" | uppercase}} {{lavTitoloStudioAltro?.dsNumCivicoIst || "" | uppercase}}'>
+                </div>
+                <div class="mb-5 col-sm-12 col-md-3">
+                  <h4>Titolo tesi</h4>
+                  <input type="text" pInputText class="form-control" disabled="true" value='{{lavTitoloStudioAltro?.dsTitoloTesi || "--" | uppercase}}'>
+                </div>
+                <div class="mb-5 col-sm-12 col-md-3">
+                  <h4>Relatore</h4>
+                  <input type="text" pInputText class="form-control" disabled="true" value='{{lavTitoloStudioAltro?.dsRelatore ? (lavTitoloStudioAltro?.dsRelatore | uppercase) : "--"}}'>
+                </div>
+                <div class="mb-5 col-sm-12 col-md-3">
+                  <h4>Stage finale</h4>
+                  <input type="text" pInputText class="form-control" disabled="true" value='{{lavTitoloStudioAltro?.flgStageFinale ? (lavTitoloStudioAltro?.flgStageFinale =="S"?"SI":"NO") : "--"}}'>
+                </div>
+                <div class="mb-5 col-sm-12 col-md-3">
+                  <h4>Note</h4>
+                  <input type="text" pInputText class="form-control" disabled="true" value='{{lavTitoloStudioAltro?.dsNote ? (lavTitoloStudioAltro?.dsNote | uppercase) : "--"}}'>
+                </div>
+              </div>
+            </ng-template>
+          </li>
+
+
+          <li [ngbNavItem]="2">
+            <a ngbNavLink>Azienda stage/tirocinio</a>
+            <ng-template ngbNavContent>
+              <!--INFORMAZIONE AGGIUNTIVE-->
+              <div class="row">
+                <div class="mb-5 col-sm-12 col-md-3">
+                  <h4>Denominazione azienda</h4>
+                  <input type="text" pInputText class="form-control" disabled="true" value='{{lavTitoloStudioAltro?.dsDenominazioneAziStage || "--" | uppercase}}'>
+                </div>
+                <div class="mb-5 col-sm-12 col-md-3">
+                  <h4>Durata</h4>
+                  <input type="text" pInputText class="form-control" disabled="true" value='{{lavTitoloStudioAltro?.durataStage || "--"}}'>
+                </div>
+                <div class="mb-5 col-sm-12 col-md-3">
+                  <h4>Tipo durata</h4>
+                  <input type="text" pInputText class="form-control" disabled="true" value='{{lavTitoloStudioAltro?.codTipologiaDurataStage || "--"}}'>
+                </div>
+                <div class="mb-5 col-sm-12 col-md-3">
+                  <h4>Indirizzo</h4>
+                  <input type="text" pInputText class="form-control" disabled="true" value='{{lavTitoloStudioAltro?.silTToponimoAziStage?.dsSilTToponimo || "--" | uppercase}} {{lavTitoloStudioAltro?.dsIndirizzoAziStage || "--" | uppercase}} {{lavTitoloStudioAltro?.dsNumCivicoAziStage || "--" | uppercase}}'>
+                </div>
+                <div class="mb-5 col-sm-12 col-md-3">
+                  <h4>Comune/Stato estero</h4>
+                  <input type="text" pInputText class="form-control" disabled="true" value='{{lavTitoloStudioAltro?.silTComuneAziStage != null ? lavTitoloStudioAltro?.silTComuneAziStage?.descr:
+                    lavTitoloStudioAltro?.silTNazioneAziStage?.dsSilTNazione  || "--" | uppercase}}'>
+                </div>
+              </div>
+            </ng-template>
+          </li>
+        </ul>
+
+        <div [ngbNavOutlet]="nav" class="mt-2"></div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="row">
+    <div class="col mt-3">
+      <button type="button" (click)="onClickAnnullaVisualizza()" class="btn btn-outline-secondary btn-sm"
+        aria-label="annulla inserimento">ANNULLA</button>
+    </div>
+  </div>
+</div>

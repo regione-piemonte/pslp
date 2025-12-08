@@ -1,0 +1,135 @@
+<!--
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ -->
+<!--START PERCORSOFORMATIVO -->
+<ngb-accordion #accordionPercorsoFormativo activeIds="panelPercorsoFormativo0" id="accordion-percorso-formativo"
+    [closeOthers]="true" [destroyOnHide]="false">
+<ngb-panel title="PERCORSO FORMATIVO" id="panelPercorsoFormativo">
+<ng-template ngbPanelContent let-opened="opened">
+<ng-container>
+
+<div class="card-mb-5">
+<div class="card-body">
+
+<ul ngbNav [roles]="false" #nav="ngbNav" class="nav-tabs">
+
+  <li [ngbNavItem]="0">
+    <a ngbNavLink>Titolo di studio</a>
+    <ng-template ngbNavContent>
+      <pslpwcl-titolo-studio [fascicolo]="fascicolo"></pslpwcl-titolo-studio>
+    </ng-template>
+  </li>
+
+  <li [ngbNavItem]="1">
+    <a ngbNavLink>Formazione professionale</a>
+    <ng-template ngbNavContent>
+    <ul ngbNav [roles]="false" #nav="ngbNav" class="nav-tabs">
+
+      <li [ngbNavItem]="0">
+        <a ngbNavLink>Corsi di formazione piemontese</a>
+        <ng-template ngbNavContent>
+          <pslpwcl-formazione-professionale [fascicolo]="fascicolo"></pslpwcl-formazione-professionale>
+        </ng-template>
+      </li>
+
+      <li [ngbNavItem]="1">
+        <a ngbNavLink>Altri corsi</a>
+        <ng-template ngbNavContent>
+          <pslpwcl-altri-corsi [fascicolo]="fascicolo"></pslpwcl-altri-corsi>
+        </ng-template>
+      </li>
+    </ul>
+    <div [ngbNavOutlet]="nav" class="mt-2"></div>
+    </ng-template>
+  </li>
+</ul>
+
+
+<div [ngbNavOutlet]="nav" class="mt-2"></div>
+</div>
+</div>
+
+</ng-container>
+</ng-template>
+</ngb-panel>
+</ngb-accordion>
+<!--END PERCORSO FORMATIVO-->
+
+<!--START LINGUE STRANIERE CONOSCIUTE-->
+<ngb-accordion #accordionLingueStrinereRiconosciute id="accordion-lingue-straniere-riconosciute">
+    <ngb-panel title="LINGUE STRANIERE CONOSCIUTE" id="panelLingueStrinereRiconosciute0">
+        <ng-template ngbPanelContent let-opened="opened">
+            <ng-container>
+                <pslpwcl-lingue-straniere-conosciute [fascicolo]="fascicolo"></pslpwcl-lingue-straniere-conosciute>
+            </ng-container>
+        </ng-template>
+    </ngb-panel>
+</ngb-accordion>
+<!--END LINGUE STRANIERE CONOSCIUTE-->
+
+
+<!--START COMPETENZE INFORMATICHE-->
+<ngb-accordion #accordionCompetenzeInformatiche id="accordion-competenze-informatiche">
+    <ngb-panel title="COMPETENZE INFORMATICHE" id="panelCompetenzeInformatiche0">
+        <ng-template ngbPanelContent let-opened="opened">
+            <ng-container>
+                <pslpwcl-competenze-informatiche
+                [conoscenzeInformatiche]="conoscenzeInformatiche"
+                [idSilLavAnagrafica]="idSilLavAnagrafica"></pslpwcl-competenze-informatiche>
+            </ng-container>
+        </ng-template>
+    </ngb-panel>
+</ngb-accordion>
+<!--END COMPETENZE INFORMATICHE-->
+
+
+<!--START PATENTI-->
+<ngb-accordion #accordionPatenti id="accordion-patenti">
+<ngb-panel title="PATENTI" id="panelPatenti0">
+  <ng-template ngbPanelContent let-opened="opened">
+  <ng-container>
+      <pslpwcl-patenti
+        [idSilLavAnagrafica]="idSilLavAnagrafica"
+        [patentiPossedute]="patentiPossedute"
+        ></pslpwcl-patenti>
+  </ng-container>
+  </ng-template>
+</ngb-panel>
+</ngb-accordion>
+<!--END PATENTI-->
+
+<!--START PATENTINI-->
+<ngb-accordion #accordionPatenti id="accordion-patentini">
+    <ngb-panel title="PATENTINI" id="panelPatentini0">
+        <ng-template ngbPanelContent let-opened="opened">
+            <ng-container>
+                <pslpwcl-patentini [idSilLavAnagrafica]="idSilLavAnagrafica"
+                [patentiPossedute]="patentiPossedute">
+              </pslpwcl-patentini>
+            </ng-container>
+        </ng-template>
+    </ngb-panel>
+</ngb-accordion>
+<!--END PATENTINI-->
+
+<!--START ALTRE INFORMAZIONI albo-->
+<ngb-accordion #accordionAltreInformazioni id="accordion-altre-informazioni">
+<ngb-panel title="ALTRE INFORMAZIONI" id="panelAltreInformazioni0">
+<ng-template ngbPanelContent let-opened="opened">
+  <ng-container>
+
+    <pslpwcl-altre-informazioni
+      [idSilLavAnagrafica]="idSilLavAnagrafica"
+      [altreInformazioni]="altreInformazioni"
+      [albi]="albi">
+    </pslpwcl-altre-informazioni>
+
+  </ng-container>
+</ng-template>
+</ngb-panel>
+</ngb-accordion>
+<!--END ALTRE INFORMAZIONI-->

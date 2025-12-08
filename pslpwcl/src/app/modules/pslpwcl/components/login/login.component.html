@@ -1,0 +1,63 @@
+<!--
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ -->
+<!--
+    pagina login virtuale
+    per simulazione accesso SPID
+    in ambiente di sviluppo/test
+-->
+<div class="col-12">
+    <h2>Dati utente test login </h2>
+    <form>
+       <p><span class="ob">*</span><span class="small">obbligatorio</span></p>
+      <div class="row mb-4 ml-2 mr-2">
+        <div class="col-sm-12 col-md-4 col-lg-4 col-xl-4">
+          <div class="input-group group">
+            <input type="text" id="cf" name="cf" ngModel required maxlength="16" pslwcllibCodiceFiscaleValidator>
+            <span class="highlight"></span>
+            <span class="bar"></span>
+            <label for="cf">Codice Fiscale</label>
+          </div>
+          <div *ngIf="loginForm.controls['cf'] && loginForm.controls['cf'].invalid">
+            <div class="text-danger" >Obbligatorio</div>
+            <div class="text-danger" ></div>
+          </div>
+        </div>
+        <div class="col-sm-12 col-md-4 col-lg-4 col-xl-4">
+          <div class="input-group group">
+            <input type="text" id="nome" name="nome" ngModel required>
+            <span class="highlight"></span>
+            <span class="bar"></span>
+            <label for="nome">Nome</label>
+          </div>
+          <div *ngIf="loginForm.controls['nome'] && loginForm.controls['nome'].invalid">
+            <div class="text-danger">Obbligatorio</div>
+          </div>
+        </div>
+        <div class="col-sm-12 col-md-4 col-lg-4 col-xl-4">
+          <div class="input-group group">
+            <input type="text" id="cognome" name="cognome" ngModel required>
+            <span class="highlight"></span>
+            <span class="bar"></span>
+            <label for="cognome">Cognome</label>
+          </div>
+          <div *ngIf="loginForm.controls['cognome'] && loginForm.controls['cognome'].invalid">
+            <div class="text-danger">Obbligatorio</div>
+          </div>
+        </div>
+      </div>
+      <div class="row mt-5">
+        <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 text-center">
+          <p><button type="button" (click)="onSubmit()" class="btn btn-outline-primary" [disabled]="loginForm.invalid">OK</button>
+          </p>
+        </div>
+      </div>
+      <br>
+      <br>&nbsp;
+    </form>
+  
+  </div>

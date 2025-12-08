@@ -1,0 +1,33 @@
+<!--
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ -->
+<h2 class="relative">{{ subheaderContent }}</h2>
+<div>
+  <ul >
+    <li>
+      <div class="oppe0" (click)="onHome()">
+        <div class="oppe1">
+          <i  class="fas fa-home col-2 pb-2 ps-0" style="color: #016CB4; font-size: x-large;"></i>
+        </div>
+        <div class="font-weight-bold oppe2">Home</div>
+      </div>
+    </li>
+    <li *ngFor="let el of elencoCard" >
+      <div class="oppe0" (click)="onGotoLink(el)" ngClass="{{(el.flgAccessoAutenticato && !hasUtente)?'disabled oppe0':'oppe0'}}">
+
+        <div>
+          <!-- <img class="responsiveBurger" src="{{ el.urlImg }}" alt="{{ el.titolo }}" > -->
+          <img class="responsiveBurger col-2 pb-2 ps-0 " src="assets/img/{{el.icon}}" alt="user_privacy_deleghe" style="color: #016CB4; width: 3em;">
+
+        </div>
+        <div class="font-weight-bold oppe2" [innerHTML]="el.titolo | escapeHtml" ></div>
+        <div class="oppe3" *ngIf="el.flgAccessoAutenticato && !hasUtente"><img class="lucchetto" src="assets/img/lucchetto.svg" alt="autenticato" title="servizio ad accesso autenticato"></div>
+
+      </div>
+    </li>
+  </ul>
+</div>

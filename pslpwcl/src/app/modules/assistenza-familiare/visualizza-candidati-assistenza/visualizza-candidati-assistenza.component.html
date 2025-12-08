@@ -1,0 +1,81 @@
+<!--
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ -->
+<ng-container>
+    <div class="row">
+        <div class="col mt-3 mb-5">
+            <button type="button" (click)="onClickAnnulla()" class="btn btn-outline-secondary btn-lg"
+                aria-label="Torna indietro">INDIETRO</button>
+        </div>
+        <div class="col-auto mt-3">
+        </div>
+    </div>
+    <h3>ELENCO CANDIDATURE</h3>
+    <div class="row mt-3">
+        <p-table [value]="candidatureList" [paginator]="true" [rows]="10">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Data invio</th>
+                    <th>Codice fiscale</th>
+                    <th>Cognome</th>
+                    <th>Nome</th>
+                    <th>Azioni</th>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-el>
+                <tr class="p-selectable-row">
+                    <td>
+                        <span class="p-column-title">Data invio</span>
+                        {{ el.dInserim | date: 'dd/MM/yyyy' }}
+                    </td>
+                    <td>
+                        <span class="p-column-title">Codice fiscale</span>
+                        {{ el.datiCandidato.cfCandidato }}
+                    </td>
+                    <td>
+                        <span class="p-column-title">Cognome</span>
+                        {{ el.datiCandidato.cognomeCandidato }}
+                    </td>
+                    <td>
+                        <span class="p-column-title">Nome</span>
+                        {{ el.datiCandidato.nomeCandidato }}
+                    </td>
+                    <td>
+                        <a tabindex="0" (click)="stampaCv(el)" (keydown.enter)="stampaCv(el)" style="color: #016CB4"
+                            aria-label="Azione: stampare Curriculum vitae" title="Stampare Curriculum vitae">
+                            <i class="fas fa-file-pdf"></i>
+                        </a>
+                    </td>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="5" class="text-center no-results-warning">
+                        Nessun risultato trovato
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+
+
+
+    </div>
+    <div *ngIf="candidatureList && candidatureList.length > 0" class="row">
+        <div class="col-auto">
+            <button type="button" (click)="onClickEsportaFile('pdf')" class="btn btn-primary ml-auto btn-lg">
+                ESPORTA PDF
+            </button>
+        </div>
+        <div class="col-8">
+            <button type="button" (click)="onClickEsportaFile('xls')" class="btn btn-primary ml-auto btn-lg">
+                ESPORTA EXCEL
+            </button>
+        </div>
+    </div>
+</ng-container>

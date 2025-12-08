@@ -1,0 +1,364 @@
+<!--
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ -->
+<ngb-accordion #acc="ngbAccordion" activeIds="elencoTitoli,elencoTitoliCv,inserisciTitolo">
+
+  <ngb-panel title="{{messaggioIstruzioneFasc?.testo}}" id="elencoTitoli">
+    <ng-template ngbPanelContent>
+      <p-table
+    #dt
+    [value]="titoliDiStudioFiltrati"
+    dataKey="id"
+    styleClass="p-datatable-customers"
+    [rowHover]="true"
+
+    [rows]="5"
+    [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[5,10,25,50]"
+
+    [loading]="false"
+    responsiveLayout="scroll"
+    [paginator]="true"
+    currentPageReportTemplate="{first} di {last}, su {totalRecords} righe">
+    <ng-template pTemplate="header">
+          <tr>
+            <th scope="col">Livello</th>
+            <th scope="col">Titolo di studio</th>
+            <th scope="col">Valutazione conseguita</th>
+            <th scope="col">Azioni</th>
+          </tr>
+
+        </ng-template>
+        <ng-template pTemplate="body" let-titoloDiStudio >
+          <ng-container>
+            <tr class="p-selectable-row">
+              <td class="align-middle"> {{titoloDiStudio.lavTitoloStudio.silTStudio.silTGradoStudio?.dsSilTGradoStudio | uppercase }}
+              </td>
+
+              <td class="align-middle"> {{titoloDiStudio.descrizioneTitolo | uppercase }}</td>
+              <td class="align-middle"> {{(titoloDiStudio.voto == "null/null" || titoloDiStudio.voto == "null") ? "-/-": titoloDiStudio.voto || "-/-"}}</td>
+              <td class="align-middle"  style="min-width: 90px;">
+                <a tabindex="0" (click)="null"
+                  (keydown.enter)="null" style="color: #016CB4"
+                  (click)="viewTitolo(titoloDiStudio)"
+                  aria-label="Azione: Visualizza dettaglio titolo studio" title="Visualizzare dettaglio titolo studio" >
+                  <i class="fas fa-eye"></i>
+                </a>
+                <a tabindex="0" style="color: #016CB4" aria-label="Azione: aggiunge titolo di studio al CV" *ngIf="canModifica"
+                  (click)="addTitoloACv(titoloDiStudio)" title="Aggiungere titolo di studio  al CV">
+                  <i class="fas fa-file-download"></i>
+                </a>
+              </td>
+            </tr>
+          </ng-container>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+              <td colspan="4">
+                {{messaggioNonCiSonoDati?.testo}}
+              </td>
+          </tr>
+      </ng-template>
+      </p-table>
+    </ng-template>
+  </ngb-panel>
+  <ngb-panel title="{{messaggioIstruzionegCv?.testo}}" id="elencoTitoliCv">
+    <ng-template ngbPanelContent>
+
+
+      <p-table
+        #dt
+        [value]="titoliDiStudioCv"
+        dataKey="id"
+        styleClass="p-datatable-customers"
+        [rowHover]="true"
+
+        [rows]="5"
+        [showCurrentPageReport]="true"
+        [rowsPerPageOptions]="[5,10,25,50]"
+
+        [loading]="false"
+        responsiveLayout="scroll"
+        [paginator]="true"
+        currentPageReportTemplate="{first} di {last}, su {totalRecords} righe">
+        <ng-template pTemplate="header">
+          <tr>
+            <th scope="col">Livello</th>
+            <th scope="col">Titolo di studio</th>
+            <th scope="col">Valutazione conseguita</th>
+            <th scope="col">Data inizio</th>
+            <th scope="col">Data fine</th>
+            <th scope="col">Nome istituto</th>
+            <th scope="col">In corso</th>
+            <th scope="col">Azioni</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-titoloDiStudio >
+          <ng-container *ngIf="titoliDiStudioCv?.length; else noData">
+            <tr class="p-selectable-row">
+              <td class="align-middle"> {{titoloDiStudio.idLivelloStudio?.descrLivelloStudio | uppercase }}
+              </td>
+
+              <td class="align-middle"> {{titoloDiStudio.idTitoloStudio?.descrTitoloStudio | uppercase }}</td>
+              <td class="align-middle"> {{(titoloDiStudio.votazioneConseguita == "null/null" || titoloDiStudio.votazioneConseguita == "null") ? "-/-": titoloDiStudio.votazioneConseguita || "-/-"}}</td>
+              <td class="align-middle"> {{titoloDiStudio.dInizio|date :"dd/MM/yyyy"}}</td>
+              <td class="align-middle"> {{titoloDiStudio.dFine|date :"dd/MM/yyyy"}}</td>
+              <td class="align-middle"> {{titoloDiStudio.nomeIstituto | uppercase }}</td>
+              <td class="align-middle">{{titoloDiStudio.flgInCorso?(titoloDiStudio.flgInCorso=="S"?"SI":"NO"):"-"}}</td>
+
+              <td class="align-middle" style="min-width: 90px;">
+
+                <a tabindex="0" style="color: #016CB4" aria-label="Azione: visualizza titolo studio" (click)="onVisualizzaIstruzione(titoloDiStudio)"
+                  title="Visualizzare dettaglio titolo studio" >
+                  <i class="fas fa-eye"></i>
+                </a>
+
+                <a tabindex="0" style="color: #016CB4" aria-label="Azione: modificare titolo studio" (click)="onModificaIstruzione(titoloDiStudio)"
+                  title="Modificare titolo studio" *ngIf="canModifica">
+                  <i class="fas fa-edit"></i>
+                </a>
+                <a tabindex="0" style="color: #016CB4" aria-label="Azione: eliminare titolo studio" (click)="onClickEliminaTitolo(titoloDiStudio)"
+                  title="Eliminare titolo studio" *ngIf="canModifica">
+                  <i class="fas fa-trash-alt"></i>
+                </a>
+              </td>
+            </tr>
+          </ng-container>
+          <ng-template #noData>
+            <tr>
+              <td colspan="7">Non ci sono dati</td>
+            </tr>
+          </ng-template>
+        </ng-template>
+      </p-table>
+      <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3">
+        <button type="button" class="btn btn-primary btn-lg" (click)="onNuovoTitolo()"
+          aria-label="inserisci esperienza professionale" *ngIf="canModifica">INSERISCI NUOVO TITOLO DI STUDIO</button>
+      </div>
+      <div *ngIf="showForm">
+        <form [formGroup]="form" >
+
+          <!-- TITOLO DI STUDIO - CODICE -->
+          <div class="row" formGroupName="lavTitoloStudio">
+            <div class="mb-5 col-sm-12 col-md-9" formGroupName="blpTStudio">
+              <label for="titoloStudio">Titolo di studio<span class="oblg">*</span></label>
+              <p-dropdown inputId="titoloStudio" [filter]="true" (onFilter)="onFilter($event)"
+                [emptyMessage]="'Nessun dato trovato'" [autoDisplayFirst]="false" [options]="titoliStudios"
+                formControlName="id" (onChange)="onChangeTitoloStudio($event)" class=" p-form-select" placeholder=""
+                optionLabel="descr" optionValue="idTitoloStudio" ariaLabel="seleziona titolo di studio">
+
+              </p-dropdown>
+            </div>
+          </div>
+          <div class="row" formGroupName="lavTitoloStudio">
+            <div class="mb-5 col-sm-12 col-md-3">
+              <label>Codice</label><br>
+              <span class="valore">{{titoloStudioSelected?.codTitoloStudioMin}}</span>
+            </div>
+            <div class="mb-5 col-sm-12 col-md-6">
+              <label>Livello titolo studio</label><br>
+              <span class="valore">{{titoloStudioSelected?.idLivelloStudio?.descrLivelloStudio}}</span>
+            </div>
+          </div>
+
+          <div class="row" formGroupName="lavTitoloStudio">
+            <div class="mb-5 col-sm-12 col-md-9">
+              <label for="descrizione">Descrizione</label>
+              <textarea pInputTextarea type="textarea"  formControlName="dsTitoloStudio"
+                maxlength="100" id="descrizione" aria-labelledby="descrizione"></textarea>
+            </div>
+          </div>
+          <div class="row" formGroupName="lavTitoloStudio">
+            <div class="mb-5 col-sm-12 col-md-3">
+              <fieldset>
+                <legend>In corso</legend><br>
+                <div *ngFor="let item of [{key:'Si',id:'S'},{key:'No',id:'N'}]"
+                  class="mb-3 col-auto form-check form-check-inline">
+                  <input class="form-check-input"  name="flgInCorso"
+                    formControlName="flgInCorso" [value]="item.id" type="radio" id="flgInCorso{{item.id}}" (click)="onChangeInCorso(item.id)"
+                    [attr.aria-label]="'flgInCorso{{item.id}}'">
+                  <label class="form-check-label" for="flgInCorso{{item.id}}">{{item.key}}</label>
+                </div>
+              </fieldset>
+            </div>
+
+
+            <!-- Anno - Voto - VotoM - Laude -->
+            <div class="mb-5 col-sm-12 col-md-3">
+              <label for="voto">Voto<span *ngIf="VotoValoreRequired" class="oblg">*</span></label>
+              <input pInputText type="text" (keyup)="votoValoreRequired()" (click)="votoValoreRequired()" class="form-control" formControlName="dsVoto"
+                maxlength="20" id="voto" aria-label="voto">
+              <span style="color: red;"> <app-control-messages
+                [control]="form.get('lavTitoloStudio.dsVoto')"></app-control-messages></span>
+            </div>
+            <div class="mb-3 col-sm-12 col-md-3">
+              <label for="valore">Valore massimo<span *ngIf="VotoValoreRequired" class="oblg">*</span></label>
+              <input pInputText type="text" (keyup)="votoValoreRequired()"   (click)="votoValoreRequired()" pslpwclOnlyNumber class="form-control"
+                formControlName="valoreMassimo" id="valore" aria-label="valore massimo" maxlength="3">
+              <span style="color: red;"> <app-control-messages
+                [control]="form.get('lavTitoloStudio.valoreMassimo')"></app-control-messages></span>
+              </div>
+
+          </div>
+
+      <!-- Riconosciuta in Italia - Se conseguito in apprendistato.. -->
+      <div class="row" >
+        <div class="mb-5 col-sm-12 col-md-3" formGroupName="lavTitoloStudio">
+          <fieldset>
+            <legend>Conseguito in Italia</legend><br>
+            <div *ngFor="let item of [{key:'Si',id:'S'},{key:'No',id:'N'}]"
+              class="mb-3 col-auto form-check form-check-inline">
+              <input class="form-check-input" name="flgConseguitoInItalia" formControlName="flgConseguitoInItalia"
+                [value]="item.id" type="radio" id="conseguito{{item.id}}"
+                [attr.aria-labelledby]="'conseguito'+item.id">
+              <label class="form-check-label" for="conseguito{{item.id}}">{{item.key}}</label>
+            </div>
+          </fieldset>
+        </div>
+
+      <!-- Denominazione -->
+
+        <div class="mb-5 col-sm-12 col-md-6" formGroupName="lavTitoloStudioAltro">
+          <label for="denomIstituto">Nome istituto</label>
+          <input pInputText type="text" class="form-control" formControlName="dsDenominazioneIst" maxlength="250"
+            id="denomIstituto" aria-label="denominazione istituto">
+        </div>
+      </div>
+
+      <!-- Luogo - Comune - nazioni -->
+      <div class="row" formGroupName="lavTitoloStudioAltro">
+        <div class="mb-5 col-sm-12 col-md-3">
+          <fieldset>
+            <legend>Luogo</legend><br>
+            <div *ngFor="let item of [{key:'Italia',id:'I'},{key:'Estero',id:'E'}]"
+              class="mb-3 col-auto form-check form-check-inline">
+              <input class="form-check-input" (change)="onChangeLuogoIstituto()" name="flgLuogoIstItalia"
+                formControlName="flgLuogoIstItalia" [value]="item.id" type="radio" id="luogoIstituto{{item.id}}"
+                [attr.aria-labelledby]="'luogoIstituto'+item.id">
+              <label class="form-check-label" for="luogoIstituto{{item.id}}">
+                {{item.key}}
+              </label>
+            </div>
+          </fieldset>
+        </div>
+
+        <div formGroupName="blpTComuneIst" class="mb-5 col-sm-12 col-md-3">
+          <label for="comuneEnteIst">Comune</label>
+          <p-dropdown inputId="comuneEnteIst" [filter]="true" (onFilter)="onFilterComune($event)"
+            [emptyMessage]="'Nessun dato trovato'" [autoDisplayFirst]="false" [options]="comuniIst" formControlName="id"
+            ariaLabel="comune istituto" class=" p-form-select" placeholder="" optionLabel="descr" optionValue="id">
+            <!-- (search)="onSearchComune($event)"  -->
+          </p-dropdown>
+        </div>
+        <div class="row mt-3">
+          <!-- Toponimo -->
+          <div formGroupName="toponimo" class="mb-5 col-sm-12 col-md-4">
+            <label for="toponimo">Toponimo</label>
+            <p-dropdown inputId="toponimo" [emptyMessage]="'Nessun dato trovato'"
+              [autoDisplayFirst]="false" [options]="toponimos" formControlName="id" optionLabel="name"
+              class=" p-form-select" placeholder="" optionLabel="descr" optionValue="id" labelForId="toponimo"
+              ariaLabel="seleziona toponimo">
+            </p-dropdown>
+            <span style="color: red;"> <app-control-messages
+                [control]="form.get('lavTitoloStudioAltro.toponimo.id')"></app-control-messages></span>
+          </div>
+
+          <!-- Indirizzo -->
+          <div class="mb-5 col-sm-12 col-md-4">
+            <label for="indirizzo">Indirizzo</label>
+            <input type="text" pInputText class="form-control" formControlName="indirizzo"
+              oninput="this.value = this.value.toUpperCase()" id="indirizzo" maxlength="100"
+               aria-label="indirizzo" >
+            <span style="color: red;"> <app-control-messages
+                [control]="form.get('lavTitoloStudioAltro.indirizzo')"></app-control-messages></span>
+          </div>
+
+          <!-- numero civico -->
+          <div class="mb-5 col-sm-12 col-md-4">
+            <label for="numeroCivicoResidenza">Numero civico</label>
+            <input type="text" pInputText class="form-control" formControlName="numeroCivico"
+              oninput="this.value = this.value.toUpperCase()" id="numeroCivicoResidenza" maxlength="15"
+              aria-label="numero civico">
+            <span style="color: red;"> <app-control-messages
+                [control]="form.get('lavTitoloStudioAltro.numeroCivico')"></app-control-messages></span>
+          </div>
+        </div>
+        <div formGroupName="blpTNazioneIst" class="mb-5 col-sm-12 col-md-3">
+          <label for="nazioneIst">Stato estero</label>
+          <p-dropdown inputId="nazioneIst" ariaLabel="stato estero istituto" [emptyMessage]="'Nessun dato trovato'"
+            [autoDisplayFirst]="false" [options]="nazioniEstere" formControlName="id" class=" p-form-select"
+            placeholder="" optionLabel="descr" optionValue="id">
+          </p-dropdown>
+        </div>
+        <!--div class="mb-5 col-sm-12 col-md-6">
+          <label for="indirizzoIst">Indirizzo</label>
+          <input type="text" pInputText style="width: 100%; margin-top: 3.75px; margin-left: 7.5px;"
+              formControlName="indirizzoIst" id="indirizzoIst" maxlength="100" aria-label="indirizzo istituto">
+        </div-->
+      </div>
+
+      <!--data inizio/fine-->
+      <div class="row" formGroupName="lavTitoloStudio">
+        <div class="mb-5 col-sm-12 col-md-3">
+          <label for="dataInizio">Data di inizio<span class="oblg">*</span></label>
+          <p-calendar class="p-form-date" id="dataInizio" placeholder="Data inizio" formControlName="dataInizio"
+            dateFormat="dd/mm/yy" [maxDate]="sysDate" aria-labelledby="dataInizio" ariaLabelledBy="dataInizio">
+
+          </p-calendar>
+          <span style="color: red;"> <app-control-messages
+            [control]="form.get('lavTitoloStudio.dataInizio')"></app-control-messages></span>
+        </div>
+        <div class="mb-5 col-sm-12 col-md-3">
+
+          <label for="dataFine">Data fine</label>
+          <p-calendar class="p-form-date" id="dataFine" placeholder="Data fine" formControlName="dataFine"
+            dateFormat="dd/mm/yy"  aria-labelledby="dataFine" ariaLabelledBy="dataFine">
+
+          </p-calendar>
+          <span style="color: red;"> <app-control-messages
+            [control]="form.get('lavTitoloStudio.dataFine')"></app-control-messages></span>
+        </div>
+      </div>
+
+
+      <!-- Stage finale -->
+      <div class="row" formGroupName="lavTitoloStudioAltro">
+        <div class="mb-5 col-sm-12 col-md-6">
+          <fieldset>
+            <legend>Stage/PCTO  (Percorsi per le Competenze Trasversali e l'Orientamento)<span class="oblg">*</span></legend><br>
+            <div *ngFor="let item of [{key:'Si',id:'S'},{key:'No',id:'N'}]"
+              class="mb-3 col-auto form-check form-check-inline">
+              <input class="form-check-input" name="flgStageFinale" formControlName="flgStageFinale" [value]="item.id"
+                type="radio" id="stageFinale{{item.id}}" [attr.aria-labelledby]="'stageFinale'+item.id">
+              <label class="form-check-label" for="stageFinale{{item.id}}">{{item.key}}</label>
+            </div>
+          </fieldset>
+        </div>
+      </div>
+
+
+
+
+      <div class="row">
+        <div class="col mt-3">
+          <button type="button" class="btn btn-outline-secondary btn-sm"
+            aria-label="annulla inserimento" (click)="onAnnulla()">ANNULLA</button>
+        </div>
+        <div class="col-auto mt-3">
+          <button type="submit" class="btn btn-primary ml-auto btn-lg" (click)="inserisciAggiornaIstruzioneDich()"
+            aria-label="salva i dati inseriti" *ngIf="canModifica" [disabled]="!this.form.valid">CONFERMA</button>
+        </div>
+      </div>
+      </form>
+      </div>
+    </ng-template>
+
+  </ngb-panel>
+
+
+
+</ngb-accordion>

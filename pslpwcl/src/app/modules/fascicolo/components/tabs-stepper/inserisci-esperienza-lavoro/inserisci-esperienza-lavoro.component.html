@@ -1,0 +1,491 @@
+<!--
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ -->
+<form [formGroup]="form">
+  <div class="card-mb-5">
+    <div class="card-body">
+
+      <ul ngbNav [roles]="false" #nav="ngbNav" class="nav-tabs">
+        <li [ngbNavItem]="0">
+
+          <a ngbNavLink>Informazioni generali</a>
+          <ng-template ngbNavContent>
+
+            <div class="mt-3 row">
+              <ng-container formGroupName="lavEsperienzaLavoro">
+
+                <!-- D inizio/Fine & durata -->
+                <div class="row">
+                  <div class="mb-5 col-sm-12 col-md-3">
+                    <label for="dataAssunzione">Data assunzione<span class="oblg">*</span></label>
+                    <p-calendar class="p-form-date" id="dataAssunzione" placeholder="" formControlName="dataInizio"
+                      [minDate]="minDate" dateFormat="dd/mm/yy" ariaLabelledBy="dataAssunzione">
+
+                    </p-calendar>
+                    <div *ngIf="form?.get('lavEsperienzaLavoro.dataInizio')?.invalid" class="text-danger">
+                      <p *ngIf="form?.get('lavEsperienzaLavoro.dataInizio')?.value?.length > 0">Data non valida</p>
+
+                        <span style="color: red;"> <app-control-messages
+                          [control]="form?.get('lavEsperienzaLavoro.dataInizio')"></app-control-messages></span>
+                    </div>
+                  </div>
+
+                  <div class="mb-5 col-sm-12 col-md-3">
+                    <label for="dataCessazione">Data cessazione</label>
+                    <p-calendar class="p-form-date" id="dataCessazione" ariaLabelledBy="dataCessazione" placeholder=""
+                      formControlName="dataFine" [minDate]="minDate" dateFormat="dd/mm/yy">
+                    </p-calendar>
+
+                    <div *ngIf="form?.get('lavEsperienzaLavoro.dataFine')?.invalid" class="text-danger">
+                      <p *ngIf="form?.get('lavEsperienzaLavoro.dataFine')?.value?.length > 0">Data non valida</p>
+                    </div>
+                    <span style="color: red;"> <app-control-messages
+                      [control]="form?.get('lavEsperienzaLavoro.dataFine')"></app-control-messages></span>
+                  </div>
+
+                  <div class="mb-5 col-sm-12 col-md-2">
+                    <label for="numGgDurata">Durata (gg.)</label>
+                    <input type="text" pInputText oninput="this.value = this.value.toUpperCase()" class="form-control"
+                      formControlName="numGgDurata" id="numGgDurata" maxlength="7" pslpwclOnlyNumber
+                      aria-label="durata dell'esperienza in giorni">
+                  </div>
+                </div>
+
+                <!-- Tipo & Forma -->
+                <div class="row">
+                  <div formGroupName="silTTipoLavoro" class="mb-5 col-sm-12 col-md-6">
+                    <label for="tipoLavoro">Tipo<span class="oblg">*</span></label>
+                    <p-dropdown optionLabel="descr" optionValue="id" inputId="tipoLavoro" ariaLabel="tipo lavoro"
+                      [emptyMessage]="'Nessun dato trovato'" [autoDisplayFirst]="false" [options]="tipoLavori"
+                      formControlName="idSilTTipoLavoro" class=" p-form-select" placeholder="" bindLabel="descr"
+                      (ngModelChange)="enableOrDisableFormControls($event)">
+                      <!-- (change)="loadTipoLavoro($event)" (ngModelChange)="enableOrDisableFormControls($event)"  -->
+                    </p-dropdown>
+                  </div>
+
+                  <div class="mb-5 col-sm-12 col-md-3">
+                    <label for="forma">Forma<span class="oblg">*</span></label>
+                    <p-dropdown [disabled]="formaDisabled" optionLabel="descr" optionValue="id" inputId="forma"
+                      ariaLabel="formato lavorativo" [emptyMessage]="'Nessun dato trovato'" [autoDisplayFirst]="false"
+                      [options]="formaOptions" formControlName="flgForma" class=" p-form-select" placeholder=""
+                      bindLabel="descr">
+                    </p-dropdown>
+                  </div>
+                </div>
+
+                <!-- Denominazione & SoggPromotre -->
+                <div class="row">
+                  <div class="mb-5 col-sm-12 col-md-6">
+                    <label for="denominazione">Denominazione</label>
+                    <input type="text" pInputText oninput="this.value = this.value.toUpperCase()" class="form-control"
+                      formControlName="dsDenominazioneRp" id="denominazione" maxlength="300"
+                      aria-label="denominazione soggetto promotore">
+                  </div>
+                  <div class="mb-5 col-sm-12 col-md-3">
+                    <label for="soggPromotore">Soggetto promotore</label>
+                    <input type="text" pInputText oninput="this.value = this.value.toUpperCase()"
+                      aria-label="descrizione soggetto promotore" class="form-control"
+                      formControlName="dsSoggettoPromotore" id="soggPromotore" maxlength="150">
+                  </div>
+                </div>
+
+                <!-- Tipo apprendistato & data fine periodo formativo -->
+                <div class="row">
+                  <div formGroupName="silTTipoApprendistato" class="mb-5 col-sm-12 col-md-3">
+                    <label for="tipoApprendistato">Tipo apprendistato<span class="oblg"
+                        *ngIf="isRequired()">*</span></label>
+                    <p-dropdown optionLabel="descr" optionValue="id" inputId="tipoApprendistato"
+                      [emptyMessage]="'Nessun dato trovato'" [autoDisplayFirst]="false" [options]="tipoApprendistati"
+                      formControlName="idSilTTipoApprendistato" class=" p-form-select" placeholder="" bindLabel="descr"
+                      ariaLabel="tipo apprendistato">
+                    </p-dropdown>
+                  </div>
+                  <div class="mb-5 col-sm-12 col-md-3">
+                    <label for="dataFinePeriodoFormativo">Data fine periodo formativo</label>
+                    <p-calendar class="p-form-date" id="dataFinePeriodoFormativo" placeholder=""
+                      formControlName="dataFinePeriodoFormativo" [minDate]="minDate" dateFormat="dd/mm/yy"
+                      ariaLabelledBy="dataFinePeriodoFormativo">
+                    </p-calendar>
+
+                    <div *ngIf="form?.get('lavEsperienzaLavoro.dataFinePeriodoFormativo')?.invalid" class="text-danger">
+                      <p *ngIf="form?.get('lavEsperienzaLavoro.dataFinePeriodoFormativo')?.value?.length > 0">Data non
+                        valida</p>
+                        <span style="color: red;"> <app-control-messages
+                      [control]="form?.get('lavEsperienzaLavoro.dataFinePeriodoFormativo')"></app-control-messages></span>
+                    </div>
+
+                  </div>
+                </div>
+
+                <!-- TipoPartT & Modalità Lavoro & N.Ore & Stagionale -->
+                <div class="row">
+                  <div formGroupName="tipoParttime" class="mb-5 col-sm-12 col-md-3">
+                    <label for="tipoParttime">Tipo part-time</label>
+                    <p-dropdown optionLabel="descr" optionValue="id" inputId="tipoParttime"
+                      [emptyMessage]="'Nessun dato trovato'" [autoDisplayFirst]="false" [options]="tipoPartTime"
+                      formControlName="idSilTTipoParttime" ariaLabel="tipologia di part-time"
+                      (ngModelChange)="setModalitaLavoro($event)" class=" p-form-select" placeholder="" bindLabel="descr">
+                    </p-dropdown>
+                  </div>
+
+                  <div class="mb-5 col-sm-12 col-md-3" formGroupName="silTModalitaLavoro">
+                    <label for="modalitaLavoro">Modalità lavoro</label>
+                    <input type="text" pInputText class="form-control"  style="color:gray"
+                      [value]="modalitaLavoroSelected?.descr" disabled>
+                    <!-- <p-dropdown optionLabel="descr" optionValue="id" inputId="modalitaLavoro"
+                      [emptyMessage]="'Nessun dato trovato'" [autoDisplayFirst]="false" [options]="modalitaLavori"
+                      formControlName="idSilTModalitaLavoro" [disabled]="true" class=" p-form-select" placeholder=""
+                      bindLabel="descr" ariaLabel="modalità di lavoro">
+                    </p-dropdown> -->
+                  </div>
+                  <div class="mb-5 col-sm-12 col-md-2">
+                    <label for="numOreParttime">N.ore</label>
+                    <input type="text" pInputText class="form-control" formControlName="numOreParttime"
+                      id="numOreParttime" maxlength="7" pslpwclOnlyNumber aria-label="numero ore part-time">
+                  </div>
+                  <div class="mb-5 col-sm-12 col-md-2 ml-2">
+                    <fieldset>
+                      <legend>Stagionale</legend><br>
+                      <div class="mb-3 col-auto form-check form-check-inline">
+                        <input  class="form-check-input" name="flgStagionale" formControlName="flgStagionale"
+                          [value]="'S'" type="radio" id="flgSiStagionale" aria-label="lavoro stagionale">
+                        <label for="flgSiStagionale">
+                          Si
+                        </label>
+                      </div>
+                      <div class="mb-3 col-auto form-check form-check-inline">
+                        <input  class="form-check-input" name="flgStagionale" formControlName="flgStagionale"
+                          [value]="'N'" type="radio" id="flgNoStagionale" aria-label="lavoro non stagionale">
+                        <label for="flgNoStagionale">
+                          No
+                        </label>
+                      </div>
+                    </fieldset>
+                  </div>
+                </div>
+
+                <!-- Qualifica professionale ISTAT& Grado  -->
+                <div class="row">
+                  <div formGroupName="silTQualifica" class="mb-5 col-sm-12 col-md-6">
+                    <label for="qualifica">Qualifica professionale ISTAT</label>
+                    <p-dropdown optionLabel="descr" optionValue="id" inputId="qualifica"
+                      [emptyMessage]="'Nessun dato trovato'" [autoDisplayFirst]="false" [filter]="true"
+                      (onFilter)="onFilterQualifica($event)" [options]="qualifiche" formControlName="idSilTQualifica"
+                      class=" p-form-select" placeholder="" bindLabel="descr" ariaLabelledBy="qualifica">
+                    </p-dropdown>
+                  </div>
+                  <div formGroupName="silTGrado" class="mb-5 col-sm-12 col-md-3">
+                    <label for="grado">Grado</label>
+                    <p-dropdown optionLabel="descr" optionValue="id" inputId="grado"
+                      [emptyMessage]="'Nessun dato trovato'" [autoDisplayFirst]="false" [options]="gradi"
+                      formControlName="idSilTGrado" class=" p-form-select" placeholder="" bindLabel="descr"
+                      ariaLabelledBy="grado">
+                    </p-dropdown>
+                  </div>
+                </div>
+
+                <!-- CCNL & Retribuzione Ann -->
+                <div class="row">
+                  <div formGroupName="silTCcnl" class="mb-5 col-sm-12 col-md-6">
+                    <label for="ccnl">CCNL</label>
+                    <p-dropdown optionLabel="descr" optionValue="id" inputId="ccnl"
+                      [emptyMessage]="'Nessun dato trovato'" [autoDisplayFirst]="false" [options]="ccnl"
+                      formControlName="id" class=" p-form-select" placeholder="" bindLabel="descr" ariaLabel="CCNL">
+                    </p-dropdown>
+                  </div>
+
+                  <div class="mb-5 col-sm-12 col-md-6">
+                    <label for="retribuzione">Retribuzione lorda annuale</label>
+                    <input type="text" pInputText formControlName="retribuzione"
+                      style="width: 100%;margin-top: 3.75px; margin-left: 7.5px;" id="retribuzione" maxlength="9"
+                      pslpwclOnlyNumber aria-labelledby="retribuzione">
+                  </div>
+                </div>
+
+                <!-- Mansione -->
+                <div class="row">
+                  <div class="mb-5 col-sm-12 col-md-6">
+                    <label for="dsMansione">Mansione</label>
+                    <textarea pInputTextarea formControlName="dsMansione" style="margin-left: 7.5px;" id="dsMansione"
+                      maxlength="250" rows="3" aria-label="descrizione mansioni">
+          </textarea>
+                  </div>
+                </div>
+
+                <!-- insCV & L68 & RespPers & inMoblt & Agric-->
+                <div class="row">
+                  <!--div class="mb-5 col-sm-12 col-md-2">
+                    <fieldset>
+                      <legend>Inserimento CV</legend><br>
+                      <div class="mb-3 col-auto form-check form-check-inline">
+                        <input class="form-check-input" formControlName="flgCv" [value]="'S'" type="radio" id="flgSiCv"
+                          aria-label="inserito in cv ">
+                        <label for="flgSiCv">
+                          Si
+                        </label>
+                      </div>
+                      <div class="mb-3 col-auto form-check form-check-inline">
+                        <input class="form-check-input" formControlName="flgCv" [value]="'N'" type="radio" id="flgNoCv"
+                          aria-label="non inserito in cv ">
+                        <label for="flgNoCv">
+                          No
+                        </label>
+                      </div>
+                    </fieldset>
+                  </div-->
+                  <div class="mb-5 col-sm-12 col-md-2">
+                    <fieldset>
+                      <legend>Assunzione L.68</legend><br>
+                      <div class="mb-3 col-auto form-check form-check-inline">
+                        <input class="form-check-input" name="flgAssunzioneL68" formControlName="flgAssunzioneL68"
+                          [value]="'S'" type="radio" id="flgSiL68" aria-label="assunto con legge 68">
+                        <label for="flgSiL68">
+                          Si
+                        </label>
+                      </div>
+                      <div class="mb-3 col-auto form-check form-check-inline">
+                        <input class="form-check-input" name="flgAssunzioneL68" formControlName="flgAssunzioneL68"
+                          [value]="'N'" type="radio" id="flgNoL68" aria-label="non assunto con legge 68">
+                        <label for="flgNoL68">
+                          No
+                        </label>
+                      </div>
+                    </fieldset>
+                  </div>
+                  <div class="mb-5 col-sm-12 col-md-2">
+                    <fieldset>
+                      <legend>Responsabilità altre persone</legend><br>
+                      <div class="mb-3 col-auto form-check form-check-inline">
+                        <input class="form-check-input" name="flgResponPers" formControlName="flgResponPers"
+                          [value]="'S'" type="radio" id="flgSiRes" aria-label="responsabilità su altre persone">
+                        <label for="flgSiRes">
+                          Si
+                        </label>
+                      </div>
+                      <div class="mb-3 col-auto form-check form-check-inline">
+                        <input class="form-check-input" name="flgResponPers" formControlName="flgResponPers"
+                          [value]="'N'" type="radio" id="flgNoRes" aria-label="nessuna responsabilità su altre persone">
+                        <label for="flgNoRes">
+                          No
+                        </label>
+                      </div>
+                    </fieldset>
+                  </div>
+                  <div class="mb-5 col-sm-12 col-md-2">
+                    <fieldset>
+                      <legend>In mobilità</legend><br>
+                      <div class="mb-3 col-auto form-check form-check-inline">
+                        <input class="form-check-input" name="flgLavInMobilita" formControlName="flgLavInMobilita"
+                          [value]="'S'" type="radio" id="flgSiMobilita" aria-label="lavoro in mobilità">
+                        <label for="flgSiMobilita">
+                          Si
+                        </label>
+                      </div>
+                      <div class="mb-3 col-auto form-check form-check-inline">
+                        <input class="form-check-input" name="flgLavInMobilita" formControlName="flgLavInMobilita"
+                          [value]="'N'" type="radio" id="flgNoMobilita" aria-label="lavoro non in mobilità">
+                        <label for="flgNoMobilita">
+                          No
+                        </label>
+                      </div>
+                    </fieldset>
+                  </div>
+                  <div class="mb-5 col-sm-12 col-md-2">
+                    <fieldset>
+                      <legend>Lavoro agricoltura</legend><br>
+                      <div class="mb-3 col-auto form-check form-check-inline">
+                        <input class="form-check-input" name="flgLavoroAgricoltura"
+                          formControlName="flgLavoroAgricoltura" [value]="'S'" type="radio" id="flgSiAgricoltura"
+                          aria-label="lavoro nell'agricoltura">
+                        <label for="flgSiAgricoltura">
+                          Si
+                        </label>
+                      </div>
+                      <div class="mb-3 col-auto form-check form-check-inline">
+                        <input class="form-check-input" name="flgLavoroAgricoltura"
+                          formControlName="flgLavoroAgricoltura" [value]="'N'" type="radio" id="flgNoAgricoltura"
+                          aria-label="lavoro non nell'agricoltura">
+                        <label for="flgNoAgricoltura">
+                          No
+                        </label>
+                      </div>
+                    </fieldset>
+                  </div>
+                </div>
+
+              </ng-container>
+
+              <div class="row">
+                <div class="col mt-3">
+                  <button type="button" (click)="onClickAnnulla()" class="btn btn-outline-secondary btn-sm"
+                    aria-label="annulla inserimento">ANNULLA</button>
+                </div>
+                <div class="col-auto mt-3">
+                  <button type="submit" (click)="onConferma()" [disabled]="!form.valid" *ngIf="mod!='view'"
+                    class="btn btn-primary ml-auto btn-lg"
+                    aria-label="conferma dati inseriti e vai a inserimento datore di lavoro">CONFERMA</button>
+                </div>
+              </div>
+            </div>
+
+          </ng-template>
+        </li>
+
+
+        <li [ngbNavItem]="1">
+
+          <a ngbNavLink>Datore-Azienda</a>
+          <ng-template ngbNavContent>
+            <ng-container formGroupName="lavEsperienzaLavoro">
+
+              <div class="mt-3 row">
+                <span class="mb-3 title">
+                  <h4>DATORE DI LAVORO</h4>
+                </span>
+
+                <!-- Denominazione & codice fiscale -->
+                <div class="row">
+                  <div class="mb-5 col-sm-12 col-md-6">
+                    <label for="denominazione">Denominazione</label>
+                    <input type="text" pInputText oninput="this.value = this.value.toUpperCase()"
+                      style="width: 100%; margin-top: 3.75px;" formControlName="dsDenominazioneDl" id="denominazione"
+                      maxlength="300"  aria-label="denominazione datore di lavoro">
+                  </div>
+                  <div class="mb-5 col-sm-12 col-md-3">
+                    <label for="codiceFiscaleDl">Codice fiscale</label>
+                    <input type="text" pInputText oninput="this.value = this.value.toUpperCase().trim()"
+                      style="width: 100%; margin-top: 3.75px; margin-left: 7.5px;" formControlName="codFiscaleDl"
+                      id="codiceFiscaleDl" maxlength="16" aria-label="codice fiscale datore di lavoro">
+
+                    <div *ngIf="form?.get('lavEsperienzaLavoro.codFiscaleDl')?.errors" class="text-danger">
+                      <div *ngIf="form?.get('lavEsperienzaLavoro.codFiscaleDl')?.errors['minlength']">Inserire almeno 11
+                        caratteri</div>
+                    </div>
+                  </div>
+                  <div class="mt-3 col-sm-12 col-md-3" style="align-self: center;min-height: 50px;"
+                    [hidden]="mod=='view'">
+                    <button type="button" (click)="onClickOpenaModalRicercaAzienda('datoreLavoro')"
+                      aria-label="vai a ricerca azienda" class="btn btn-primary btn-md">
+                      {{"cerca azienda" | uppercase}}
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Attivita -->
+                <div class="row">
+                  <div formGroupName="silTAteco02" class="mb-5 col-sm-12 col-md-9">
+                    <label for="attivitaDl">Attività</label>
+                    <p-dropdown optionLabel="descr" optionValue="id" [filter]="true" (onFilter)="filtraAttivita($event)"
+                      inputId="attivitaDl" [emptyMessage]="'Nessun dato trovato'" [autoDisplayFirst]="false"
+                      [options]="attivita" formControlName="idSilTAteco02" class=" p-form-select" placeholder=""
+                      bindLabel="descr" ariaFilterLabel="inserisci almeno 3 caratteri per ricercare l'attività"
+                      ariaLabel="attività">
+                      <!-- (search)="onSearch($event, 'ateco02')" -->
+                    </p-dropdown>
+                  </div>
+                </div>
+                <pslpwcl-stradario [statosEstero]="stati" [comuni]="comuniDl" [province]="province"
+                  [toponimos]="toponimi" [form]="formLuogoDl" [idChiamante]="'espLav'" [mod]="mod">
+
+                </pslpwcl-stradario>
+
+              </div>
+
+              <div class="mt-3 row">
+                <span class="mb-3 title">
+                  <h4>LUOGO DI LAVORO</h4>
+                </span>
+                <!-- Luogo & Comune & Stato estero -->
+                <div class="row">
+                  <pslpwcl-stradario [statosEstero]="stati" [comuni]="comuniLuogoLav" [province]="province"
+                    [toponimos]="toponimi" [form]="formLuogoLav" [idChiamante]="'espLav'" [mod]="mod">
+
+                  </pslpwcl-stradario>
+
+                </div>
+              </div>
+              <div class="mt-3 row">
+                <span class="mb-3 title">
+                  <h4>AZIENDA UTILIZZATRICE</h4>
+                </span>
+
+                <!-- Denominazione & codice fiscale -->
+                <div class="row">
+                  <div class="mb-5 col-sm-12 col-md-6">
+                    <label for="denominazioneAu">Denominazione</label>
+                    <input type="text" pInputText oninput="this.value = this.value.toUpperCase()"
+                      style="width: 100%; margin-top: 3.75px;" formControlName="dsDenominazioneAu" id="denominazioneAu"
+                      maxlength="300"  aria-label="denominazione azienda utilizzatrice">
+                  </div>
+                  <div class="mb-5 col-sm-12 col-md-3">
+                    <label for="codiceFiscaleAu">Codice fiscale</label>
+                    <input type="text" pInputText oninput="this.value = this.value.toUpperCase().trim()"
+                      style="width: 100%; margin-top: 3.75px; margin-left: 7.5px;" formControlName="codFiscaleAu"
+                      id="codiceFiscale" maxlength="16" aria-label="codice fiscale azienda utilizzatrice">
+                    <div *ngIf="form?.get('lavEsperienzaLavoro.codFiscaleAu')?.errors" class="text-danger">
+                      <div *ngIf="form?.get('lavEsperienzaLavoro.codFiscaleAu')?.errors['minlength']">Inserire almeno 11
+                        caratteri</div>
+                    </div>
+                  </div>
+                  <div class="mt-3 col-sm-12 col-md-3" style="align-self: center;min-height: 50px;"
+                    [hidden]="mod=='view'">
+                    <button (click)="onClickOpenaModalRicercaAzienda('aziendaUt')" type="button"
+                      class="btn btn-primary btn-md" aria-label="vai a ricerca azienda utilizzatrice">
+                      {{"cerca azienda" | uppercase}}</button>
+                  </div>
+                </div>
+
+                <!-- Attivita -->
+                <div class="row">
+                  <div formGroupName="silTAtecoAu" class="mb-5 col-sm-12 col-md-9">
+                    <label for="attivitaAu">Attività</label>
+                    <p-dropdown optionLabel="descr" optionValue="id" [filter]="true" (onFilter)="filtraAttivita($event)"
+                      inputId="dropdown" [emptyMessage]="'Nessun dato trovato'" [autoDisplayFirst]="false"
+                      [options]="attivita" formControlName="idSilTAteco02" class=" p-form-select" placeholder=""
+                      bindLabel="descr" ariaFilterLabel="inserisci almeno 3 caratteri per ricercare l'attività"
+                      ariaLabel="attività">
+                      <!-- (search)="onSearch($event, 'ateco02')" -->
+                    </p-dropdown>
+                  </div>
+                </div>
+
+                <pslpwcl-stradario [statosEstero]="stati" [comuni]="comuniAu" [province]="province"
+                  [toponimos]="toponimi" [form]="formLuogoAu" [idChiamante]="'espLav'" [mod]="mod">
+
+                </pslpwcl-stradario>
+
+                <div class="row">
+                  <div class="col mt-3">
+                    <button type="button" (click)="onClickAnnulla()" class="btn btn-outline-secondary btn-sm"
+                      aria-label="annulla inserimento">ANNULLA</button>
+                  </div>
+                  <div class="col-auto mt-3">
+                    <button type="submit" (click)="onConferma()"
+                      *ngIf="mod!='view'"
+                      [disabled]="(!form.valid || !formLuogoAu.valid || !formLuogoDl.valid || !formLuogoLav.valid)"
+                      class="btn btn-primary ml-auto btn-lg" aria-label="salva id dati inseriti">SALVA</button>
+                  </div>
+                </div>
+                <span style="color: red;"
+                  *ngIf="(!form.valid || !formLuogoAu.valid || !formLuogoDl.valid || !formLuogoLav.valid) && mod!='view'">è
+                  necessario compilare tutti i campi correttamente</span>
+              </div>
+
+            </ng-container>
+          </ng-template>
+        </li>
+
+
+      </ul>
+
+
+
+      <div [ngbNavOutlet]="nav" class="mt-2"></div>
+
+    </div>
+  </div>
+</form>

@@ -1,0 +1,57 @@
+<!--
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ -->
+<div *ngIf="ricercaEffettuata" class="mt-5 scrollbar-table scrollbar-primary text-center">
+  <form class="mx-auto p-4 bg-light rounded shadow">
+    <div class="d-flex justify-content-start align-items-center gap-3">
+      <div class="col-auto text-start fw-bold">
+        <i class="fas fa-filter mr-1"></i> Filtri
+      </div>
+      <div class="d-flex flex-column w-50">
+        <label for="stato" class="mb-1 ml-3 text-start fw-bold">Stato</label>
+        <p-dropdown class="p-form-select w-100" [options]="statoOptions" optionLabel="descr" optionValue="id"
+          [(ngModel)]="selectedStato" [ngModelOptions]="{standalone: true}" placeholder=" " ariaLabel="stato"
+          (onChange)="onStatoChange()" appendTo="body">
+        </p-dropdown>
+      </div>
+    </div>
+
+    <div class="row mt-3">
+      <p-table [value]="pagedResponse.list" dataKey="id" styleClass="p-datatable-customers" [rowHover]="true"
+        [rows]="10" [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50]" [loading]="false"
+        responsiveLayout="scroll" [paginator]="true" paginatorDropdownAppendTo="body"
+        currentPageReportTemplate="{first} di {last}, su {totalRecords} righe">
+
+        <ng-template pTemplate="body" let-el>
+          <tr class="p-selectable-row">
+            <td>
+              <span class="p-column-title">Tipo Notifica</span>
+              {{ el.oggSilwebTTipoNotiWeb }}
+            </td>
+            <td>
+              <span class="p-column-title">Testo Notifica</span>
+              {{ el.testoSilwebTTipoNotiWeb }}
+            </td>
+            <td>
+              <a tabindex="0" (click)="onClickNotifica(el)"
+                style="color: #016CB4" aria-label="Azione: visualizzare notifica"
+                title="Visualizzare dettaglio notifica">
+                <i class="fas fa-eye"></i>
+              </a>
+              <a tabindex="0" style="color: #016CB4" (click)="onClickEliminaNotifica(el, $event)"
+                aria-label="Azione: eliminare notifica" title="Eliminare notifica">
+                <i class="fas fa-trash-alt"></i>
+              </a>
+            </td>
+          </tr>
+        </ng-template>
+
+      </p-table>
+    </div>
+
+  </form>
+</div>

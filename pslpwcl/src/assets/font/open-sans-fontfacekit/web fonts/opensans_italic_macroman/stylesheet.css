@@ -1,0 +1,20 @@
+/*
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ */
+@font-face {
+    font-family: 'open_sansitalic';
+    src: url('OpenSans-Italic-webfont.eot');
+    src: url('OpenSans-Italic-webfont.eot?#iefix') format('embedded-opentype'),
+         url('OpenSans-Italic-webfont.woff2') format('woff2'),
+         url('OpenSans-Italic-webfont.woff') format('woff'),
+         url('OpenSans-Italic-webfont.ttf') format('truetype'),
+         url('OpenSans-Italic-webfont.svg#open_sansitalic') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+

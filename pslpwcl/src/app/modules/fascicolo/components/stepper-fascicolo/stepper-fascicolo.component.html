@@ -1,0 +1,54 @@
+<!--
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ -->
+<div class="mt-4"></div>
+
+<p-steps  [model]="items" [(activeIndex)]="activeIndex" [readonly]="!fascicolo" (activeIndexChange)="onClickNavChange($event)" >
+</p-steps>
+
+<div class="mt-4"></div>
+<ng-container [ngTemplateOutlet]="stepTemplates[activeIndex]||stepDatiAnagrafici"></ng-container>
+<!-- <div class="buttons">
+  <button pButton label="Indietro" (click)="prev()" [disabled]="activeIndex === 0"></button>
+  <button pButton label="Avanti" (click)="next()" [disabled]="activeIndex === items.length - 1"></button>
+</div> -->
+
+
+<div class="row mt-8">
+  <span style="color: red;" *ngIf="messagioErrore!=null">{{messagioErrore}}</span>
+  <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3">
+    <button type="button" class="btn btn-outline-primary btn-lg" [attr.aria-label]="'torna a '+prevStepLabel" [hidden]="activeIndex === 0" (click)="prev()">INDIETRO</button>
+  </div>
+  <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3 text-right">
+    <button type="button" class="btn btn-primary btn-lg" [attr.aria-label]="'vai a '+nextStepLabel" [hidden]="activeIndex === items.length - 1" [disabled]="isSaving" (click)="next()">
+      <span *ngIf="!isSaving">AVANTI</span>
+      <span *ngIf="isSaving">SALVANDO...</span>
+    </button>
+  </div>
+</div>
+
+
+<ng-template #stepDatiAnagrafici>
+  <pslpwcl-dati-anagrafici #DATI_ANAGRAFICI
+      >
+  </pslpwcl-dati-anagrafici>
+
+</ng-template>
+<ng-template #stepDatiAmministrativi>
+  <pslpwcl-dati-amministrativi
+      [fascicolo]="fascicolo">
+  </pslpwcl-dati-amministrativi>
+
+</ng-template>
+<ng-template #stepEsperienzeLavorative>
+  <pslpwcl-esperienza-lavoro [fascicolo]="fascicolo"></pslpwcl-esperienza-lavoro>
+
+</ng-template>
+<ng-template #stepDatiCurriculari>
+	<pslpwcl-dati-curriculari [fascicolo]="fascicolo"></pslpwcl-dati-curriculari>
+
+</ng-template>

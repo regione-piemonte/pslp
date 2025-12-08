@@ -1,0 +1,49 @@
+<!--
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ -->
+<button type="button" (click)="openCanvas(canvasRef)">
+    <i style="font-size: 2.2rem" class="fas text-white fa-bell"></i>
+    <span class="badge" *ngIf="unreadCount > 0">{{ unreadCount }}</span>
+</button>
+<ng-template #canvasRef let-offcanvas>
+	<div class="offcanvas-header">
+		<h4 class="offcanvas-title">Notifiche</h4>
+		<button type="button" class="btn-close" aria-label="Close" (click)="offcanvas.dismiss('Cross click')"></button>
+	</div>
+	<div class="offcanvas-body">
+		<div *ngIf="notificaWebRidotta.length > 0; else nessunaNotifica">
+			<ng-container *ngFor="let notifica of notificaWebRidotta">
+				<div id="notifica-{{notifica.idSilwebNotiWeb}}" (click)="onClickNotifica(notifica)" [ngClass]="{'notifica-lettta': true, 'card': true, 'row': true, 'mb-3': true}">
+					<div class="d-flex justify-content-between align-items-start">
+						<div>
+							<div class="row mb-2">
+								<div class="col">
+									<span><strong>{{notifica?.oggSilwebTTipoNotiWeb}}</strong></span>
+								</div>
+							</div>
+							<div class="row mb-2">
+								<div class="col">
+									<span>{{notifica?.testoSilwebTTipoNotiWeb}}</span>
+								</div>
+							</div>
+						</div>
+						<a tabindex="0" style="font-size: 1.9rem;" (click)="onClickEliminaNotifica(notifica,$event)" aria-label="Azione: eliminare notifica" title="Eliminare notifica">
+							<i  class="fas fa-trash-alt"></i>
+						</a>
+					</div>
+				</div>
+			</ng-container>
+		</div>
+		<div class="row mb-3">
+			<button (click)="onClickVediTutte()" type="button" class="btn btn-lg btn-primary mb-2 me-2 sticky-button">VEDI TUTTE</button>
+		</div>
+	</div>
+</ng-template>
+
+<ng-template #nessunaNotifica>
+	<div class="no-notitiche">Nessun messaggio ricevuto</div>
+</ng-template>

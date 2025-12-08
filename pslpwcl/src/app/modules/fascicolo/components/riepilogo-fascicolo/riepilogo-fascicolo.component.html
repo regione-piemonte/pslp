@@ -1,0 +1,49 @@
+<!--
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ -->
+
+
+<div class="row vertical-center">
+
+  <!-- <div class="container-fluid d-flex align-items-center justify-content-center col-sm-12 col-md-12 col-lg-6 col-xl-6 ">
+      <div class="row">
+        <div class="col-12"> <strong>Fascicolo di</strong></div>
+
+        <div class="col-12">
+          <p id="tabDescr" class="paragrafo" style="height: 50px;
+          display: flex;
+          align-items: center;
+          background-color: rgba(0, 0, 0, 0.05);">
+          <strong>
+            {{utente.nome}} {{utente.cognome}}
+          </strong>
+        </p>
+        </div>
+        <div class="col-12">Codice fiscale: <strong>{{utente.cfUtente}}</strong></div>
+        <div class="col-12"><strong>Identificativo SILP</strong>: {{utente.idSilLavAnagrafica}}</div>
+      </div>
+  </div> -->
+
+  <div class="scrollbar-table scrollbar-primary col-sm-12 col-md-12 col-lg-6 col-xl-6 ">
+    <button type="button" class="btn btn-outline-primary btn-lg mx-2" aria-label="stampa sap" [disabled]="true"
+            (click)="null">STAMPA SAP
+    </button>
+    <button type="button" class="btn btn-primary btn-lg mx-2" *ngIf="fascicoloSelected" [disabled]="!caricamentoCompletato"
+          aria-label="visualizza/modifica fascicolo"
+          [attr.aria-disabled]="!caricamentoCompletato"
+            (click)="navigateToFascicolo()">VISUALIZZA/MODIFICA
+    </button>
+    <button type="button" class="btn btn-primary btn-lg mx-2" *ngIf="!fascicoloSelected" [disabled]="!caricamentoCompletato"
+      aria-label="inserisci fascicolo"
+      [attr.aria-disabled]="!caricamentoCompletato"
+      (click)="navigateToFascicolo()">INSERISCI
+    </button>
+  </div>
+</div>
+
+
+

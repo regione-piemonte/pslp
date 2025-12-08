@@ -1,0 +1,45 @@
+<!--
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ -->
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-annulla-title">{{title}}</h4>
+  <!-- <button type="button" class="close" aria-label="Close" (click)="callback(modal)">
+    <span aria-hidden="true">&times;</span>
+  </button> -->
+</div>
+
+<div class="modal-body">
+
+  <label small class="text-muted">I campi contrassegnati con <span class="oblg">*</span> sono obbligatori</label>
+  <div class="row">
+    <div class="mb-3 mt-3 col-7">
+      <label for="patente">{{this.flgPatente}}<span class="oblg">*</span></label>
+      <div class="elenco">
+        <form [formGroup]="form" >
+          <p-dropdown inputId="dropdown" [emptyMessage]="'Nessun dato trovato'" [autoDisplayFirst]="false"
+
+            [options]="patenti" formControlName="patente" class=" p-form-select" placeholder="" optionLabel="descr"
+            optionValue="id">
+            <!-- ng-invalid ng-dirty  -->
+          </p-dropdown>
+        </form>
+      </div>
+    </div>
+  </div>
+
+</div>
+<div class="modal-footer row">
+  <div class="col">
+    <button type="button" (click)="callback(modal)" class="btn btn-outline-secondary btn-lg"
+      aria-label="Anulla inserimento patente">{{"annulla" | uppercase
+      }}</button>
+  </div>
+  <div class="col-auto">
+    <button  type="button" class="btn btn-primary ml-auto btn-lg" aria-label="Inserisci Patente"
+      (click)="onClickInserisciPatente()">{{"inserisci " + flgPatente | uppercase}}</button>
+  </div>
+</div>

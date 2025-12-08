@@ -1,0 +1,220 @@
+<!--
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ -->
+<ngb-accordion #accordionProfessioneDesiderata activeIds="panelProfessioneDesiderata"
+  id="accordion-professione-desiderata" [closeOthers]="false" [destroyOnHide]="false">
+  <ngb-panel title="{{messaggioProfDesiderata?.testo}}" id="panelProfessioneDesiderata">
+    <ng-template ngbPanelContent let-opened="opened">
+      <table class="mt-3 mb-5 scrollbar-table scrollbar-primary">
+        <thead>
+          <tr >
+            <th >Professione desiderata</th>
+            <th >Descrittivo qualifica</th>
+            <th class="col-md-1" >Azione</th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngIf="professioniDesiderate?.length; else noData">
+            <tr *ngFor="let professioniDesiderata of professioniDesiderate">
+              <td>{{professioniDesiderata.idQualifica.descrQualifica}}</td>
+              <td>{{professioniDesiderata.dsQualifica}}</td>
+              <td class="col-md-1" style="min-width: 90px;">
+                <a tabindex="0" (click)="visualizzaProfessione(professioniDesiderata)" style="color: #016CB4"
+                  aria-label="Azione: visualizzare Professione desiderata" title="Visualizzare Professione Desiderata">
+                  <i class="fas fa-eye"></i>
+                </a>
+                <a tabindex="0" (click)="modificaProfessione(professioniDesiderata)" style="color: #016CB4" *ngIf="canModifica"
+                  aria-label="Azione: modifica Professione desiderata" title="Modificare Professione Desiderata">
+                  <i class="fas fa-edit"></i>
+                </a>
+                <a tabindex="0" (click)="onClickEliminaTitolo(professioniDesiderata)" style="color: #b42501" *ngIf="canModifica"
+                  aria-label="Azione: eliminare Professione desiderata" title="Eliminare Professione Desiderata">
+                  <i class="fas fa-trash-alt"></i>
+                </a>
+              </td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </table>
+      <ng-template #noData>
+        Non ci sono dati
+      </ng-template>
+
+
+      <div>
+        <button (click)="onInserisciNuovaProfessione()" type="button" class="btn btn-primary btn-sm" *ngIf="canModifica">
+          INSERISCI NUOVA PROFESSIONE DESIDERATA</button>
+      </div>
+      <br><br>
+      <form [formGroup]="form" *ngIf="showForm">
+        <div class="row">
+          <div class="mb-5 col-sm-12 col-md-7">
+            <label for="qualifica">Profilo professionale di interesse<span class="oblg">*</span> </label>
+            <p-dropdown inputId="qualifica" [filter]="true" (onFilter)="onFilterQualifica($event)" [emptyMessage]="'Nessun dato trovato'" [autoDisplayFirst]="false"
+              [options]="qualifica" formControlName="qualifica" class=" p-form-select" placeholder=""
+              optionLabel="descr" optionValue="id" labelForId="qualifica"
+              ariaLabel="seleziona Profilo professionale di interesse">
+            </p-dropdown>
+          </div>
+
+
+
+          <div class="mb-5 col-sm-12 col-md-6">
+            <label for="dsQualifica">Descrivi la professione di interesse<span class="oblg">*</span> </label>
+            <textarea pInputTextarea formControlName="dsQualifica" style="margin-left: 7.5px;"
+              id="dsQualifica" maxlength="250" rows="3"
+              aria-label="descrizione qualifica desiderata"></textarea>
+          </div>
+          <div class="mb-5 col-sm-12 col-md-6">
+            <label for="dsProfessioneDesiderata">Descrivi brevemente la professione desiderata</label>
+            <textarea pInputTextarea formControlName="dsProfessioneDesiderata" style="margin-left: 7.5px;"
+              id="dsProfessioneDesiderata" maxlength="300" rows="3"
+              aria-label="descrizione professione desiderata"></textarea>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="mb-5 col-sm-12 col-md-6">
+            <label for="esperienzaSettore">Descrivi brevemente l’esperienza nel settore</label>
+            <textarea pInputTextarea formControlName="esperienzaSettore" style="margin-left: 7.5px;"
+              id="esperienzaSettore" maxlength="300" rows="3"
+              aria-label="descrizione Esperienza nel settore"></textarea>
+          </div>
+          <div class="mb-5 col-sm-12 col-md-6">
+            <label for="dsEsperienzaSettore">Descrivi brevemente l’esperienza professionale nel settore</label>
+            <textarea pInputTextarea formControlName="dsEsperienzaSettore" style="margin-left: 7.5px;"
+              id="dsEsperienzaSettore" maxlength="300" rows="3"
+              aria-label="descrizione  e durata dell'esperienza"></textarea>
+          </div>
+        </div>
+
+        <!-- Modalità di lavoro Card -->
+        <p-card [header]="isModifica && canModifica?'Inserire le modalità di lavoro':''">
+
+          <!-- Tabella -->
+          <div class="row">
+            <div class="col">
+              <table class="mt-3 mb-5 scrollbar-table scrollbar-primary">
+                <thead>
+                  <tr>
+                    <th>Modalità di lavoro</th>
+                    <th *ngIf="isModifica && canModifica">Azione</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <ng-container *ngIf="modalitaLavoroSel?.length; else noData">
+                    <tr *ngFor="let modalitaLavoro of modalitaLavoroSel">
+                      <td>{{modalitaLavoro.descr}}</td>
+
+                      <td class="col-md-1">
+                        <a tabindex="0" (click)="removeModalitaLavoro(modalitaLavoro)" style="color: #016CB4"
+                          aria-label="Azione: eliminare Professione desiderata" title="Eliminare Modalità di lavoro"
+                          *ngIf="isModifica && canModifica"
+                          >
+                          <i class="fas fa-trash-alt"></i>
+                        </a>
+                      </td>
+                    </tr>
+                  </ng-container>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="row align-items-end" *ngIf="isModifica">
+            <div class="mb-5 col-sm-12 col-md-5">
+              <label for="modalitaLavoro">Inserisci le modalità di lavoro preferite </label>
+              <p-dropdown inputId="modalitaLavoro" [emptyMessage]="'Nessun dato trovato'" [autoDisplayFirst]="false"
+                [options]="modalitaLavoroFiltrati" formControlName="modalitaLavoro" class=" p-form-select" placeholder=""
+                optionLabel="descr"  labelForId="modalitaLavoro"
+                (onChange)="onchangeModalitaLavoro($event)"
+                ariaLabel="seleziona modalita di lavoro di interesse">
+              </p-dropdown>
+            </div>
+            <div class="mb-5 col-sm-12 col-md-5">
+              <button type="submit" class="btn btn-primary ml-auto btn-lg" (click)="addModalitaLavoro()"
+              aria-label="conferma modalità lavoro da aggiungere" [disabled]=isDisabledConfermaInserireModaliitaLavoro
+              *ngIf="isModifica && canModifica"
+              >CONFERMA</button>
+            </div>
+          </div>
+      </p-card>
+
+      <div class="row mb-5" ></div>
+
+        <!-- Tipo contratto Card -->
+        <p-card [header]="isModifica && canModifica?'Inserire i tipi di contratto':''" class="mb-5">
+
+          <!-- Tabella -->
+           <div class="row">
+            <div class="col">
+              <table class="mt-3 mb-5 scrollbar-table scrollbar-primary">
+                <thead>
+                  <tr>
+                    <th>Tipo di contratto</th>
+                    <th *ngIf="isModifica && canModifica">Azione</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <ng-container *ngIf="tipoContrattoSel?.length; else noData">
+                    <tr *ngFor="let tipoContratto of tipoContrattoSel">
+                      <td>{{tipoContratto.descr}}</td>
+
+                      <td class="col-md-1">
+                        <a tabindex="0" (click)="removeTipoContratto(tipoContratto)" style="color: #016CB4"
+                          aria-label="Azione: eliminare Tipo di contratto" title="Eliminare Tipo di contratto"
+                          *ngIf="isModifica && canModifica"
+                          >
+                          <i class="fas fa-trash-alt"></i>
+                        </a>
+                      </td>
+                    </tr>
+                  </ng-container>
+                </tbody>
+              </table>
+            </div>
+           </div>
+
+           <div class="row align-items-end">
+            <div  class="mb-5 col-sm-12 col-md-5" *ngIf="isModifica">
+              <label for="tipoContratto" >Tipo contratto di interesse </label>
+              <p-dropdown inputId="tipoContratto" [emptyMessage]="'Nessun dato trovato'" [autoDisplayFirst]="false"
+                [options]="tipoContrattoFiltrato" formControlName="tipoContratto" class=" p-form-select" placeholder=""
+                optionLabel="descr"  labelForId="tipoContratto"
+                (onChange)="onchangeTipoContrato($event)"
+                ariaLabel="seleziona Tipo Contratto di interesse">
+              </p-dropdown>
+
+            </div>
+            <div class="mb-5 col-sm-12 col-md-5">
+              <button type="submit" class="btn btn-primary ml-auto btn-lg" (click)="addTipoContratto()"
+              aria-label="conferma profilo da aggiungere"
+              [disabled]=isDisabledConfermaInserireTipoContrato *ngIf="isModifica && canModifica">CONFERMA</button>
+            </div>
+           </div>
+
+
+        </p-card>
+
+        <div class="row mt-5">
+
+
+        </div>
+        <div class="row">
+          <div class="col mt-3">
+              <button type="button" (click)="onClickAnnulla()" class="btn btn-outline-secondary btn-sm" aria-label="annulla inserimento">ANNULLA</button>
+          </div>
+          <div class="col-auto mt-3">
+              <button type="submit"  (click)="inserisciAggiornaProfDesiderata()" aria-label="conferma profilo da aggiungere"
+              class="btn btn-primary ml-auto btn-lg" aria-label="conferma dati inseriti e vai a inserimento datore di lavoro"
+              [disabled]="!form.valid"
+              *ngIf="isModifica && canModifica">SALVA</button>
+          </div>
+      </div>
+      </form>
+    </ng-template>
+  </ngb-panel>
+</ngb-accordion>

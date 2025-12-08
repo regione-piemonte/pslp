@@ -1,0 +1,76 @@
+<!--
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ -->
+<ngb-accordion #accordionProfessioneDesiderata activeIds="panelProfessioneDesiderata"
+  id="accordion-professione-desiderata" [closeOthers]="false" [destroyOnHide]="false">
+  <ngb-panel title="{{messagioUlterioreInfo?.testo}}" id="panelProfessioneDesiderata">
+    <ng-template ngbPanelContent let-opened="opened">
+      <form [formGroup]="form">
+        <div class="row">
+            <div class="mb-5 col-sm-12 col-md-6">
+              <label for="ulterioreInformazioni">Ulteriori informazioni</label>
+              <textarea pInputTextarea formControlName="ulterioreInformazioni" style="margin-left: 7.5px;"
+                      id="ulterioreInformazioni" maxlength="2000" rows="3" aria-label="Ulteriori informazioni"></textarea>
+            </div>
+        </div>
+        <div class="row">
+            <div class="mb-5 col-sm-12 col-md-6">
+              <label for="dincentiviQualita">Incentivi e qualità</label>
+              <textarea pInputTextarea formControlName="incentivi" style="margin-left: 7.5px;"
+                      id="dincentiviQualita" maxlength="150" rows="3" aria-label="Incentivi e qualità"></textarea>
+            </div>
+        </div>
+        <div class="mb-5 col-sm-12 col-md-4">
+          <fieldset>
+            <legend>Disponibilità ad effettuare trasferte</legend><br>
+            <div class="mb-3 col-auto form-check form-check-inline">
+              <input  class="form-check-input" name="flgTrasferta" formControlName="flgTrasferta"
+                [value]="'S'" type="radio" id="flgSiTrasferte" aria-label="lavoro Trasferte">
+              <label for="flgSiTrasferte">
+                Si
+              </label>
+            </div>
+            <div class="mb-3 col-auto form-check form-check-inline">
+              <input  class="form-check-input" name="flgTrasferta" formControlName="flgTrasferta"
+                [value]="'N'" type="radio" id="flgNoTrasferte" aria-label="lavoro non Trasferte">
+              <label for="flgNoTrasferte">
+                No
+              </label>
+            </div>
+          </fieldset>
+        </div>
+        <div class="mb-5 col-sm-12 col-md-6">
+          <fieldset>
+            <legend>Disponibile ad utilizzare il mezzo proprio?</legend><br>
+            <div class="mb-3 col-auto form-check form-check-inline">
+              <input  class="form-check-input" name="flgMezzoProprio" formControlName="flgMezzoProprio"
+                [value]="'S'" type="radio" id="flgMezzoProprio" aria-label="mezzo proprio">
+              <label for="flgMezzoProprio">
+                Si
+              </label>
+            </div>
+            <div class="mb-3 col-auto form-check form-check-inline">
+              <input  class="form-check-input" name="flgMezzoProprio" formControlName="flgMezzoProprio"
+                [value]="'N'" type="radio" id="flgMezzoProprio" aria-label="senza mezzo proprio">
+              <label for="flgMezzoProprio">
+                No
+              </label>
+            </div>
+          </fieldset>
+        </div>
+        <div class="row">
+          <div class="col"> </div>
+          <div class="col-auto mt-3">
+            <button type="submit" class="btn btn-primary ml-auto btn-lg" (click)="onConferma()" *ngIf="canModifica"
+              aria-label="salva i dati inseriti">CONFERMA</button>
+          </div>
+        </div>
+
+      </form>
+    </ng-template>
+  </ngb-panel>
+</ngb-accordion>

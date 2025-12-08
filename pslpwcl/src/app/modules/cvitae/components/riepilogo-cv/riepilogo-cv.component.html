@@ -1,0 +1,161 @@
+<!--
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ -->
+<ng-container>
+    <div class="row" *ngIf="areaTestoVisibile">
+        <p-card class="mb-3">
+            <content>
+                <p *ngFor="let messaggio of messaggiList"> - {{messaggio}}</p>
+            </content>
+        </p-card>
+
+    </div>
+    <h3>Il tuo curriculum vitae</h3>
+    <p-card>
+        <div class="row mb-3">
+            <div class="col-sm-12 col-md-4">
+                <div class="row mb-3 align-items-center">
+                    <div class="col ms-auto">
+                        <p-toggleButton [(ngModel)]="isCvScaduti" binary="true" onIcon="pi pi-check-circle"
+                            offIcon="pi pi-circle" onLabel="Visualizzare CV scaduti" offLabel="Visualizzare CV scaduti"
+                            aria-label="Attivare filtro per cv scaduti" (onChange)="filterCvScaduti()"></p-toggleButton>
+                    </div>
+                </div>
+                <div class="row">
+                    <span class="ms-auto">
+                        <p-toggleButton [(ngModel)]="isCvAnnullati" binary="true" onIcon="pi pi-check-circle"
+                            offIcon="pi pi-circle" onLabel="Visualizzare CV annullati"
+                            offLabel="Visualizzare CV annullati" aria-label="Attivare filtro per cv annullati"
+                            (onChange)="filterCvAnnullati()"></p-toggleButton>
+                    </span>
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-4 mb-3 align-self-center" *ngIf="!isContactCenter">
+                <button type="button" class="btn btn-outline-primary btn-lg w-80"
+                    aria-label="Crea curriculum vitae automatico" [disabled]="!canCreateCv || isApl"
+                    (click)="creaCvAutomatico()">Crea CV automatico
+                </button>
+            </div>
+            <div class="col-sm-12 col-md-4 mb-3 align-self-center" *ngIf="!isContactCenter">
+                <button type="button" class="btn btn-outline-primary btn-lg w-80"
+                    aria-label="Crea curriculum vitae personalizzato" [disabled]="controlloInserimentoCvPersonalizzato"
+                    (click)="creaCvPersonalizzato()">Crea CV personalizzato
+                </button>
+            </div>
+        </div>
+    </p-card>
+    <div class="row mt-3">
+        <p-table #dt [value]="cvListFiltrati" dataKey="id" styleClass="p-datatable-customers" [rowHover]="true"
+            [rows]="10" [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50]" [loading]="false"
+            responsiveLayout="scroll" [paginator]="true"
+            currentPageReportTemplate="{first} di {last}, su {totalRecords} righe">
+
+            <ng-template pTemplate="header">
+                <tr>
+                    <th pSortableColumn="field.data">
+                        <div class="flex justify-content-between align-items-center">
+                            Data
+                            <p-sortIcon field="field.data"></p-sortIcon>
+                        </div>
+                    </th>
+                    <th pSortableColumn="field.data">
+                        <div class="flex justify-content-between align-items-center">
+                            Titolo CV
+                            <p-sortIcon field="field.data"></p-sortIcon>
+                        </div>
+                    </th>
+                    <th pSortableColumn="field.data">
+                        <div class="flex justify-content-between align-items-center">
+                            Data scadenza
+                            <p-sortIcon field="field.data"></p-sortIcon>
+                        </div>
+                    </th>
+                    <th pSortableColumn="field.data">
+                        <div class="flex justify-content-between align-items-center">
+                            Completo
+                            <p-sortIcon field="field.data"></p-sortIcon>
+                        </div>
+                    </th>
+                    <th pSortableColumn="field.data">
+                        <div class="flex justify-content-between align-items-center">
+                            Stato
+                            <p-sortIcon field="field.data"></p-sortIcon>
+                        </div>
+                    </th>
+                    <th style="width: auto">Azioni</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-cv>
+                <tr class="p-selectable-row">
+                    <!-- data -->
+                    <td>
+                        <span class="p-column-title">Data</span>
+                        {{cv.dInserim | date: 'dd/MM/yyyy' }}
+                    </td>
+
+                    <!-- titolo CV -->
+                    <td>
+                        <span class="p-column-title">Titolo CV</span>
+                        {{cv.titoloCv | uppercase}}
+                    </td>
+
+                    <!-- data scadenza -->
+                    <td>
+                        <span class="p-column-title">Data scadenza</span>
+                        {{cv.dScadenza | date: 'dd/MM/yyyy'}}
+                    </td>
+
+                    <!-- completato-->
+                    <td>
+                        <span class="p-column-title">Completato</span>
+                        {{cv.professioneDesiderataList.length>0?"SI":"NO"}}
+                    </td>
+
+                    <!-- stato -->
+                    <td>
+                        <span class="p-column-title">Stato</span>
+                        {{cv.codStatoCandidatura.descrStatoCandidatura | uppercase}}
+                    </td>
+                    <td>
+                        <a *ngIf="!isContactCenter" tabindex="0" (click)="viewCv(cv)" (keydown.enter)="viewCv(cv)"
+                            style="color: #016CB4" aria-label="Azione: visualizzare dettaglio Curriculum vitae"
+                            title="Visualizzare dettaglio Curriculum vitae">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                        <a *ngIf="(cv.flgGeneratoDaSistema=='S' && !isApl && !isContactCenter)" tabindex="0"
+                            (click)="aggiornaCvAutomatico(cv)" (keydown.enter)="aggiornaCvAutomatico(cv)"
+                            style="color: #016CB4" aria-label="Azione: Aggiornare Curriculum vitae"
+                            title="Aggiornare Curriculum vitae">
+                            <i class="fas fa-redo-alt"></i>
+                        </a>
+                        <a tabindex="0" (click)="modificaCv(cv)"
+                            *ngIf="(!isApl && (cv.codStatoCandidatura.codStatoCandidatura=='B' || cv.codStatoCandidatura.codStatoCandidatura=='V') && !isContactCenter)"
+                            (keydown.enter)="modificaCv(cv)" style="color: #016CB4"
+                            aria-label="Azione: modificare Curriculum vitae" title="Modificare Curriculum vitae">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <a *ngIf="(cv.flgGeneratoDaSistema!='S' && !isApl && !isContactCenter)" tabindex="0"
+                            (click)="eliminaCv(cv)" (keydown.enter)="eliminaCv(cv)" style="color: #016CB4"
+                            aria-label="Azione: eliminare Curriculum vitae" title="Eliminare Curriculum vitae">
+                            <i class="fas fa-trash-alt"></i>
+                        </a>
+                        <a *ngIf="!isContactCenter" tabindex="0" (click)="stampaCv(cv)" (keydown.enter)="stampaCv(cv)"
+                            style="color: #016CB4" aria-label="Azione: stampare  Curriculum vitae"
+                            title="Stampare Curriculum vitae">
+                            <i class="fas fa-file-pdf"></i>
+                        </a>
+                        <a *ngIf="(cv.codStatoCandidatura.codStatoCandidatura=='S' || cv.codStatoCandidatura.codStatoCandidatura=='V') && !isApl"
+                            tabindex="0" (click)="rinnovaCv(cv)" (keydown.enter)="rinnovaCv(cv)" style="color: #016CB4"
+                            aria-label="Azione: Rinnovare  Curriculum vitae" title="Rinnovare Curriculum vitae">
+                            <i class="far fa-clock"></i>
+                        </a>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</ng-container>

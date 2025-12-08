@@ -1,0 +1,296 @@
+<!--
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ -->
+<ngb-accordion #acc="ngbAccordion" activeIds="formazioneProfessionale,formazioneCv">
+
+  <ngb-panel title="{{messaggioFormazioneFasc?.testo}}" id="formazioneProfessionale">
+    <ng-template ngbPanelContent>
+      <p-table #dt [value]="formazioneCompletaList" dataKey="id" styleClass="p-datatable-customers" [rowHover]="true"
+        [rows]="5" [showCurrentPageReport]="true" [rowsPerPageOptions]="[5,10,25,50]" [loading]="false"
+        responsiveLayout="scroll" [paginator]="true"
+        currentPageReportTemplate="{first} di {last}, su {totalRecords} righe">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Titolo corso</th>
+            <th>Nome istituto</th>
+            <th>Durata</th>
+            <th>Azione</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-formazione>
+          <ng-container *ngIf="formazioneProfessionaleListFiltrati?.length + altriCorsiListFiltrati?.length">
+            <tr>
+              <td class="align-middle">{{formazione?.denominazioneCorso| uppercase }}</td>
+              <td class="align-middle">{{formazione?.lavCorsoFormAltro?.dsDenominazioneEnteErog | uppercase}}</td>
+              <td class="align-middle">
+                {{formazione.isAltroCorso ?
+                (formazione?.lavCorsoFormAltro?.durataCorso ? (formazione?.lavCorsoFormAltro?.durataCorso + " " +
+                findTipologiaDurata(formazione.lavCorsoFormAltro.codTipologiaDurataCorso)) : "--") :
+                (formazione?.numDurataOre + " ore") | uppercase }}
+              </td>
+              <td>
+                <a (click)="viewFormazione(formazione)" title="Visualizzare titolo studio"
+                  class="p-button-rounded p-button-text" style="color: #016CB4"><i class="fas fa-eye"></i></a>
+                <a tabindex="0" style="color: #016CB4" aria-label="Azione: aggiunge titolo di studio  al CV"
+                  (click)="addFormazioneACv(formazione,!formazione.isAltroCorso)"
+                  title="Aggiungere titolo di studio  al CV" *ngIf="canModifica">
+                  <i class="fas fa-file-download"></i>
+                </a>
+              </td>
+            </tr>
+          </ng-container>
+        </ng-template>
+
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="4">
+              {{messaggioNonCiSonoDati?.testo}}
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </ng-template>
+  </ngb-panel>
+  <ngb-panel title="{{messaggioFormazionegCv?.testo}}" id="formazioneCv">
+    <ng-template ngbPanelContent>
+      <table class="table table-bordered table-striped table-hover table-sortable">
+        <thead>
+          <tr>
+            <th>Titolo corso</th>
+            <th>Nome istituto</th>
+            <th>Durata</th>
+            <th>In corso</th>
+            <th>Tirocinio curricolare</th>
+            <th>Azione</th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngIf="formazioneProfessionaleCvList?.length; else noData">
+            <tr *ngFor="let formazioneProfessionale of formazioneProfessionaleCvList">
+              <td class="align-middle">{{formazioneProfessionale?.dsCorso| uppercase }}</td>
+              <td class="align-middle">{{formazioneProfessionale?.denominazioneAziendaFormazione | uppercase}}</td>
+              <td class="align-middle">{{formazioneProfessionale?.durata || "--"}}
+                {{(!!formazioneProfessionale?.idUnitaMisuraDurata?.descrUnitaMisuraDurata &&
+                formazioneProfessionale?.idUnitaMisuraDurata?.descrUnitaMisuraDurata!='undefined')?formazioneProfessionale?.idUnitaMisuraDurata?.descrUnitaMisuraDurata
+                :"" | uppercase }}</td>
+              <td class="align-middle">{{formazioneProfessionale?.flgInCorso == "S" ? "SI": "NO" }}</td>
+              <td class="align-middle">{{formazioneProfessionale?.flgTirocinioCurriculare == "S" ? "SI": "NO"}}</td>
+              <td class="align-middle" style="min-width: 90px;">
+                <a title="Visualizzare formazione professionale" class="p-button-rounded p-button-text"
+                  style="color: #016CB4"><i (click)="visualizzaFormazione(formazioneProfessionale)"
+                    class="fas fa-eye"></i></a>
+                <a (click)="modificaFormazione(formazioneProfessionale)"
+                  *ngIf="canModifica && formazioneProfessionale?.flgFormazionePiemontese!='S'" style="color: #016CB4"
+                  title="Modificare formazione professionale" class="p-button-rounded p-button-text"> <i
+                    class="fas fa-edit"></i></a>
+                <a (click)="eliminaFormazione(formazioneProfessionale)" *ngIf="canModifica" style="color: #016CB4"
+                  title="Eliminare formazione professionale" class="p-button-rounded p-button-text"> <i
+                    class="fas fa-trash-alt"></i></a>
+              </td>
+            </tr>
+          </ng-container>
+          <ng-template #noData>
+            <tr>
+              <td colspan="7">Non ci sono dati</td>
+            </tr>
+          </ng-template>
+        </tbody>
+      </table>
+      <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3">
+        <button type="button" class="btn btn-primary btn-lg" (click)="onNuovoFormazione()"
+          aria-label="inserisci esperienza professionale" *ngIf="canModifica">INSERISCI NUOVA FORMAZIONE
+          PROFESSIONALE</button>
+      </div>
+      <form [formGroup]="form" *ngIf="showForm">
+        <div class="row">
+          <!-- titoloCorso  -->
+          <div class="mb-5 col-sm-12 col-md-6">
+            <label for="titoloCorso">Titolo corso <span class="oblg">*</span></label>
+            <input type="text" pInputText class="form-control" formControlName="titoloCorso" id="titoloCorso"
+              maxlength="100" aria-label="titolo del corso">
+            <span style="color: red;"> <app-control-messages
+                [control]="form.get('titoloCorso')"></app-control-messages></span>
+          </div>
+          <div class="mb-5 col-sm-12 col-md-6">
+            <label for="sede">Nome istituto </label>
+            <input type="text" pInputText class="form-control" formControlName="sede" id="sede" maxlength="305"
+              aria-label="nome istituto">
+          </div>
+
+
+          <div class="mb-3 col-sm-12 col-md-3">
+            <label for="durata">Durata<span *ngIf="durataCorsoIsRequired" class="oblg">*</span></label>
+            <input pInputText type="text" pslpwclOnlyNumber class="form-control" (change)="onChangeDurataCorso()"
+              (keyup)="onChangeDurataCorso()" pslpwclOnlyNumber formControlName="durata" id="durata"
+              aria-label="durata corso" maxlength="4">
+          </div>
+          <div formGroupName="tipoDurata" class="mb-5 col-sm-12 col-md-3">
+            <label for="tipoDurata">Tipo durata <span *ngIf="durataCorsoIsRequired" class="oblg">*</span></label>
+            <p-dropdown inputId="tipoDurata" [emptyMessage]="'Nessun dato trovato'" [options]="tipoDurataDec"
+              formControlName="id" [autoDisplayFirst]="false" (onChange)="onChangeDurataCorso()" class=" p-form-select"
+              placeholder="" optionLabel="descr" optionValue="id" labelForId="tipoDurata"
+              ariaLabel="seleziona comune dell'istituto">
+            </p-dropdown>
+          </div>
+
+          <div formGroupName="certificazioneConseguita" class="mb-5 col-sm-12 col-md-6">
+            <label for="certificazioneConseguita">Certificazione </label>
+            <p-dropdown inputId="certificazioneConseguita" [emptyMessage]="'Nessun dato trovato'"
+              [options]="certificazioneProfessionale" formControlName="id" [autoDisplayFirst]="false"
+              class=" p-form-select" placeholder="" optionLabel="descr" optionValue="id"
+              labelForId="certificazioneConseguita" ariaLabel="seleziona comune dell'istituto">
+            </p-dropdown>
+          </div>
+          <div formGroupName="qualificaConseguita" class="mb-5 col-sm-12 col-md-6">
+            <label for="qualificaConseguita">Qualifica </label>
+            <p-dropdown inputId="qualificaConseguita" [emptyMessage]="'Nessun dato trovato'" [filter]="true"
+              (onFilter)="filtraQualifica($event)" [options]="qualifiche" formControlName="id"
+              [autoDisplayFirst]="false" class=" p-form-select" placeholder="" optionLabel="descr" optionValue="id"
+              labelForId="qualificaConseguita" ariaLabel="seleziona comune dell'istituto">
+            </p-dropdown>
+          </div>
+          <div class="mb-5 col-sm-12 col-md-6">
+            <label for="desrizioneQualifica">Descrittivo qualifica </label>
+            <input type="text" pInputText class="form-control" formControlName="desrizioneQualifica"
+              id="desrizioneQualifica" maxlength="250" aria-label="nome istituto">
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="mb-5 col-sm-12 col-md-3">
+            <fieldset>
+              <legend>Luogo</legend><br>
+              <div *ngFor="let item of [{key:'Italia',id:'I'},{key:'Estero',id:'E'}]"
+                class="mb-3 col-auto form-check form-check-inline">
+                <input class="form-check-input" (change)="selectLuogoIstituto()" name="flgLuogoItalia"
+                  formControlName="flgLuogoItalia" [value]="item.id" type="radio" id="luogoIstituto{{item.id}}"
+                  [attr.aria-labelledby]="'luogoIstituto'+item.id">
+                <label class="form-check-label" for="luogoIstituto{{item.id}}">
+                  {{item.key}}
+                </label>
+              </div>
+            </fieldset>
+          </div>
+
+
+          <div formGroupName="comune" class="mb-5 col-sm-12 col-md-3">
+            <label for="comune">Comune </label>
+            <p-dropdown inputId="comune" [emptyMessage]="'Nessun dato trovato'" [filter]="true"
+              (onFilter)="onCercaComune($event)" [autoDisplayFirst]="false" [options]="comuni" formControlName="id"
+              class=" p-form-select" placeholder="" optionLabel="descr" optionValue="id" labelForId="comune"
+              ariaLabel="seleziona comune dell'istituto">
+            </p-dropdown>
+          </div>
+          <div formGroupName="stato" class="mb-5 col-sm-12 col-md-3">
+            <label for="stato">Stato Estero </label>
+            <p-dropdown inputId="stato" [emptyMessage]="'Nessun dato trovato'" [autoDisplayFirst]="false"
+              [options]="statiEsteri" formControlName="id" class=" p-form-select" placeholder="" optionLabel="descr"
+              optionValue="id" labelForId="stato" ariaLabel="seleziona stato estero dell'istituto">
+            </p-dropdown>
+          </div>
+
+        </div>
+        <div class="row mt-3">
+          <!-- Toponimo -->
+          <div formGroupName="toponimo" class="mb-5 col-sm-12 col-md-4">
+            <label for="toponimo">Toponimo</label>
+            <p-dropdown inputId="toponimo" [emptyMessage]="'Nessun dato trovato'" [autoDisplayFirst]="false"
+              [options]="toponimos" formControlName="id" optionLabel="name" class=" p-form-select" placeholder=""
+              optionLabel="descr" optionValue="id" labelForId="toponimo" ariaLabel="seleziona toponimo">
+            </p-dropdown>
+            <span style="color: red;"> <app-control-messages
+                [control]="form.get('toponimo.id')"></app-control-messages></span>
+          </div>
+
+          <!-- Indirizzo -->
+          <div class="mb-5 col-sm-12 col-md-4">
+            <label for="indirizzo">Indirizzo</label>
+            <input type="text" pInputText class="form-control" formControlName="indirizzo"
+              oninput="this.value = this.value.toUpperCase()" id="indirizzo" maxlength="100" aria-label="indirizzo">
+            <span style="color: red;"> <app-control-messages
+                [control]="form.get('indirizzo')"></app-control-messages></span>
+          </div>
+
+          <!-- numero civico -->
+          <div class="mb-5 col-sm-12 col-md-4">
+            <label for="numeroCivicoResidenza">Numero civico</label>
+            <input type="text" pInputText class="form-control" formControlName="numeroCivico"
+              oninput="this.value = this.value.toUpperCase()" id="numeroCivicoResidenza" maxlength="15"
+              aria-label="numero civico">
+            <span style="color: red;"> <app-control-messages
+                [control]="form.get('numeroCivico')"></app-control-messages></span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="mb-5 col-sm-12 col-md-3">
+            <label for="dataInizio">Data di inizio<span class="oblg">*</span></label>
+            <p-calendar class="p-form-date" id="dataInizio" placeholder="Data inizio" formControlName="dataInizio"
+              dateFormat="dd/mm/yy" [maxDate]="sysDate" aria-labelledby="dataInizio" ariaLabelledBy="dataInizio">
+
+            </p-calendar>
+            <span style="color: red;"> <app-control-messages
+                [control]="form.get('dataInizio')"></app-control-messages></span>
+          </div>
+          <div class="mb-5 col-sm-12 col-md-3">
+
+            <label for="dataFine">Data fine</label>
+            <p-calendar class="p-form-date" id="dataFine" placeholder="Data fine" formControlName="dataFine"
+              dateFormat="dd/mm/yy" aria-labelledby="dataFine" ariaLabelledBy="dataFine">
+
+            </p-calendar>
+            <span style="color: red;"> <app-control-messages
+                [control]="form.get('dataFine')"></app-control-messages></span>
+          </div>
+        </div>
+
+
+        <!-- Stage finale -->
+        <div class="row">
+          <div class="mb-5 col-sm-12 col-md-2">
+            <fieldset>
+              <legend>In corso<span class="oblg">*</span></legend><br>
+              <div *ngFor="let item of [{key:'Si',id:'S'},{key:'No',id:'N'}]"
+                class="mb-3 col-auto form-check form-check-inline">
+                <input class="form-check-input" name="inCorso" formControlName="inCorso" [value]="item.id" type="radio"
+                  id="inCorso{{item.id}}" [attr.aria-labelledby]="'inCorso'+item.id">
+                <label class="form-check-label" for="inCorso{{item.id}}">{{item.key}}</label>
+              </div>
+            </fieldset>
+          </div>
+          <div class="mb-5 col-sm-12 col-md-2">
+            <fieldset>
+              <legend>Tirocinio curricolare<span class="oblg">*</span></legend><br>
+              <div *ngFor="let item of [{key:'Si',id:'S'},{key:'No',id:'N'}]"
+                class="mb-3 col-auto form-check form-check-inline">
+                <input class="form-check-input" name="tirocinioCurriculare" formControlName="tirocinioCurriculare"
+                  [value]="item.id" type="radio" id="tirocinioCurriculare{{item.id}}"
+                  [attr.aria-labelledby]="'tirocinioCurriculare'+item.id">
+                <label class="form-check-label" for="tirocinioCurriculare{{item.id}}">{{item.key}}</label>
+              </div>
+            </fieldset>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col mt-3">
+            <button type="button" class="btn btn-outline-secondary btn-sm" aria-label="annulla inserimento"
+              (click)="onAnnulla()">ANNULLA</button>
+          </div>
+          <div class="col-auto mt-3">
+            <button type="submit" [disabled]="form.invalid" class="btn btn-primary ml-auto btn-lg"
+              (click)="inserisciAggiornaFormazioneDich()" aria-label="salva i dati inseriti"
+              *ngIf="canModifica && this.mod!='v'">CONFERMA</button>
+          </div>
+        </div>
+
+      </form>
+    </ng-template>
+
+
+  </ngb-panel>
+
+</ngb-accordion>

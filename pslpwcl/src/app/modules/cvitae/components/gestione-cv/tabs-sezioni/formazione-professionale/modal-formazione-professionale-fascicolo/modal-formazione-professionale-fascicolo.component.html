@@ -1,0 +1,291 @@
+<!--
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ -->
+<div class="modal-header">
+    <h4 class="modal-title" id="modal-annulla-title">Corso Formazione</h4>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+
+<div class="modal-body">
+    <div class="mt-3 row">
+        <form [formGroup]="form">
+          <div class="row">
+            <span class="mb-3 title">DATI DEL CORSO</span>
+            <ng-container formGroupName="lavCorsoForm">
+                <div class="mb-5 col-sm-12 col-md-2">
+                    <label for="dataInizio">Data inizio</label>
+                    <p-calendar (change)="form?.controls['dInizioCorso']?.updateValueAndValidity()"
+                      class="p-form-date" id="dInizioCorso" placeholder="Data inizio corso" formControlName="dInizioCorso"
+                      dateFormat="dd/mm/yy" aria-labelledby="dInizioCorso"
+                      ariaLabelledBy="dInizioCorso">
+                    </p-calendar>
+                </div>
+                <div class="mb-5 col-sm-12 col-md-2">
+                    <label for="dFineCorso">Data fine</label>
+                    <p-calendar (change)="form?.controls['dFineCorso']?.updateValueAndValidity()"
+                      class="p-form-date" id="dFineCorso" placeholder="Data fine corso" formControlName="dFineCorso"
+                       dateFormat="dd/mm/yy" aria-labelledby="dFineCorso"
+                      ariaLabelledBy="dFineCorso">
+                    </p-calendar>
+                </div>
+            </ng-container>
+            <div class="mb-5 col-sm-12 col-md-2">
+                <label for="anno">Anno</label>
+                <input pInputText type="text" maxlength="4" class="form-control" formControlName="annoGestione"
+                    id="anno">
+            </div>
+            <div class="mb-5 col-sm-12 col-md-5">
+                <label for="denominazioneCorso">Denominazione corso</label>
+                <textarea style="width: 30em;" formControlName="denominazioneCorso" id="denominazioneCorso" rows="3"></textarea>
+            </div>
+        </div>
+        <div class="row">
+          <div class="mb-5 col-sm-12 col-md-2" formGroupName="lavCorsoFormAltro">
+              <label for="durataOre">Durata corso</label>
+              <input pInputText type="text"maxlength="5"  class="form-control" pslpwclOnlyNumber formControlName="durataCorso"
+                  id="durataOre">
+          </div>
+          <div class="mb-5 col-sm-12 col-md-3" formGroupName="lavCorsoFormAltro">
+              <label for="tipoDurata">Tipo durata</label>
+              <p-dropdown inputId="codTipologiaDurataCorso" ariaLabelledBy="tipoDurata" [emptyMessage]="'Nessun dato trovato'"
+                [autoDisplayFirst]="false" [options]="tipoDurata" formControlName="codTipologiaDurataCorso"
+                class=" p-form-select"  placeholder="" optionLabel="descr" optionValue="id">
+                <!--   -->
+              </p-dropdown>
+          </div>
+          <div class="mb-5 col-sm-12 col-md-3" formGroupName="lavCorsoForm">
+              <label for="esitoFinale">Esito finale</label>
+              <input pInputText type="text" class="form-control" pslpwclOnlyNumber formControlName="numEsitoFinale" id="esitoFinale"
+                  maxlength="6">
+          </div>
+          <div class="mb-5 col-sm-12 col-md-3" formGroupName="lavCorsoFormAltro">
+              <label for="genere">Stage finale</label><br>
+              <div class="mb-3 col-auto form-check form-check-inline">
+                  <input class="form-check-input" formControlName="flgStageFinale" [value]="'S'" type="radio"
+                      id="stageFinaleSi">
+                  <label class="form-check-label" for="stageFinaleSi">
+                      Si
+                  </label>
+              </div>
+              <div class="mb-3 col-auto form-check form-check-inline">
+                  <input class="form-check-input" formControlName="flgStageFinale" [value]="'N'" type="radio"
+                      id="stageFinaleNo">
+                  <label class="form-check-label" for="stageFinaleNo">
+                      No
+                  </label>
+              </div>
+          </div>
+        </div>
+        <div class="row" formGroupName="lavCorsoForm">
+          <!-- <div class="mb-5 col-sm-12 col-md-2">
+              <label for="cv">CV</label><br>
+              <div class="mb-3 col-auto form-check form-check-inline">
+                  <input class="form-check-input" formControlName="flgPubblicazione" [value]="'S'" type="radio"
+                      id="cvSi">
+                  <label class="form-check-label" for="cvSi">
+                      Si
+                  </label>
+              </div>
+              <div class="mb-3 col-auto form-check form-check-inline">
+                  <input class="form-check-input" formControlName="flgPubblicazione" [value]="'N'" type="radio"
+                      id="cvNo">
+                  <label class="form-check-label" for="cvNo">
+                      No
+                  </label>
+              </div>
+          </div> -->
+          <div class="mb-5 col-sm-12 col-md-4" formGroupName="silTTipoApprendistato">
+              <label for="idSilTTipoApprendistato">Tipo apprendistato:</label>
+              <p-dropdown inputId="idSilTTipoApprendistato" ariaLabelledBy="tipoAppr" [emptyMessage]="'Nessun dato trovato'"
+                [autoDisplayFirst]="false" [options]="tipoApprendistati"  formControlName="idSilTTipoApprendistato"
+                class=" p-form-select" placeholder="" optionLabel="descr" optionValue="id">
+                <!--   -->
+                </p-dropdown>
+            </div>
+          </div>
+
+
+    <!-- Dati presenti in altri corsi -->
+    <div *ngIf="!formazione.codice">
+        <div class="row">
+            <span class="mb-3 title">ENTE EROGATORE</span>
+        </div>
+        <ng-container formGroupName="lavCorsoFormAltro">
+            <div class="row">
+                <div class="mb-5 col-sm-12 col-md-6">
+                    <label for="denomEnte">Denominazione</label>
+                    <input pInputText type="text" class="form-control" formControlName="dsDenominazioneEnteErog" id="denomEnte">
+                </div>
+            </div>
+  
+            <!-- Luogo - Comune - nazioni -->
+            <div class="row">
+              <div class="mb-5 col-sm-12 col-md-3">
+                <fieldset>
+                  <legend>Luogo</legend><br>
+                  <div *ngFor="let item of [{key:'Italia',id:'I'},{key:'Estero',id:'E'}]"
+                    class="mb-3 col-auto form-check form-check-inline">
+                    <input class="form-check-input"  name="flgLuogoEnteErog"
+                      formControlName="flgLuogoEnteErog" [value]="item.id" type="radio" id="flgLuogoEnteErog{{item.id}}"
+                      [attr.aria-labelledby]="'flgLuogoEnteErog'+item.id">
+                    <label class="form-check-label" for="flgLuogoEnteErog{{item.id}}">
+                      {{item.key}}
+                    </label>
+                  </div>
+                </fieldset>
+              </div>
+  
+              <div formGroupName="silTComuneEnteErog" class="mb-5 col-sm-12 col-md-3">
+                <label for="silTComuneEnteErog">Comune</label>
+                <p-dropdown inputId="silTComuneEnteErog" [filter]="true"
+                  [emptyMessage]="'Nessun dato trovato'" [autoDisplayFirst]="false" [options]="comuniIst" formControlName="id"
+                  ariaLabel="comune ente" class=" p-form-select" placeholder="" optionLabel="descr"
+                  optionValue="id">
+                  <!-- (search)="onSearchComune($event)"  -->
+                </p-dropdown>
+              </div>
+  
+              <div formGroupName="silTNazioneEnteErog" class="mb-5 col-sm-12 col-md-3">
+                <label for="silTNazioneEnteErog">Stato estero</label>
+                <p-dropdown inputId="silTNazioneEnteErog" ariaLabel="stato estero istituto" [emptyMessage]="'Nessun dato trovato'"
+                  [autoDisplayFirst]="false" [options]="nazioniEstereAzi" formControlName="idSilTNazione" class=" p-form-select"
+                  placeholder="" optionLabel="descr" optionValue="id">
+                </p-dropdown>
+              </div>
+            </div>
+  
+            <!-- Toponimo - Indirizzo -numeroCivico -->
+            <div class="row">
+                
+                <div class="mb-5 col-sm-12 col-md-3" formGroupName="silTToponimoEnteErog">
+                  <label for="silTToponimoEnteErog">Toponimo</label>
+                  <p-dropdown inputId="silTToponimoEnteErog" ariaLabel="toponimo indirizzo ente" [filter]="true"
+                    [emptyMessage]="'Nessun dato trovato'" [autoDisplayFirst]="false" [options]="toponimos"
+                    formControlName="idSilTToponimo" class=" p-form-select" placeholder="" optionLabel="dsSilTToponimo"
+                    optionValue="idSilTToponimo">
+                  </p-dropdown>
+                </div>
+              <div class="mb-5 col-sm-12 col-md-3">
+                <label for="dsIndirizzoEnteErog">Indirizzo</label>
+                <input pInputText type="text" aria-label="indirizzo ente" class="form-control"
+                  formControlName="dsIndirizzoEnteErog" oninput="this.value = this.value.toUpperCase()" id="dsIndirizzoEnteErog"
+                  maxlength="80" >
+              </div>
+              <div class="mb-5 col-sm-12 col-md-2">
+                <label for="dsNumCivicoEnteErog">Numero civico</label>
+                <input pInputText type="text" class="form-control" formControlName="dsNumCivicoEnteErog"
+                  oninput="this.value = this.value.toUpperCase()" id="dsNumCivicoIst" maxlength="10"
+                  aria-label="numero civico ente">
+                <div *ngIf="form.get('lavCorsoFormAltro.dsNumCivicoEnteErog')?.invalid" class="text-danger">
+                  <p *ngIf="form.get('lavCorsoFormAltro.dsNumCivicoEnteErog')?.errors['pattern']">Il numero civico di
+                    riferimento inserito non risulta formalmente corretto.</p>
+                </div>
+              </div>
+            </div>
+  
+        </ng-container>
+  
+        <!-- indirizzo azienda -->
+  
+  
+        <div class="row">
+          <span class="mb-3 title">AZIENDA STAGE</span>
+      </div>
+  
+      <ng-container formGroupName="lavCorsoFormAltro">
+          <div class="row">
+              <div class="mb-5 col-sm-12 col-md-6">
+                  <label for="denomAzi">Denominazione</label>
+                  <input pInputText type="text" class="form-control" formControlName="dsDenominazioneAziStage" id="denomAzi">
+              </div>
+          </div>
+  
+          <!-- Luogo - Comune - nazioni -->
+          <div class="row">
+            <div class="mb-5 col-sm-12 col-md-3">
+              <fieldset>
+                <legend>Luogo</legend><br>
+                <div *ngFor="let item of [{key:'Italia',id:'I'},{key:'Estero',id:'E'}]"
+                  class="mb-3 col-auto form-check form-check-inline">
+                  <input class="form-check-input"  name="flgLuogoAziStage"
+                    formControlName="flgLuogoAziStage" [value]="item.id" type="radio" id="flgLuogoAziStage{{item.id}}"
+                    [attr.aria-labelledby]="'flgLuogoAziStage'+item.id">
+                  <label class="form-check-label" for="flgLuogoAziStage{{item.id}}">
+                    {{item.key}}
+                  </label>
+                </div>
+              </fieldset>
+            </div>
+  
+            <div formGroupName="silTComuneAziStage" class="mb-5 col-sm-12 col-md-3">
+              <label for="silTComuneAziStage">Comune</label>
+              <p-dropdown inputId="silTComuneAziStage" [filter]="true" 
+                [emptyMessage]="'Nessun dato trovato'" [autoDisplayFirst]="false" [options]="comuniAz" formControlName="id"
+                ariaLabel="comune azienda" class=" p-form-select" placeholder="" optionLabel="descr"
+                optionValue="id">
+                <!-- (search)="onSearchComune($event)"  -->
+              </p-dropdown>
+            </div>
+  
+            <div formGroupName="silTNazioneAgiStage" class="mb-5 col-sm-12 col-md-3">
+              <label for="silTNazioneAgiStage">Stato estero</label>
+              <p-dropdown inputId="silTNazioneAgiStage" ariaLabel="stato estero istituto" [emptyMessage]="'Nessun dato trovato'"
+                [autoDisplayFirst]="false" [options]="nazioniEstere" formControlName="idSilTNazione" class=" p-form-select"
+                placeholder="" optionLabel="descr" optionValue="id">
+              </p-dropdown>
+            </div>
+          </div>
+  
+          <!-- Toponimo - Indirizzo -numeroCivico -->
+          <div class="row">
+            <div formGroupName="silTToponimoAziStage" class="mb-5 col-sm-12 col-md-3">
+              <label for="silTToponimoAziStage">Toponimo</label>
+              <p-dropdown inputId="silTToponimoAziStage" filt ariaLabel="toponimo indirizzo azienda"  [filter]="true"
+                [emptyMessage]="'Nessun dato trovato'" [autoDisplayFirst]="false" [options]="toponimos"
+                formControlName="idSilTToponimo" class=" p-form-select" placeholder="" optionLabel="dsSilTToponimo"
+                optionValue="idSilTToponimo">
+              </p-dropdown>
+            </div>
+            <div class="mb-5 col-sm-12 col-md-3">
+              <label for="dsIndirizzoAziStage">Indirizzo</label>
+              <input pInputText type="text" aria-label="indirizzo azienda" class="form-control"
+                formControlName="dsIndirizzoAziStage" oninput="this.value = this.value.toUpperCase()" id="dsIndirizzoAziStage"
+                maxlength="80">
+            </div>
+            <div class="mb-5 col-sm-12 col-md-2">
+              <label for="dsNumCivicoAziStage">Numero civico</label>
+              <input pInputText type="text" class="form-control" formControlName="dsNumCivicoAziStage"
+                oninput="this.value = this.value.toUpperCase()" id="dsNumCivicoIst" maxlength="10"
+                aria-label="numero civico azienda">
+            </div>
+          </div>
+  
+  
+          <div class="row">
+              <div class="mb-5 col-sm-12 col-md-2">
+                  <label for="durataStage">Durata stage/tirocinio</label>
+                  <input pInputText type="text" pslpwclOnlyNumber class="form-control" formControlName="durataStage"
+                  id="durataStage" maxlength="5">
+              </div>
+              <div class="mb-5 col-sm-12 col-md-3">
+                  <label for="cert">Tipo durata</label>
+                  <p-dropdown inputId="codTipologiaDurata" ariaLabelledBy="tipoAppr" [emptyMessage]="'Nessun dato trovato'"
+                    [autoDisplayFirst]="false" [options]="tipoDurata" formControlName="codTipologiaDurata"
+                    class=" p-form-select"  placeholder="" optionLabel="descr" optionValue="id">
+                    <!--   -->
+                  </p-dropdown>
+                </div>
+            </div>
+        </ng-container>
+    </div>
+    </form>
+    
+    </div>
+
+</div>

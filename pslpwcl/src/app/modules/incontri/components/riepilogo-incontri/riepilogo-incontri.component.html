@@ -1,0 +1,191 @@
+<!--
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ -->
+<ng-container>
+    <h3>RIEPILOGO INCONTRI</h3>
+    <div class="row mt-3">
+        <p-table #dt2 dataKey="id" [value]="appuntamentiList" styleClass="p-datatable-customers" [rowHover]="true"
+            [rows]="10" [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50]" [loading]="false"
+            responsiveLayout="scroll" [paginator]="true"
+            currentPageReportTemplate="{first} di {last}, su {totalRecords} righe" [sortField]="'dataIncontro'"
+            [sortOrder]="1">
+
+            <ng-template pTemplate="header">
+                <tr>
+                    <th pSortableColumn="dataIncontro">
+                        <div style="white-space: nowrap;" class="flex justify-content-between align-items-center">
+                            Data
+                            <p-sortIcon field="dataIncontro"></p-sortIcon>
+                        </div>
+                    </th>
+                    <th pSortableColumn="oraIncontro">
+                        <div style="white-space: nowrap;" class="flex justify-content-between align-items-center">
+                            Ora
+                            <p-sortIcon field="oraIncontro"></p-sortIcon>
+                        </div>
+                    </th>
+                    <th pSortableColumn="durataPrevistaIncontroMinuti">
+                        <div style="white-space: nowrap;" class="flex justify-content-between align-items-center">
+                            Durata
+                            <p-sortIcon field="durataPrevistaIncontroMinuti"></p-sortIcon>
+                        </div>
+                    </th>
+                    <th pSortableColumn="desSilTStatoIncontro">
+                        <div style="white-space: nowrap;" class="flex justify-content-between align-items-center">
+                            Stato
+                            <p-sortIcon field="desSilTStatoIncontro"></p-sortIcon>
+                        </div>
+                    </th>
+                    <th pSortableColumn="desSilwebTIncServCateg">
+                        <div style="white-space: nowrap;" class="flex justify-content-between align-items-center">
+                            Categoria servizio
+                            <p-sortIcon field="desSilwebTIncServCateg"></p-sortIcon>
+                        </div>
+                    </th>
+                    <th pSortableColumn="desSilwebTIncServizi">
+                        <div class="flex justify-content-between align-items-center">
+                            Servizio
+                            <p-sortIcon field="desSilwebTIncServizi"></p-sortIcon>
+                        </div>
+                    </th>
+                    <th pSortableColumn="desSilTInContattoErogaz">
+                        <div style="white-space: nowrap;" class="flex justify-content-between align-items-center">
+                            Modalità erogazione
+                            <p-sortIcon field="desSilTInContattoErogaz"></p-sortIcon>
+                        </div>
+                    </th>
+                    <th pSortableColumn="desSedeIncontro">
+                        <div style="white-space: nowrap;" class="flex justify-content-between align-items-center">
+                            Sede
+                            <p-sortIcon field="desSedeIncontro"></p-sortIcon>
+                        </div>
+                    </th>
+                    <th pSortableColumn="dataLimiteSpostamento">
+                        <div style="white-space: nowrap;" class="flex justify-content-between align-items-center">
+                            Limite spost.
+                            <p-sortIcon field="dataLimiteSpostamento"></p-sortIcon>
+                        </div>
+                    </th>
+                    <th style="width: auto">Azioni</th>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-doc>
+                <tr class="p-selectable-row">
+                    <td style="white-space: nowrap;">
+                        <span class="p-column-title">Data</span>
+                        {{doc.dataIncontro | date: 'dd/MM/yyyy' }}
+                    </td>
+                    <td style="white-space: nowrap;">
+                        <span class="p-column-title">Ora</span>
+                        {{doc.oraIncontro | uppercase }}
+                    </td>
+                    <td style="white-space: nowrap;">
+                        <span class="p-column-title">Durata</span>
+                        {{ doc.desSilTStatoIncontro.trim() !== 'EROGATO' ? doc.durataPrevistaIncontroMinuti ? doc.durataPrevistaIncontroMinuti + ' ' + 'MINUTI' : '-' :
+                        doc.durataEffettivaIncontroMinuti ? doc.durataEffettivaIncontroMinuti : doc.durataEffettivaIncontroMinuti + ' ' + 'MINUTI' }}
+                    </td>
+                    <td style="white-space: nowrap;">
+                        <span class="p-column-title">Stato</span>
+                        {{doc.desSilTStatoIncontro | uppercase }}
+                    </td>
+                    <td style="white-space: nowrap;">
+                        <span class="p-column-title">Categoria servizio</span>
+                        {{doc?.desSilwebTIncServCateg | uppercase}}
+                    </td>
+                    <td style="white-space: nowrap;">
+                        <span class="p-column-title">Servizio</span>
+                        {{doc?.desSilwebTIncServizi | uppercase}}
+                    </td>
+                    <td style="white-space: nowrap;">
+                        <span class="p-column-title">Modalità erogazione</span>
+                        {{doc?.desSilTInContattoErogaz | uppercase}}
+                    </td>
+                    <td style="white-space: nowrap;">
+                        <span class="p-column-title">Sede</span>
+                        {{doc?.desSedeIncontro | uppercase}}
+                    </td>
+                    <td style="white-space: nowrap;">
+                        <span class="p-column-title">Data</span>
+                        {{ (doc?.idSilTStatoIncontro == 1 && doc?.flgPrenotaCittadinoServ === 'S'  ? (doc?.dataLimiteSpostamento | date: 'dd/MM/yyyy') : '' )}}
+                    </td>
+                    <td style="white-space: nowrap;">
+                        <a tabindex="0" style="color: #016CB4" aria-label="Azione: visualizzare prenotazione"
+                            title="Visualizzare" (click)="gotoVisualizza(doc.idIncontro)">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                        <a *ngIf="showSposta(doc)" tabindex="0" (click)="onClickSposta(doc)" style="color: #016CB4"
+                            aria-label="Azione: Sposta prenotazione" title="Spostare">
+                            <i class="fas fa-clock"></i>
+                        </a>
+                        <a *ngIf="showAnnulla(doc)" tabindex="0" (click)="onClickAnnulla(doc)" style="color: #016CB4"
+                            aria-label="Azione: Disdire prenotazione" title="Disdire">
+                            <i class="fas fa-calendar-times"></i>
+                        </a>
+                    </td>
+                </tr>
+            </ng-template>
+
+            <ng-template *ngIf="appuntamentiList?.length === 0" pTemplate="emptymessage">
+                <tr>
+                    <td colspan="5" class=" text-center no-results-warning">
+                        Nessun risultato trovato
+                    </td>
+                </tr>
+            </ng-template>
+
+
+        </p-table>
+
+
+    </div>
+
+    <div class="row justify-content-between align-items-center mb-3">
+
+        <div class="col-auto">
+            <button (click)="gotoInserisci()" type="button" class="btn btn-outline-primary btn-lg"
+                aria-label="Inserisci nuovo appuntamento">
+                NUOVO APPUNTAMENTO
+            </button>
+        </div>
+
+    </div>
+
+</ng-container>
+
+<ng-template #modalAnnulla let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title">{{this.msgI50?.intestazione}}</h4>
+        <button type="button" class="btn-close" aria-label="Close"
+            (click)="modal.dismiss('cross click'); motivazioneSelezionataId = null; noteInserite = null; idIncontroDaAnnullare = null; msagAnnulla = null"></button>
+    </div>
+    <div class="modal-body">
+        <div class="alert alert-warning" role="alert" aria-atomic="true" [innerHtml]="msagAnnulla"></div>
+        <div class="form-group">
+            <label for="motivazioneSelect">Motivazione<span class="oblg">*</span></label>
+            <select id="motivazioneSelect" class="form-select" [(ngModel)]="motivazioneSelezionataId"
+                name="motivazioneSelect">
+                <option [ngValue]="null"></option>
+                <option *ngFor="let motivo of listaMotivazioni" [ngValue]="motivo.id">{{ motivo.descr }}</option>
+            </select>
+        </div>
+        <div>
+            <div class="form-group">
+                <label for="noteInput">Note</label>
+
+                <textarea id="noteInput" class="form-control note-textarea-grande" rows="6" [(ngModel)]="noteInserite"
+                    name="noteInput" placeholder="Inserisci eventuali note..."></textarea>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer d-flex">
+        <button type="button" class="btn btn-outline-dark me-auto"
+            (click)="modal.dismiss(); motivazioneSelezionataId = null; noteInserite = null; idIncontroDaAnnullare = null; msagAnnulla = null">CHIUDI</button>
+        <button [disabled]="!motivazioneSelezionataId" type="button" class="btn btn-primary"
+            (click)="confermaAnnulla(modal)">CONFERMA</button>
+    </div>
+</ng-template>

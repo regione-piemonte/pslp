@@ -1,0 +1,311 @@
+<!--
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ -->
+
+<h3>Le mie deleghe</h3>
+<ngb-accordion #accordionDeleghe activeIds="panelDelegante, panelDelegati"
+  id="accordion-deleghe" [closeOthers]="false" [destroyOnHide]="false">
+  <ngb-panel title="PERSONE PER CUI POSSO OPERARE" id="panelDelegante">
+    <ng-template ngbPanelContent let-opened="opened">
+      <!-- Persone per cui posso operare  -->
+      <p-table
+          #dt
+          [value]="delegheDelegatiFiltered |async"
+          dataKey="id"
+          styleClass="p-datatable-customers"
+          [rowHover]="true"
+
+          [rows]="10"
+          [showCurrentPageReport]="true"
+          [rowsPerPageOptions]="[10,25,50]"
+
+          [loading]="loadingDelegheDelegati"
+          responsiveLayout="scroll"
+          [paginator]="true"
+          currentPageReportTemplate="{first} di {last}, su {totalRecords} righe">
+
+          <!-- [filterDelay]="0"
+          [globalFilterFields]="['name','utente.name']"> -->
+
+        <ng-template pTemplate="caption">
+          <div class="table-header d-flex">
+            
+            <span class="ms-auto">
+              Visualizzare solo deleghe attive:
+              <p-toggleButton
+                  [(ngModel)]="activeDelegheDelegati"
+                  binary="true" onIcon="pi pi-check-circle" offIcon="pi pi-circle"
+                  (onChange)="filter(true,activeDelegheDelegati)"
+                  aria-label="visualizza solo le deleghe attive"
+                  ></p-toggleButton>
+            </span>
+          </div>
+        </ng-template>
+
+
+        <ng-template pTemplate="header">
+          <tr>
+            <!-- Codice Fiscale -->
+            <th pSortableColumn="pslpTUtente2.cfUtente">
+              <div class="flex justify-content-between align-items-center">
+                Codice fiscale
+                <p-sortIcon field="pslpTUtente2.cfUtente"></p-sortIcon>
+                <!-- <p-columnFilter type="text"
+                                field="pslpTUtente2.cfUtente"
+                                display="menu" class="ml-auto"></p-columnFilter> -->
+              </div>
+            </th>
+            <!-- Cognome -->
+            <th pSortableColumn="pslpTUtente2.cognome">
+              <div class="flex justify-content-between align-items-center">
+                Cognome
+                <p-sortIcon field="pslpTUtente2.cognome"></p-sortIcon>
+                <!-- <p-columnFilter type="text"
+                                field="pslpTUtente2.cognome"
+                                display="menu" class="ml-auto"></p-columnFilter> -->
+              </div>
+            </th>
+            <!-- Nome -->
+            <th pSortableColumn="pslpTUtente2.nome">
+              <div class="flex justify-content-between align-items-center">
+                Nome
+                <p-sortIcon field="pslpTUtente2.nome"></p-sortIcon>
+                <!-- <p-columnFilter type="text" field="pslpTUtente2.nome" display="menu" class="ml-auto"></p-columnFilter> -->
+              </div>
+            </th>
+            <!-- Tipo delega -->
+            <th pSortableColumn="pslpDTipoResponsabilita.descrTipoResponsabilita">
+              <div class="flex justify-content-between align-items-center">
+                Tipo delega
+                <!-- <p-sortIcon field="pslpDTipoResponsabilita.descrTipoResponsabilita"></p-sortIcon>
+                <p-columnFilter type="text" field="pslpDTipoResponsabilita.descrTipoResponsabilita" display="menu" class="ml-auto"></p-columnFilter> -->
+              </div>
+            </th>
+            <!-- Data inizio -->
+            <th pSortableColumn="dInizio">
+              <div class="flex justify-content-between align-items-center">
+                Data inizio
+                <p-sortIcon field="dInizio"></p-sortIcon>
+                <!-- <p-columnFilter type="date" field="dInizio" display="menu" class="ml-auto"></p-columnFilter> -->
+              </div>
+            </th>
+            <!-- Data fine -->
+            <th pSortableColumn="dFine">
+              <div class="flex justify-content-between align-items-center">
+                Data fine
+                <p-sortIcon field="dFine"></p-sortIcon>
+                <!-- <p-columnFilter type="date" field="dFine" display="menu" class="ml-auto"></p-columnFilter> -->
+              </div>
+          </th>
+
+            <th style="width: auto">Azioni</th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-delega>
+          <tr class="p-selectable-row">
+            <!-- Codice Fiscale -->
+            <td>
+              <span class="p-column-title">Codice fiscale</span>
+              {{delega.pslpTUtente2.cfUtente}}
+            </td>
+            <!-- Cognome -->
+            <td>
+              <span class="p-column-title">Cognome</span>
+              {{delega.pslpTUtente2.cognome}}
+            </td>
+            <!-- Nome -->
+            <td>
+              <span class="p-column-title">Nome</span>
+              {{delega.pslpTUtente2.nome}}
+            </td>
+            <!-- Tipo delega -->
+            <td>
+              <span class="p-column-title">Tipo delega</span>
+              {{delega.pslpDTipoResponsabilita.descrTipoResponsabilita}}
+            </td>
+            <!-- Data inizio -->
+            <td>
+                <span class="p-column-title">Data inizio</span>
+                {{delega.dInizio | date: 'dd/MM/yyyy'}}
+            </td>
+            <!-- Data fine -->
+            <td>
+                <span class="p-column-title">Data fine</span>
+                {{delega.dFine | date: 'dd/MM/yyyy'}}
+            </td>
+            <td >
+                <a pTooltip="visualizza la delega"  tooltipPosition="top" [attr.aria-label]="'visualizza la delega di '+delega.pslpTUtente1.cognome+' '+delega.pslpTUtente1.nome" (click)="viewDelega(delega)"><i class="fas fa-eye "></i></a>
+                <a pTooltip="elimina la delega"  tooltipPosition="top" [attr.aria-label]="'elimina la delega di '+delega.pslpTUtente1.cognome+' '+delega.pslpTUtente1.nome" (click)="deleteDelega(delega, true)"><i class="fas fa-trash-alt"></i></a>
+                <a pTooltip="seleziona la delega"  tooltipPosition="top" *ngIf="!mostraPrendereDelega(delega.dFine)" [attr.aria-label]="'seleziona la delega di '+delega.pslpTUtente1.cognome+' '+delega.pslpTUtente1.nome" (click)="selezionaDelega(delega)"><i class="fas fa-hand-pointer"></i></a>
+                <a pTooltip="visualizza la delega"  tooltipPosition="top" *ngIf="false" [attr.aria-label]="'seleziona la delega di '+delega.pslpTUtente1.cognome+' '+delega.pslpTUtente1.nome" (click)="attivaDelega(delega)"><i class="fas fa-redo-alt"></i></a>
+            </td>
+          </tr>
+        </ng-template>
+
+
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="8">Nessuna delega è stata trovata.</td>
+          </tr>
+        </ng-template>
+      </p-table>
+
+      <div class="d-flex my-3 justify-content-end gap-3">
+        <button aria-label="Aggiungi minore" pButton pRipple (click)="addDelega(true)" type="button" label="Aggiungi minore" class="p-button-outlined"></button>
+        <button aria-label="Aggiungi maggiorenne"  pButton pRipple (click)="addDelega()" type="button" label="Aggiungi maggiorenne" class="p-button-outlined"></button>
+      </div>
+
+    </ng-template>
+  </ngb-panel>
+
+<!-- ================================================ -->
+<!-- ================================================ -->
+<!-- ================================================ -->
+
+<ngb-panel title="PERSONE CHE POSSONO OPERARE PER ME" id="panelDelegati">
+  <ng-template ngbPanelContent let-opened="opened">
+    <!-- Persone che possono operare per me  -->
+    <p-table
+        #dy
+        [value]="delegheDelegantiFiltered | async"
+        dataKey="id"
+        styleClass="p-datatable-customers"
+        [rowHover]="true"
+
+        [rows]="10"
+        [showCurrentPageReport]="true"
+        [rowsPerPageOptions]="[10,25,50]"
+
+        [loading]="loadingDelegheDeleganti"
+        responsiveLayout="scroll"
+        [paginator]="true"
+        currentPageReportTemplate="{first} di {last}, su {totalRecords} righe"
+
+        [globalFilterFields]="['dFine']">
+
+
+      <ng-template pTemplate="caption">
+        <div class="table-header d-flex">
+          <span class="ms-auto">
+            Visualizzare solo deleghe attive:
+            <p-toggleButton
+                [(ngModel)]="activeDelegheDeleganti"
+                binary="true" onIcon="pi pi-check-circle" offIcon="pi pi-circle"
+                (onChange)="filter(false,activeDelegheDeleganti)"
+                aria-label="visualizza solo deleghe attive" ></p-toggleButton>
+          </span>
+        </div>
+      </ng-template>
+
+
+      <ng-template pTemplate="header">
+        <tr>
+          <!-- Codice Fiscale -->
+          <th pSortableColumn="pslpTUtente1.cfUtente">
+            <div class="flex justify-content-between align-items-center">
+              Codice fiscale
+              <p-sortIcon field="pslpTUtente1.cfUtente"></p-sortIcon>
+            </div>
+          </th>
+          <!-- Cognome -->
+          <th pSortableColumn="pslpTUtente1.cognome">
+            <div class="flex justify-content-between align-items-center">
+              Cognome
+              <p-sortIcon field="pslpTUtente1.cognome"></p-sortIcon>
+            </div>
+          </th>
+          <!-- Nome -->
+          <th pSortableColumn="pslpTUtente1.nome">
+            <div class="flex justify-content-between align-items-center">
+              Nome
+              <p-sortIcon field="pslpTUtente1.nome"></p-sortIcon>
+            </div>
+          </th>
+          <!-- Tipo delega -->
+          <th pSortableColumn="pslpDTipoResponsabilita.descrTipoResponsabilita">
+            <div class="flex justify-content-between align-items-center">
+              Tipo delega
+              <p-sortIcon field="pslpTUtente1.nome"></p-sortIcon>
+            </div>
+          </th>
+          <!-- Data inizio -->
+          <th pSortableColumn="dInizio">
+            <div class="flex justify-content-between align-items-center">
+              Data inizio
+              <p-sortIcon field="dInizio"></p-sortIcon>
+            </div>
+          </th>
+          <!-- Data fine -->
+          <th pSortableColumn="dFine">
+            <div class="flex justify-content-between align-items-center">
+              Data fine
+              <p-sortIcon field="dFine"></p-sortIcon>
+            </div>
+        </th>
+
+          <th style="width: auto">Azioni</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-delega>
+        <tr class="p-selectable-row">
+          <!-- Codice Fiscale -->
+          <td>
+            <span class="p-column-title">Codice fiscale</span>
+            {{delega.pslpTUtente1.cfUtente}}
+          </td>
+          <!-- Cognome -->
+          <td>
+            <span class="p-column-title">Cognome</span>
+            {{delega.pslpTUtente1.cognome}}
+          </td>
+          <!-- Nome -->
+          <td>
+            <span class="p-column-title">Nome</span>
+            {{delega.pslpTUtente1.nome}}
+          </td>
+          <!-- Tipo delega -->
+          <td>
+            <span class="p-column-title">Tipo delega</span>
+            {{delega.pslpDTipoResponsabilita.descrTipoResponsabilita}}
+          </td>
+          <!-- Data inizio -->
+          <td>
+              <span class="p-column-title">Data inizio</span>
+              {{delega.dInizio | date: 'MM/dd/yyyy'}}
+          </td>
+          <!-- Data fine -->
+          <td>
+              <span class="p-column-title">Data fine</span>
+              {{delega.dFine | date: 'MM/dd/yyyy'}}
+          </td>
+          <td >
+              <button pTooltip="visualizza la delega"  tooltipPosition="top" [attr.aria-label]="'visualizza la delega di '+delega.pslpTUtente1.cognome+' '+delega.pslpTUtente1.nome" pButton (click)="viewDelega(delega)" type="button" class="p-button-rounded p-button-text"><i class="fas fa-eye icon-table"></i></button>
+              <button pTooltip="elimina la delega"  tooltipPosition="top" [attr.aria-label]="'elimina la delega di '+delega.pslpTUtente1.cognome+' '+delega.pslpTUtente1.nome" pButton (click)="deleteDelega(delega)" type="button" class="p-button-rounded p-button-danger p-button-text"><i class="fas fa-trash-alt icon-table"></i></button>
+          </td>
+        </tr>
+      </ng-template>
+
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="8">Nessuna delega è stata trovata.</td>
+        </tr>
+      </ng-template>
+    </p-table>
+
+  </ng-template>
+</ngb-panel>
+
+
+
+<p-confirmDialog
+    [style]="{width: '50vw'}"
+    [baseZIndex]="10000"
+    rejectButtonStyleClass="p-button-text"></p-confirmDialog>
+<p-toast position="bottom-right" ></p-toast>

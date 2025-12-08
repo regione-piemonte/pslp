@@ -1,0 +1,83 @@
+<!--
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ -->
+<ngb-accordion #accordionDeleghe activeIds="panelDeleghe"
+  id="accordion-deleghe" [closeOthers]="false" [destroyOnHide]="false">
+  <ngb-panel title="DATI DELEGA" id="panelDeleghe">
+    <ng-template ngbPanelContent let-opened="opened">
+      <div class="container">
+        <!-- Delegato -->
+        <p-card>
+          <h4 class="m-0 mb-3">Delegato</h4>
+
+          <div class="row">
+            <div class="mb-5 col-sm-12 col-md-4">
+              <h5>Codice fiscale</h5>
+              <p pInputText class="form-control disabled">{{delegato.cfUtente}}</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="mb-5 col-sm-12 col-md-6">
+              <h5>Cognome</h5>
+              <p pInputText class="form-control disabled">{{delegato.cognome}}</p>
+            </div>
+            <div class="mb-5 col-sm-12 col-md-6">
+              <h5>Nome</h5>
+              <p pInputText class="form-control disabled">{{delegato.nome}}</p>
+            </div>
+          </div>
+
+          <div class="row mt-3">
+            <div class="mb-5 col-sm-12 col-md-3">
+              <h5>Tipo delega</h5>
+              <p pInputText class="form-control disabled">{{delega.pslpDTipoResponsabilita.descrTipoResponsabilita}}</p>
+            </div>
+            <div class="mb-5 col-sm-12 col-md-3">
+              <h5>Data inizio</h5>
+              <p pInputText class="form-control disabled">{{delega.dInizio| date: 'dd/MM/yyyy'}}</p>
+            </div>
+            <div class="mb-5 col-sm-12 col-md-3">
+              <h5>Data fine</h5>
+              <p pInputText class="form-control disabled">{{delega.dFine| date: 'dd/MM/yyyy'}}</p>
+            </div>
+          </div>
+
+
+        </p-card>
+        <div class="row mt-5"></div>
+        <!-- Delegante -->
+        <p-card>
+          <h4  class="m-0 mb-3">Delegante</h4>
+
+          <div class="row">
+            <div class="mb-5 col-sm-12 col-md-4">
+              <h5>Codice fiscale</h5>
+              <p pInputText class="form-control disabled">{{delegante.cfUtente}}</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="mb-5 col-sm-12 col-md-6">
+              <h5>Cognome</h5>
+              <p pInputText class="form-control disabled">{{delegante.cognome}}</p>
+            </div>
+            <div class="mb-5 col-sm-12 col-md-6">
+              <h5>Nome</h5>
+              <p pInputText class="form-control disabled">{{delegante.nome}}</p>
+            </div>
+          </div>
+        </p-card>
+
+        <div class="row mt-8">
+          <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3">
+            <button type="button" class="btn btn-outline-primary btn-lg" (click)="indietro()">INDIETRO</button>
+          </div>
+        </div>
+
+      </div>
+    </ng-template>
+  </ngb-panel>
+</ngb-accordion>

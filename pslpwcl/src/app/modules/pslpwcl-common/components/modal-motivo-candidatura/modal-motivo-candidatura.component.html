@@ -1,0 +1,28 @@
+<!--
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ -->
+<div class="modal-header">
+    <h4 class="modal-title">{{ title }}</h4>
+</div>
+
+<div class="modal-body">
+    <div class="form-group">
+        <label for="select">Scegli un'opzione</label>
+        <p-dropdown inputId="stato" [emptyMessage]="'Nessun dato trovato'" [autoDisplayFirst]="false" [options]="motivi"
+            class="p-form-select" placeholder="Seleziona" optionLabel="descr" optionValue="id"
+            [(ngModel)]="selectedValue"
+            labelForId="stato"
+            ariaLabel="Seleziona il motivo">
+        </p-dropdown>
+
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button type="button" class="btn btn-outline-secondary" (click)="annulla()">NO</button>
+    <button type="button" class="btn btn-primary" [disabled]="!selectedValue" (click)="conferma()">SÌ</button>
+</div>

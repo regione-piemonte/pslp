@@ -1,0 +1,89 @@
+<!--
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ -->
+
+<form [formGroup]="form">
+<div class="container py-3">
+<div class="d-flex flex-wrap mb-5 gap-5">
+  <span class="p-float-label">
+    <input id="float-input"
+          style="min-width: 30rem;
+                 text-transform: uppercase;"
+          type="text"
+          formControlName="codiceFiscale"
+          pInputText
+          maxlength="16">
+    <label for="float-input">Codice fiscale*</label>
+  </span>
+  <button type="button"
+          class="btn btn-primary "
+          (click)="onCerca()">
+    CERCA SOGGETTO</button>
+</div>
+<!-- Messaggio -->
+<div role="alert" *ngIf="messaggioErrore"
+     class="alert alert-danger ng-star-inserted">
+  
+    <span style="font-size: medium;">
+      <strong>{{titoloErrore}}. </strong>
+    </span>
+  
+  <span  [innerHTML]="messaggioErrore"></span>
+</div>
+
+<!-- <div *ngIf="messaggioErrore" class="text-danger mb-4">
+  <p>{{titoloErrore}}</p>
+  <p>{{messaggioErrore}}</p>
+</div> -->
+
+<div class="d-flex flex-wrap gap-5 mb-5">
+  <span class="p-float-label">
+    <input id="nome" class="input-agg-delega" type="text" formControlName="nome" pInputText>
+    <label for="nome">Nome*</label>
+  </span>
+  <span class="p-float-label">
+    <input id="cognome" class="input-agg-delega" type="text" formControlName="cognome" pInputText>
+    <label for="cognome">Cognome*</label>
+  </span>
+  <span class="p-float-label">
+    <input id="dataNascita" class="input-agg-delega" type="text" formControlName="dataNascita" pInputText>
+    <label for="dataNascita">Data di nascita*</label>
+  </span>
+</div>
+
+<div class="row">
+  <label for="tipoDelega">Tipo delega</label>
+  <p-dropdown inputId="tipo_delega"
+              [autoDisplayFirst]="false"
+              [options]="tipoResponsabilitaList"
+              formControlName="tipoDelega"
+              optionLabel="descrTipoResponsabilita"
+              class="ng-invalid ng-dirty input-agg-delega"
+              placeholder="tipo delega*"
+              ariaLabel="tipo delega"
+              [disabled]="tipoDelega"
+              >
+  </p-dropdown>
+</div>
+
+</div>
+</form>
+
+
+<div class="row mt-8">
+  <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3">
+    <button type="button" class="btn btn-outline-primary btn-lg" (click)="indietro()">INDIETRO</button>
+  </div>
+  <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 mt-3 mb-3 text-right">
+    <button type="button"
+            class="btn btn-primary btn-lg"
+            (click)="onSalva()"
+            [disabled]="!(tipoResponsabilitaIsCompiled && isUtenteFound)">
+            <!-- [hidden]="isDettaglio" -->
+            SALVA</button>
+  </div>
+</div>

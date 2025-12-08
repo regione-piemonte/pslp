@@ -1,0 +1,359 @@
+<!--
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ -->
+<div class="modal-header">
+    <h4 class="modal-title" id="modal-annulla-title">Esperienza Lavoro</h4>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div class="modal-body">
+
+
+<form [formGroup]="form" >
+    <div class="card-mb-5">
+    <div class="card-body">
+
+    <ul ngbNav [roles]="false" #nav="ngbNav" class="nav-tabs">
+    <li [ngbNavItem]="0">
+
+    <a ngbNavLink>Informazioni generali</a>
+    <ng-template ngbNavContent>
+
+    <div class="mt-3 row">
+      <ng-container formGroupName="lavEsperienzaLavoro">
+
+        <!-- D inizio/Fine & durata -->
+        <div class="row">
+          <div class="mb-5 col-sm-12 col-md-3">
+            <label for="dataAssunzione">Data inizio</label>
+            <input type="text" pInputText class="form-control"
+                  formControlName="dataInizio" id="dataAssunzione" aria-label="data assunzione">
+          </div>
+
+          <div class="mb-5 col-sm-12 col-md-3">
+            <label for="dataCessazione">Data fine</label>
+            <input type="text" pInputText class="form-control"
+                  formControlName="dataFine" id="dataCessazione" aria-label="data cessazione">
+          </div>
+
+          <div class="mb-5 col-sm-12 col-md-2">
+            <label for="numGgDurata">Durata (gg.)</label>
+            <input type="text" pInputText class="form-control"
+                  formControlName="numGgDurata" id="numGgDurata" aria-label="durata dell'esperienza in giorni">
+          </div>
+        </div>
+
+        <!-- Tipo & Forma -->
+        <div class="row">
+          <div formGroupName="silTTipoLavoro" class="mb-5 col-sm-12 col-md-6">
+            <label for="tipoLavoro">Tipo</label>
+            <input type="text" pInputText class="form-control"
+            formControlName="dsSilTTipoLavoro" id="idSilTTipoLavoro" aria-label="tipo lavoro">
+          </div>
+
+          <div class="mb-5 col-sm-12 col-md-3">
+            <label for="forma">Forma<span class="oblg">*</span></label>
+            <input type="text" pInputText class="form-control"
+            formControlName="flgForma" id="flgForma" aria-label="tipo lavoro">
+          </div>
+        </div>
+
+        <!-- Denominazione & SoggPromotre -->
+        <div class="row">
+          <div class="mb-5 col-sm-12 col-md-6">
+            <label for="denominazione">Denominazione</label>
+            <input type="text"  pInputText class="form-control"
+                  formControlName="dsDenominazioneRp" id="denominazione" maxlength="300" aria-label="denominazione soggetto promotore">
+          </div>
+          <div class="mb-5 col-sm-12 col-md-3">
+            <label for="soggPromotore">Soggetto promotore</label>
+            <input type="text"  pInputText aria-label="descrizione soggetto promotore" class="form-control"
+                  formControlName="dsSoggettoPromotore" id="soggPromotore" maxlength="150">
+          </div>
+        </div>
+
+        <!-- Tipo apprendistato & data fine periodo formativo -->
+        <div class="row">
+          <div formGroupName="silTTipoApprendistato" class="mb-5 col-sm-12 col-md-6">
+            <label for="tipoApprendistato">Tipo apprendistato</label>
+            <input type="text"  pInputText  aria-label="descrizione soggetto promotore" class="form-control"
+            formControlName="dsSilTTipoApprendistato" id="tipoApprendistato" maxlength="150">
+          </div>
+          <div class="mb-5 col-sm-12 col-md-3">
+            <label for="dataFinePeriodoFormativo">Data fine periodo formativo</label>
+            <input type="text"  pInputText aria-label="Data fine periodo formativo" class="form-control"
+                  formControlName="dataFinePeriodoFormativo" id="dataFinePeriodoFormativo">
+          </div>
+        </div>
+
+        <!-- TipoPartT & Modalità Lavoro & N.Ore & Stagionale -->
+        <div class="row">
+          <div formGroupName="tipoParttime" class="mb-5 col-sm-12 col-md-3">
+            <label for="tipoParttime">Tipo part-time</label>
+            <input type="text"  pInputText aria-label="Tipo part-time" class="form-control"
+                  formControlName="dsSilTTipoParttime" id="dataFinePeriodoFormativo">
+          </div>
+
+          <div class="mb-5 col-sm-12 col-md-3" formGroupName="silTModalitaLavoro">
+            <label for="modalitaLavoro">Modalità lavoro</label>
+            <input type="text"  pInputText aria-label="Modalità lavoro" class="form-control"
+                  formControlName="descrModalitaLavoro" id="idSilTModalitaLavoro">
+          </div>
+          <div class="mb-5 col-sm-12 col-md-2">
+            <label for="numOreParttime">N.ore</label>
+            <input type="text"  pInputText class="form-control"
+                formControlName="numOreParttime" id="numOreParttime" aria-label="numero ore part-time">
+          </div>
+          <div class="mb-5 col-sm-12 col-md-2 ml-2">
+              <label>Stagionale</label><br>
+              <div class="mb-3 col-auto form-check form-check-inline">
+                <input pInputText class="form-control" name="flgStagionale" formControlName="flgStagionale" [value]="'S'"
+                    type="text" id="flgSiStagionale" aria-label="lavoro stagionale">
+              </div>
+          </div>
+        </div>
+
+        <!-- Qualifica professionale ISTAT& Grado  -->
+        <div class="row">
+          <div formGroupName="silTQualifica" class="mb-5 col-sm-12 col-md-6">
+            <label for="qualifica">Qualifica professionale ISTAT</label>
+            <input type="text"  pInputText class="form-control"
+                formControlName="dsSilTQualifica" id="idSilTQualifica" aria-label="Qualifica professionale ISTAT">
+          </div>
+          <div formGroupName="silTGrado" class="mb-5 col-sm-12 col-md-3">
+            <label for="grado">Grado</label>
+            <input type="text"  pInputText class="form-control"
+                formControlName="dsSilTGrado" id="idSilTGrado" aria-label="grado">
+          </div>
+        </div>
+
+        <!-- CCNL & Retribuzione Ann -->
+        <div class="row">
+          <div formGroupName="silTCcnl" class="mb-5 col-sm-12 col-md-6">
+            <label for="ccnl">CCNL</label>
+            <input type="text"  pInputText class="form-control"
+                formControlName="descr" id="idCcnl" aria-label="grado">
+          </div>
+
+          <div class="mb-5 col-sm-12 col-md-6">
+            <label for="retribuzione">Retribuzione lorda annuale</label>
+            <input type="text" pInputText formControlName="retribuzione" style="width: 100%;margin-top: 3.75px; margin-left: 7.5px;"
+                  id="retribuzione" maxlength="9" pslpwclOnlyNumber aria-labelledby="retribuzione">
+          </div>
+        </div>
+
+        <!-- Mansione -->
+        <div class="row">
+          <div class="mb-5 col-sm-12 col-md-6">
+            <label for="dsMansione">Mansione</label>
+            <textarea pInputTextarea formControlName="dsMansione" style="margin-left: 7.5px;"
+                    id="dsMansione" maxlength="250" rows="3" aria-label="descrizione mansioni">
+              </textarea>
+          </div>
+        </div>
+
+        <!-- insCV & L68 & RespPers & inMoblt & Agric-->
+        <div class="row">
+          <!-- <div class="mb-5 col-sm-12 col-md-3">
+            <label>Inserimento CV</label>
+            <div class="mb-3 col-auto form-check form-check-inline">
+
+              <input pInputText class="form-control" name="flgCv" formControlName="flgCv" [value]="'S'"
+              type="text" id="flgCv" aria-label="inserimento CV">
+            </div>
+          </div> -->
+          <div class="mb-5 col-sm-12 col-md-3">
+            <label>Assunzione L.68</label>
+            <div class="mb-3 col-auto form-check form-check-inline">
+              <input pInputText class="form-control" name="flgAssunzioneL68" formControlName="flgAssunzioneL68" [value]="'S'"
+              type="text" id="flgAssunzioneL68" aria-label="iassunto con legge 68">
+            </div>
+          </div>
+          <div class="mb-5 col-sm-12 col-md-3">
+            <label>Responsabilità altre persone</label>
+            <div class="mb-3 col-auto form-check form-check-inline">
+              <input pInputText class="form-control" name="flgResponPers" formControlName="flgResponPers" [value]="'S'"
+              type="text" id="flgResponPers" aria-label="responsabilità su altre persone">
+
+            </div>
+          </div>
+          <div class="mb-5 col-sm-12 col-md-3">
+            <label>In mobilità</label>
+            <div class="mb-3 col-auto form-check form-check-inline">
+
+              <input pInputText class="form-control" name="flgLavInMobilita" formControlName="flgLavInMobilita" [value]="'S'"
+              type="text" id="flgLavInMobilita" aria-label="lavoro in mobilità">
+            </div>
+          </div>
+          <div class="mb-5 col-sm-12 col-md-3">
+            <label>Lavoro agricoltura</label>
+            <div class="mb-3 col-auto form-check form-check-inline">
+              <input pInputText class="form-control" name="flgLavoroAgricoltura" formControlName="flgLavoroAgricoltura" [value]="'S'"
+              type="text" id="flgLavoroAgricoltura" aria-label="lavoro nell'agricoltura">
+            </div>
+          </div>
+        </div>
+
+      </ng-container>
+
+    </div>
+
+    </ng-template>
+    </li>
+
+
+    <li [ngbNavItem]="1">
+
+    <a ngbNavLink>Datore-Azienda</a>
+    <ng-template ngbNavContent>
+    <ng-container formGroupName="lavEsperienzaLavoro">
+
+    <div class="mt-3 row">
+      <span class="mb-3 title"><h4>DATORE DI LAVORO</h4></span>
+
+      <!-- Denominazione & codice fiscale -->
+      <div class="row">
+        <div class="mb-5 col-sm-12 col-md-6">
+          <label for="denominazione">Denominazione</label>
+          <input type="text" pInputText oninput="this.value = this.value.toUpperCase()" style="width: 100%; margin-top: 3.75px;"
+            formControlName="dsDenominazioneDl" id="denominazione" maxlength="70" aria-label="denominazione datore di lavoro">
+        </div>
+        <div class="mb-5 col-sm-12 col-md-3">
+          <label for="codiceFiscaleDl">Codice fiscale</label>
+          <input type="text" pInputText oninput="this.value = this.value.toUpperCase().trim()" style="width: 100%; margin-top: 3.75px; margin-left: 7.5px;"
+            formControlName="codFiscaleDl" id="codiceFiscaleDl" maxlength="16" aria-label="codice fiscale datore di lavoro">
+        </div>
+      </div>
+
+      <!-- Attivita -->
+      <div class="row">
+        <div formGroupName="silTAteco02" class="mb-5 col-sm-12 col-md-9">
+          <label for="attivitaDl">Attività</label>
+          <input type="text"  pInputText class="form-control"
+          formControlName="descrSilTAteco02" id="idSilTAteco02" aria-label="Attività">
+        </div>
+      </div>
+
+      <!-- Luogo & Comune & Stato estero -->
+      <div class="row">
+        <div formGroupName="silTComuneDl" class="mb-5 col-sm-12 col-md-3">
+          <label for="comuneDl">Comune</label>
+          <input type="text"  pInputText class="form-control"
+          formControlName="descr" id="idComune" aria-label="comune">
+        </div>
+        <div formGroupName="silTNazioneDl" class="mb-5 col-sm-12 col-md-3">
+          <label for="statoEsteroDl">Stato estero</label>
+          <input type="text"  pInputText class="form-control"
+          formControlName="dsSilTNazione" id="statoEsteroDl" aria-label="comune">
+        </div>
+      </div>
+
+      <!-- Toponimo & indirizzo & numero civico -->
+      <div class="row">
+        <div class="mb-5 col-sm-12 col-md-6">
+          <label for="indirizzoDl">Indirizzo</label>
+          <input type="text" pInputText oninput="this.value = this.value.toUpperCase()" style="width: 100%; margin-top: 3.75px; margin-left: 7.5px;"
+              formControlName="dsIndirizzoDl" id="indirizzoDl" maxlength="100" aria-label="indirizzo datore di lavoro">
+        </div>
+
+      </div>
+    </div>
+
+    <div class="mt-3 row">
+    <span class="mb-3 title"><h4>LUOGO DI LAVORO</h4></span>
+    <!-- Luogo & Comune & Stato estero -->
+    <div class="row">
+
+      <div formGroupName="silTComuneLuogoLav" class="mb-5 col-sm-12 col-md-3">
+        <label for="comuneLav">Comune</label>
+        <input type="text"  pInputText class="form-control"
+        formControlName="descr" id="comuneLav" aria-label="comune lavoro">
+      </div>
+      <div formGroupName="silTNazioneLuogoLav" class="mb-5 col-sm-12 col-md-3">
+        <label for="statoEsteroLav">Stato estero</label>
+        <input type="text"  pInputText class="form-control"
+        formControlName="dsSilTNazione" id="statoEsteroLav" aria-label="comune lavoro">
+      </div>
+    </div>
+
+    <!-- Toponimo & indirizzo & numero civico -->
+    <div class="row">
+      <div class="mb-5 col-sm-12 col-md-6">
+        <label for="indirizzoLav">Indirizzo</label>
+        <input type="text" pInputText oninput="this.value = this.value.toUpperCase()" style="width: 100%; margin-top: 3.75px; margin-left: 7.5px;"
+          formControlName="dsIndirizzoLuogoLav" id="indirizzoLav" maxlength="100" aria-label="indirizzo luogo di lavoro">
+      </div>
+    </div>
+    </div>
+
+    <div class="mt-3 row">
+    <span class="mb-3 title"><h4>AZIENDA UTILIZZATRICE</h4></span>
+
+    <!-- Denominazione & codice fiscale -->
+    <div class="row">
+      <div class="mb-5 col-sm-12 col-md-6">
+        <label for="denominazioneAu">Denominazione</label>
+        <input type="text" pInputText oninput="this.value = this.value.toUpperCase()" style="width: 100%; margin-top: 3.75px;"
+            formControlName="dsDenominazioneAu" id="denominazioneAu" maxlength="70" aria-label="denominazione azienda utilizzatrice">
+      </div>
+      <div class="mb-5 col-sm-12 col-md-3">
+        <label for="codiceFiscaleAu">Codice fiscale</label>
+        <input type="text" pInputText oninput="this.value = this.value.toUpperCase().trim()" style="width: 100%; margin-top: 3.75px; margin-left: 7.5px;"
+            formControlName="codFiscaleAu" id="codiceFiscale" maxlength="16" aria-label="codice fiscale azienda utilizzatrice">
+      </div>
+    </div>
+
+    <!-- Attivita -->
+    <div class="row">
+      <div formGroupName="silTAtecoAu" class="mb-5 col-sm-12 col-md-9">
+        <label for="attivitaAu">Attività</label>
+        <input type="text"  pInputText class="form-control"
+        formControlName="descrSilTAteco02" id="silTAteco02" aria-label="attivita">
+      </div>
+    </div>
+
+    <!-- Luogo & Comune & stato -->
+    <div class="row">
+      <div formGroupName="silTComuneAu" class="mb-5 col-sm-12 col-md-3">
+        <label for="comuneAu">Comune</label>
+        <input type="text"  pInputText class="form-control"
+        formControlName="descr" id="idComuneAz" aria-label="comune azienda">
+      </div>
+      <div formGroupName="silTNazioneAu" class="mb-5 col-sm-12 col-md-3">
+        <label for="statoEsteroAu">Stato estero</label>
+        <input type="text"  pInputText class="form-control"
+        formControlName="dsSilTNazione" id="statoEsteroAu" aria-label="comune azienda">
+      </div>
+    </div>
+
+    <!-- Toponimo & indirizzo & numero civico -->
+    <div class="row">
+      <div class="mb-5 col-sm-12 col-md-6">
+        <label for="indirizzoAu">Indirizzo</label>
+        <input type="text" pInputText oninput="this.value = this.value.toUpperCase()"  style="width: 100%; margin-top: 3.75px; margin-left: 7.5px;"
+            formControlName="dsIndirizzoAu" id="indirizzoAu" maxlength="100" aria-label="indirizzo dell'azienda utilizzatrice ">
+      </div>
+    </div>
+    </div>
+
+    </ng-container>
+    </ng-template>
+    </li>
+
+
+    </ul>
+
+
+
+    <div [ngbNavOutlet]="nav" class="mt-2"></div>
+
+    </div>
+    </div>
+    </form>
+  </div>

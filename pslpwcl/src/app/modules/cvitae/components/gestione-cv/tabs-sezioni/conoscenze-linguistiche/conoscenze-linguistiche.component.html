@@ -1,0 +1,237 @@
+<!--
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ -->
+<ngb-accordion #acc="ngbAccordion" activeIds="lingueFascicolo,lingueCv">
+  <ngb-panel title="{{messaggioConoscenzaLingFasc?.testo}}" id="lingueFascicolo">
+    <ng-template ngbPanelContent>
+      <div class="table-container">
+        <p-table
+    #dt
+    [value]="linguaStranieraFiltrateList"
+    dataKey="id"
+    styleClass="p-datatable-customers"
+    [rowHover]="true"
+
+    [rows]="5"
+    [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[5,10,25,50]"
+
+    [loading]="false"
+    responsiveLayout="scroll"
+    [paginator]="true"
+    currentPageReportTemplate="{first} di {last}, su {totalRecords} righe">
+    <ng-template pTemplate="header">
+            <tr>
+              <th>Lingua</th>
+              <th>Letta</th>
+              <th>Scritta</th>
+              <th>Parlata</th>
+              <th>Modalità di apprendimento</th>
+              <th>Certificato</th>
+              <th>Azione</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-linguaStraniera >
+            <ng-container *ngIf="linguaStranieraFiltrateList?.length; else noData">
+              <tr>
+                <td class="align-middle">{{linguaStraniera?.lingua?.descr }}</td>
+                <td class="align-middle">{{linguaStraniera?.letto?.descr}}</td>
+                <td class="align-middle">{{linguaStraniera?.scritto?.descr}}</td>
+                <td class="align-middle">{{linguaStraniera?.parlato?.descr}}</td>
+                <td class="align-middle">{{linguaStraniera?.modalitaApprendimento?.descr}}</td>
+                <td class="align-middle">{{linguaStraniera?.certificato ? "Si": "No"}}</td>
+                <td class="align-middle"  style="min-width: 90px;">
+                  <a tabindex="0" style="color: #016CB4" aria-label="Azione: visualizzare dettaglio lingua"
+                  (click)="visualizzaLinguaStranieraFascicolo(linguaStraniera)" title="Visualizzare dettaglio lingua">
+                  <i class="fas fa-eye"></i></a>
+                    <a tabindex="0" style="color: #016CB4" aria-label="Azione: aggiunge lingua al CV"
+                  (click)="inserisciLinguaDaFascicolo(linguaStraniera)" title="Aggiungere lingua al CV" *ngIf="canModifica">
+                  <i class="fas fa-file-download"></i>
+                </a>
+                </td>
+              </tr>
+            </ng-container>
+          </ng-template>
+          
+        <ng-template pTemplate="emptymessage">
+          <tr>
+              <td colspan="7">
+                {{messaggioNonCiSonoDati?.testo}}
+              </td>
+          </tr>
+      </ng-template>
+        </p-table>
+      </div>
+    </ng-template>
+  </ngb-panel>
+  <ngb-panel title="{{messaggioConoscenzaLingCv?.testo}}" id="lingueCv">
+    <ng-template ngbPanelContent>
+
+      <!-- Lingue madri -->
+      <p-card header="LINGUE MADRI">
+        <!-- Tabella -->
+        <div class="row">
+          <div class="col">
+            <table class="mt-3 mb-5 scrollbar-table scrollbar-primary">
+              <thead>
+                <tr>
+                  <th>Elenco lingue madri </th>
+                  <th *ngIf="canModifica">Azione</th>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngIf="lingueMadriList?.length; else noData">
+                  <tr *ngFor="let linguaMadre of lingueMadriList">
+                    <td>{{linguaMadre.codLingua.descrLingua}}</td>
+
+                    <td class="col-md-1">
+                      <a tabindex="0" (click)="eliminaLinguaMadre(linguaMadre)"
+                        aria-label="Azione: eliminare lingua madre" title="Eliminare lingua madre"
+                        *ngIf="canModifica"
+                        >
+                        <i class="fas fa-trash-alt"></i>
+                      </a>
+                    </td>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="row mb-5">
+          <div class="col-8" *ngIf="canModifica">
+            <button type="submit" class="btn btn-primary ml-auto btn-lg" (click)="toggleFormLinguaMadre(false)" (keydown.enter)="toggleFormLinguaMadre(false)"
+              aria-label="inserire lingua madre">INSERISCI LINGUA MADRE</button>
+          </div>
+        </div>
+        <div class="row mb-5" *ngIf="showFormLinguaMadre && canModifica" [formGroup]="formLinguaMadre">
+          <div *ngIf="!isEliminaLinguaMadre">
+            <span>INSERISCI LINGUA MADRE</span>
+            <p-dropdown inputId="lingua" [emptyMessage]="'Nessun dato trovato'" [autoDisplayFirst]="false"
+              [options]="linguaDecodificheFiltrate" formControlName="lingua" ariaLabel="seleziona lingua"
+              class=" p-form-select" placeholder="" optionLabel="descr" optionValue="id">
+            </p-dropdown>
+          </div>
+          <div class="col-auto mt-3">
+            <button type="submit" class="btn btn-primary ml-auto btn-lg" (click)="inserisciEliminaLinguaMadre()"
+              aria-label="salva i dati inseriti" [disabled]="formLinguaMadre.invalid">CONFERMA</button>
+          </div>
+        </div>
+      </p-card>
+
+      <!-- Tabella Elenco lingue -->
+      <div class="table-container mt-5">
+        <table class="table table-bordered table-striped table-hover table-sortable" id="infoTableLingue">
+          <thead>
+            <tr>
+              <th>Lingua</th>
+              <th>Livello</th>
+              <th>Certificazione</th>
+              <th>Tipo certificazione</th>
+              <th>Azione</th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngIf="linguaStranieraCvList?.length; else noData">
+              <tr *ngFor="let linguaStraniera of linguaStranieraCvList">
+                <td class="align-middle">{{linguaStraniera?.codLingua?.descrLingua }}</td>
+                <td class="align-middle">{{linguaStraniera?.codGradoConLingua?.descrGradoConLingua}}</td>
+                <td class="align-middle">{{linguaStraniera?.flgCertificazioneAcquisita=="S" ? "Si": "No"}}</td>
+                <td class="align-middle">{{linguaStraniera?.tipoCertificazione}}</td>
+
+                <td class="align-middle" style="min-width: 90px;">
+                  <a tabindex="0" (click)="patchForm(linguaStraniera,'v')"
+                    (keydown.enter)="patchForm(linguaStraniera,'v')" style="color: #016CB4"
+                    aria-label="Azione: visualizzare dettaglio lingua" title="Visuallizzare lingua" >
+                    <i class="fas fa-eye"></i>
+                  </a>
+                  <a tabindex="0" (click)="patchForm(linguaStraniera,'m')"
+                    (keydown.enter)="patchForm(linguaStraniera,'m')" style="color: #016CB4"
+                    aria-label="Azione: modificare lingua" title="Modificare lingua" *ngIf="canModifica">
+                    <i class="fas fa-edit"></i>
+                  </a>
+                  <a   (click)="onClickEliminaLinguaCv(linguaStraniera)"  class="p-button-rounded p-button-text" 
+                  aria-label="Azione: eliminare lingua" title="Eliminare lingua" *ngIf="canModifica">
+                    <i class="fas fa-trash-alt"></i></a>
+                </td>
+              </tr>
+            </ng-container>
+            <ng-template #noData>
+              <tr>
+                <td colspan="6">Non ci sono dati</td>
+              </tr>
+            </ng-template>
+          </tbody>
+        </table>
+      </div>
+      <button type="button" class="btn btn-primary btn-lg" (click)="onInsertLingua()" *ngIf="canModifica">INSERISCI LINGUA</button>
+      <div *ngIf="showForm">
+        <div class="mt-3 row">
+          <h3>DETTAGLIO LINGUE STRANIERE CONOSCIUTE</h3>
+          <form [formGroup]="form">
+            <div class="row">
+              <!-- lingua -->
+
+              <div class="mb-5 col-sm-12 col-md-5" >
+                <label for="lingua">Lingua<span class="oblg">*</span></label>
+                <p-dropdown inputId="lingua" [emptyMessage]="'Nessun dato trovato'" [autoDisplayFirst]="false"
+                  [options]="!!linguaSelected?linguaDecodifiche:linguaDecodificheFiltrate" formControlName="lingua" ariaLabel="seleziona lingua"
+                  class=" p-form-select" placeholder="" optionLabel="descr" optionValue="id">
+                </p-dropdown>
+              </div>
+
+              <!-- Livello -->
+              <div class="mb-5 col-sm-12 col-md-6">
+                <label for="livello">Livello<span class="oblg">*</span></label>
+                <p-dropdown inputId="livello" ariaLabel="grado competenza di lettura"
+                  [emptyMessage]="'Nessun dato trovato'" [autoDisplayFirst]="false" [options]="gradoConoscenzaLingua"
+                  formControlName="livello" class=" p-form-select" placeholder="" optionLabel="descr" optionValue="id">
+                </p-dropdown>
+              </div>
+
+              
+              <!-- certificato -->
+              <div class="mb-5 col-8 col-md-4">
+                <label for="flgCertificato">Certificato</label>
+                <input type="checkbox" id="flgCertificato" aria-label="con certificazione"
+                  formControlName="flgCertificato" class="form-check-input"
+                  (change)="onCertificatoChange($event)">
+              </div>
+
+              <!-- Tipo certificato -->
+              <div class="mb-5 col-8 col-md-6">
+                <label for="tipoCertificazione">Tipo certificazione</label>
+                <input type="text" id="tipoCertificazione" maxlength="100" aria-label="tipo certificazione" pInputText
+                  class="form-control" formControlName="tipoCertificazione"
+                  >
+              </div>
+
+            </div>
+            <div class="row">
+              <div class="col mt-3">
+                <button type="button" (click)="toggleForm()" class="btn btn-outline-secondary btn-sm"
+                  aria-label="annulla inserimento">ANNULLA</button>
+              </div>
+              <div class="col-auto mt-3">
+                <button type="submit" [disabled]="!form?.valid" *ngIf="canModifica" (click)="inserisciAggiornaLingua()"
+                  class="btn btn-primary ml-auto btn-lg" aria-label="conferma inserimento dati">CONFERMA</button>
+              </div>
+            </div>
+
+          </form>
+
+
+        </div>
+
+      </div>
+    </ng-template>
+  </ngb-panel>
+</ngb-accordion>
+
+<ng-template #noData>
+  Non ci sono dati
+</ng-template>

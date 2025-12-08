@@ -1,0 +1,44 @@
+<!--
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ -->
+<!-- <div class="mt-5" [innerHTML]="messaggioGenerale | escapeHtml"></div> -->
+
+<div class="mt-5"  [innerHTML]="privacy?.dsTestata | escapeHtml">
+  <!-- <p [align]="'center'">
+    <span style="font-size: xx-large;">
+      <strong style="font-size: x-large;">{{messaggio?.intestazione}}</strong>
+    </span>
+  </p> -->
+
+  <p [align]="'center'">&nbsp;</p>
+</div>
+
+
+
+<div class="card m-0 mt-2">
+  <div [innerHTML]="privacy?.dsSunto | escapeHtml"></div>
+  <ng-template [ngIf]="privacy?.dsDettaglio">
+    <p-accordion>
+      <p-accordionTab header="Leggi tutto">
+        <div [innerHTML]="privacy?.dsDettaglio | escapeHtml"></div>
+      </p-accordionTab>
+    </p-accordion>
+
+  </ng-template>
+</div>
+
+
+
+<div class="md-checkbox md-radio-inline mt-5">
+  <input type="checkbox" id="informativa"
+        [checked]="isReady" [disabled]="isReady"
+        (click)="onCheckInformativaPrivacy()"
+        onkeypress="">
+  <label for="informativa">
+    Dichiaro di aver preso visione dell'informativa sul trattamento dei dati personali
+  </label>
+</div>

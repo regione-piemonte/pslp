@@ -1,0 +1,200 @@
+<!--
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ -->
+
+
+<form [formGroup]="form" (change)="onChangeForm()" >
+<div class="card-mb-5">
+<div class="card-body">
+
+<ul ngbNav [roles]="false" #nav="ngbNav" class="nav-tabs">
+<li [ngbNavItem]="0">
+
+<a ngbNavLink>Informazioni generali</a>
+<ng-template ngbNavContent>
+
+<div class="mt-3 row">
+
+
+    <!-- D inizio/Fine & durata -->
+    <div class="row">
+      <div class="mb-5 col-sm-12 col-md-3">
+        <label for="dataAssunzione">Data inizio<span class="oblg">*</span></label>
+        <p-calendar class="p-form-date" id="dataAssunzione" placeholder=""
+          formControlName="dataInizio" [minDate]="minDate"
+          dateFormat="dd/mm/yy"
+          [maxDate]="sysDate" ariaLabelledBy="dataAssunzione">
+
+        </p-calendar>
+        <span style="color: red;"> <app-control-messages
+          [control]="form.get('dataInizio')"></app-control-messages></span>
+      </div>
+
+      <div class="mb-5 col-sm-12 col-md-3">
+        <label for="dataCessazione">Data fine</label>
+        <p-calendar class="p-form-date" id="dataCessazione" ariaLabelledBy="dataCessazione" placeholder=""
+          formControlName="dataFine" [minDate]="minDate"
+          dateFormat="dd/mm/yy"
+          >
+        </p-calendar>
+        <span style="color: red;"> <app-control-messages
+          [control]="form.get('dataFine')"></app-control-messages></span>
+
+      </div>
+
+    </div>
+
+    <!-- Tipo & Forma -->
+    <div class="row">
+      <div formGroupName="blpTTipoLavoro" class="mb-5 col-sm-12 col-md-6">
+        <label for="tipoLavoro">Tipo di esperienza<span class="oblg">*</span></label>
+        <p-dropdown optionLabel="descr" optionValue="id"  inputId="tipoLavoro"  ariaLabel="tipo lavoro"  [emptyMessage]="'Nessun dato trovato'"
+          [autoDisplayFirst]="false"
+          [options]="tipoLavori" formControlName="idblpTTipoLavoro"
+          class=" p-form-select" placeholder=""bindLabel="descr"
+     >
+          <!-- (change)="loadTipoLavoro($event)" (ngModelChange)="enableOrDisableFormControls($event)"  -->
+        </p-dropdown>
+      </div>
+
+
+    </div>
+
+
+    <!-- Qualifica professionale ISTAT& Grado  -->
+    <div class="row">
+      <div formGroupName="blpTQualifica" class="mb-5 col-sm-12 col-md-10">
+        <label for="qualifica">Professione svolta</label>
+        <p-dropdown optionLabel="descr" [filter]="true" (onFilter)="onFilterQualifica($event)" optionValue="id" inputId="qualifica" [emptyMessage]="'Nessun dato trovato'" [autoDisplayFirst]="false"
+          [options]="qualifiche" formControlName="idblpTQualifica"
+          class=" p-form-select" placeholder=""bindLabel="descr" ariaLabelledBy="qualifica">
+        </p-dropdown>
+      </div>
+    </div>
+
+
+    <!-- Mansione -->
+    <div class="row">
+
+      <div class="mb-5 col-sm-12 col-md-6">
+        <label for="dsQualifica">Descrittivo professione</label>
+        <textarea pInputTextarea formControlName="dsQualifica" style="margin-left: 7.5px;"
+                id="dsQualifica" maxlength="250" rows="3" aria-label="descrizione qualifica"></textarea>
+                <span style="color: red;"> <app-control-messages
+                  [control]="form.get('dsQualifica')"></app-control-messages></span>
+      </div>
+      <div class="mb-5 col-sm-12 col-md-6">
+        <label for="dsMansione"> Descrivi brevemente le tue mansioni e responsabilità</label>
+        <textarea pInputTextarea formControlName="dsMansione" style="margin-left: 7.5px;"
+                id="dsMansione" maxlength="250" rows="3" aria-label="descrizione mansioni">
+          </textarea>
+          <span style="color: red;"> <app-control-messages
+            [control]="form.get('dsMansione')"></app-control-messages></span>
+      </div>
+      
+      <div class="mb-5 col-sm-12 col-md-3">
+        <fieldset>
+          <legend for="flgLavoroAttuale">Lavoro Attuale<span class="oblg">*</span></legend><br>
+          <div *ngFor="let item of [{key:'SI',id:'S'},{key:'NO',id:'N'}]" class="mb-3 col-auto form-check form-check-inline">
+            <input class="form-check-input" [value]="item.id" name="flgLavoroAttuale" formControlName="flgLavoroAttuale"
+                 type="radio" id="lavoroAttualeFlg" [attr.aria-label]="item.key">
+            <label for="lavoroAttualeFlg">{{item.key}}</label>
+          </div>
+        </fieldset>
+      </div>
+    </div>
+
+    <div class="mt-3 row">
+        <span class="mb-3 title"><h4>DATORE DI LAVORO</h4></span>
+
+        <!-- Denominazione & codice fiscale -->
+        <div class="row">
+          <div class="mb-5 col-sm-12 col-md-6">
+            <label for="denominazione">Nome azienda</label>
+            <input type="text" pInputText oninput="this.value = this.value.toUpperCase()" style="width: 100%; margin-top: 3.75px;"
+              formControlName="dsDenominazioneDl" id="denominazione" [maxlength]="300" aria-label="denominazione datore di lavoro">
+          </div>
+
+        </div>
+
+        <!-- <pslpwcl-form-stradario label="Luogo datore di lavoro" [campiObbligatori]="true" [form]="this.f.residenza.controls.indirizzo" [mode]="mode" ></pslpwcl-form-stradario> -->
+
+        <!-- Luogo & Comune & Stato estero -->
+        <div class="row">
+          <div class="mb-5 col-sm-12 col-md-3">
+            <fieldset>
+              <legend for="luogoDl">Luogo</legend><br>
+              <div *ngFor="let item of [{key:'Italia',id:'I'},{key:'Estero',id:'E'}]" class="mb-3 col-auto form-check form-check-inline">
+                <input class="form-check-input" [value]="item.id" name="flgLuogoDl" formControlName="flgLuogoDl"
+                    (change)="setLuogoDlSedeControl()" type="radio" id="flgLuogoDl" [attr.aria-label]="item.key">
+                <label for="flgLuogoDl">{{item.key}}</label>
+              </div>
+            </fieldset>
+          </div>
+          <div formGroupName="blpTComuneDl" class="mb-5 col-sm-12 col-md-3">
+            <label for="comuneDl">Comune</label>
+            <p-dropdown optionLabel="descr" optionValue="id" inputId="comuneDl" [emptyMessage]="'Nessun dato trovato'" [autoDisplayFirst]="false"
+              [options]="comuni" formControlName="id" (onFilter)="onFilterComuneDl($event,true)" [filter]="true"
+              class=" p-form-select" placeholder="" bindLabel="descr" ariaLabel="comune del datore di lavoro">
+              <!-- (search)="onSearch($event,'comune')" -->
+            </p-dropdown>
+
+          </div>
+          <div formGroupName="blpTNazioneDl" class="mb-5 col-sm-12 col-md-3">
+            <label for="statoEsteroDl">Stato estero</label>
+            <p-dropdown optionLabel="descr" optionValue="id" inputId="statoEsteroDl" ariaLabel="stato estero del datore di lavoro" [emptyMessage]="'Nessun dato trovato'" [autoDisplayFirst]="false"
+              [options]="stati" formControlName="idblpTNazione"
+              class=" p-form-select" placeholder="" bindLabel="descr">
+            </p-dropdown>
+          </div>
+        </div>
+
+        <!-- Toponimo & indirizzo & numero civico -->
+        <div class="row">
+
+
+          <div class="mb-5 col-sm-12 col-md-3">
+            <label for="indirizzoDl">Indirizzo</label>
+            <input type="text" pInputText style="width: 100%; margin-top: 3.75px; margin-left: 7.5px;"
+                formControlName="dsIndirizzoDl" id="indirizzoDl" maxlength="100" aria-label="indirizzo datore di lavoro">
+          </div>
+
+
+
+        </div>
+      </div>
+
+
+
+
+
+  <div class="row">
+      <div class="col mt-3">
+          <button type="button" (click)="onClickAnnulla()" class="btn btn-outline-secondary btn-sm" aria-label="annulla inserimento">ANNULLA</button>
+      </div>
+      <div class="col-auto mt-3">
+          <button type="submit" *ngIf="mod!='v'" (click)="onConferma()"
+          class="btn btn-primary ml-auto btn-lg" aria-label="conferma dati inseriti e vai a inserimento datore di lavoro"
+          [disabled]="!this.form.valid && altreValidazioneForm">CONFERMA</button>
+      </div>
+  </div>
+</div>
+<span style="color: red;" *ngIf="mostraMessagioErrore && mod!='v'">è necessario compilare tutti i campi correttamente</span>
+</ng-template>
+</li>
+
+
+
+</ul>
+
+
+
+<div [ngbNavOutlet]="nav" class="mt-2"></div>
+
+</div>
+</div>
+</form>

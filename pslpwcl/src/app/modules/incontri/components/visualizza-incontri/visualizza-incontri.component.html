@@ -1,0 +1,75 @@
+<!--
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ -->
+<div class="row">
+    <div class="torna col">
+        <button (click)="onClickTornaElenco()" type="button" class="btn btn-outline-secondary btn-sm">
+            TORNA ALL'ELENCO
+        </button>
+    </div>
+    <!-- <div *ngIf="!VIEW_MODE" class="col-auto">
+        <button (click)="onClickVisualizza()" class="btn btn-primary ml-auto btn-lg">VISUALIZZA</button>
+    </div> -->
+    <div *ngIf="dettaglioIncontro?.incontro?.codTipoAgendaIncServizi === COD_TIPO_AGENDE.AGENDE" class="col-auto">
+        <button [disabled]="DISABILITA_SPOSTA" (click)="onClickSposta()"
+            class="btn btn-primary ml-auto btn-lg">SPOSTARE</button>
+    </div>
+    <div *ngIf="dettaglioIncontro?.incontro?.codTipoAgendaIncServizi === COD_TIPO_AGENDE.AGENDE" class="col-auto">
+        <button [disabled]="DISABILITA_ANNULLA" (click)="onClickAnnulla()"
+            class="btn btn-primary ml-auto btn-lg">DISDIRE</button>
+    </div>
+</div>
+<ng-container *ngIf="dettaglioIncontro">
+    <ngb-accordion #accrdionPrenotazione [activeIds]="['panelPrenotazione', 'panelStoricoSpostamenti']"
+        id="accordion-inc-servizio" [closeOthers]="false" [destroyOnHide]="false">
+
+        <ngb-panel [title]="'DATI PRENOTAZIONE'" [id]="'panelPrenotazione'">
+            <ng-template ngbPanelContent let-opened="opened">
+                <pslpwcl-dati-prenotazione [servizio]="dettaglioIncontro?.servizio"
+                    [incontro]="dettaglioIncontro?.incontro"></pslpwcl-dati-prenotazione>
+            </ng-template>
+        </ngb-panel>
+
+        <ngb-panel [title]="'ELENCO STORICO SPOSTAMENTI'" [id]="'panelStoricoSpostamenti'">
+            <ng-template ngbPanelContent let-opened="opened">
+                <pslpwcl-storico-appuntamenti [servizio]="dettaglioIncontro?.servizio"
+                    [listaSpostamentiPrec]="dettaglioIncontro?.listaSpostamentiPrec"></pslpwcl-storico-appuntamenti>
+            </ng-template>
+        </ngb-panel>
+
+    </ngb-accordion>
+</ng-container>
+<ng-template #modalAnnulla let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title">{{this.msgI50?.intestazione}}</h4>
+        <button type="button" class="btn-close" aria-label="Close"
+            (click)="modal.dismiss('cross click'); motivazioneSelezionataId = null; noteInserite = null;"></button>
+    </div>
+    <div class="modal-body">
+        <div class="alert alert-warning" role="alert" aria-atomic="true" [innerHtml]="msagAnnulla"></div>
+        <div class="form-group">
+            <label for="motivazioneSelect">Motivazione<span class="oblg">*</span></label>
+            <select id="motivazioneSelect" class="form-select" [(ngModel)]="motivazioneSelezionataId"
+                name="motivazioneSelect">
+                <option [ngValue]="null"></option>
+                <option *ngFor="let motivo of listaMotivazioni" [ngValue]="motivo.id">{{ motivo.descr }}</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="noteInput">Note</label>
+
+            <textarea id="noteInput" class="form-control note-textarea-grande" rows="6" [(ngModel)]="noteInserite"
+                name="noteInput" placeholder="Inserisci eventuali note..."></textarea>
+        </div>
+    </div>
+    <div class="modal-footer d-flex">
+        <button type="button" class="btn btn-outline-dark me-auto"
+            (click)="modal.dismiss(); motivazioneSelezionataId = null; noteInserite = null;">CHIUDI</button>
+        <button [disabled]="!motivazioneSelezionataId" type="button" class="btn btn-primary"
+            (click)="confermaSelezione(modal)">CONFERMA</button>
+    </div>
+</ng-template>

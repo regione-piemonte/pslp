@@ -1,0 +1,62 @@
+<!--
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ -->
+<div class="row text-center">
+    <div class="col-md-4">
+      <div class="btn-group">
+        <button class="btn btn-primary" mwlCalendarPreviousView [view]="view" [(viewDate)]="viewDate"
+          (viewDateChange)="onViewDateChange()" [disabled]="isPreviousDisabled()" >
+          Precedente
+        </button>
+        <button class="btn btn-outline-secondary" (click)="vaiAllaPrimaDataUtile()">
+            Primo mese disponibile
+        </button>
+        <button class="btn btn-primary" mwlCalendarNextView [view]="view" [(viewDate)]="viewDate"
+          (viewDateChange)="onViewDateChange()" [disabled]="isNextDisabled()">
+          Successivo
+        </button>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <h3>{{ viewDate | calendarDate:(view + 'ViewTitle'):'it' }}</h3>
+    </div>
+    <div class="col-md-4">
+      <div class="btn-group">
+        <div *ngIf="isViewEnabled(CalendarView.Month)" class="btn btn-primary" (click)="cambiaView(CalendarView.Month)"
+          [class.active]="view === CalendarView.Month">
+          Mese
+        </div>
+        <div *ngIf="isViewEnabled(CalendarView.Week)" class="btn btn-primary" (click)="cambiaView(CalendarView.Week)" [class.active]="view === CalendarView.Week">
+          Settimana
+        </div>
+        <div *ngIf="isViewEnabled(CalendarView.Day)" class="btn btn-primary" (click)="cambiaView(CalendarView.Day)" [class.active]="view === CalendarView.Day">
+          Giorno
+        </div>
+      </div>
+    </div>
+  </div>
+  <br>
+  <div [ngSwitch]="view">
+    <mwl-calendar-month-view *ngSwitchCase="CalendarView.Month" [viewDate]="viewDate" [events]="events"
+    [excludeDays]="[0, 6]" [refresh]="refresh" (dayClicked)="dayClicked.emit($event)" (eventClicked)="eventClickedHandler($event)">
+  </mwl-calendar-month-view>
+  
+    <!-- inizio settimana -->
+  
+  
+    <mwl-calendar-week-view *ngSwitchCase="CalendarView.Week" [viewDate]="viewDate" [events]="events" [refresh]="refresh"
+      [excludeDays]="[0, 6]" [hourSegments]="4" [hourDuration]="60" [dayStartHour]="7" [dayEndHour]="19">
+      <!-- (eventClicked)="handleEvent('Clicked', $event.event)" (eventTimesChanged)="eventTimesChanged($event)"> -->
+    </mwl-calendar-week-view>
+  
+    <!-- fine settimana -->
+  
+    <mwl-calendar-day-view *ngSwitchCase="CalendarView.Day" [viewDate]="viewDate" [events]="events" [refresh]="refresh"
+      [hourSegments]="4" [hourDuration]="60" [dayStartHour]="7" [dayEndHour]="19">
+      <!-- (eventClicked)="handleEvent('Clicked', $event.event)" (eventTimesChanged)="eventTimesChanged($event)"> -->
+    </mwl-calendar-day-view>
+  </div>

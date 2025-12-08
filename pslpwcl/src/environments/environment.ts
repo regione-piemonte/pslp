@@ -1,0 +1,42 @@
+/*
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ */
+// This file can be replaced during build by using the `fileReplacements` array.
+// `ng build` replaces `environment.ts` with `environment.prod.ts`.
+// The list of file replacements can be found in `angular.json`.
+
+export const environment = {
+  ambiente: 'local',
+  shibbolethAuthentication: true,
+
+  production: false,
+  publicPath: 'http://localhost:8090',
+
+  appBaseHref: '',
+
+  beServerPrefix: 'http://localhost:8090',
+
+  beService: '/pslpbff',
+
+  shibbolethSSOLogoutURL: '/',
+  onAppExitURL: '/',
+
+  appHomeURL: 'http://localhost:4200',
+  appCittadinoURL: 'http://localhost:4202',
+  appFascicoloURL: 'http://localhost:4202',
+  urlMappe: "https://tst-secure.organizzazione.it/pslpublicweb/mappa/mappa.html",
+};
+
+
+/*
+ * For easier debugging in development mode, you can import the following file
+ * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.
+ *
+ * This import should be commented out in production mode because it will have a negative impact
+ * on performance if an error is thrown.
+ */
+// import 'zone.js/plugins/zone-error';  // Included with Angular CLI.

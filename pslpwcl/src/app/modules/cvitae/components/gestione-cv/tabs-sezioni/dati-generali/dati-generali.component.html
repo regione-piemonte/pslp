@@ -1,0 +1,46 @@
+<!--
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ -->
+<ngb-accordion #accordionDatiGenerali activeIds="panelDatiGenerali"
+  id="accordion-dati-generali" [closeOthers]="false" [destroyOnHide]="false">
+  <ngb-panel title="DATI GENERALI" id="panelDatiGenerali">
+    <ng-template ngbPanelContent let-opened="opened">
+        <div class="row">
+            <span class="col-sm-12 col-md-7 rounded mb-3 pt-2 pb-2" style="background-color: #DFE3E6;" *ngIf="isValidato"> Il CV <strong> {{cv?.codCandidatura}} </strong> è in stato validato. E' stato aggiornato il <strong> {{cv?.dAggiorn|date:"dd/MM/yyyy"}}</strong>. Scade il <strong>{{cv?.dScadenza|date:"dd/MM/yyyy"}}</strong></span>
+            <span class="col-sm-12 col-md-7 rounded mb-3 pt-2 pb-2" style="background-color: #DFE3E6;" *ngIf="isBozza"> Il CV è stato aggiornato il <strong> {{cv?.dAggiorn|date:"dd/MM/yyyy"}}</strong> ed è in <strong>Bozza</strong></span>
+            <span class="col-sm-12 col-md-7 rounded" *ngIf="isAutomatico"> Il CV <strong> {{cv?.codCandidatura}} </strong>è stato generato dal sistema il <strong> {{cv?.dInserim|date:"dd/MM/yyyy"}}</strong>. </span>
+            <span class="col-sm-12 col-md-7 rounded" *ngIf="!isAutomatico"> CV generato dal sistema: <strong>No</strong>. </span>
+        </div>
+    </ng-template>
+  </ngb-panel>
+</ngb-accordion>
+<ngb-accordion #accordionDatiIntermediario activeIds="panelDatiIntermediario" *ngIf="cv?.idIntermediario"
+  id="accordion-dati-Intermediario" [closeOthers]="false" [destroyOnHide]="false">
+  <ngb-panel title="DATI INTERMEDIARIO" id="panelDatiIntermediario">
+    <ng-template ngbPanelContent let-opened="opened">
+        <div class="row">
+            <div class="col-sm-12 col-md-3">
+                <label>Intermediario</label>
+                <input type="text"  pInputText  class="form-control"
+                [readonly]="true"  value="codice e denominazione intermediario" id="intermediario" aria-label="Codice e denominazione intermediario">
+            </div>
+            <div class="col-sm-12 col-md-3">
+                <label>Operatore</label>
+                <input type="text"  pInputText  class="form-control"
+                [readonly]="true"  value="nome cognome" id="operatore" aria-label="Dati operatore">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12 col-md-3">
+                <label>Comune</label>
+                <input type="text"  pInputText  class="form-control"
+                [readonly]="true"  value="Comune della sede del CPI" id="comune" aria-label="Comune della sede del CPI">
+            </div>
+        </div>
+    </ng-template>
+  </ngb-panel>
+</ngb-accordion>

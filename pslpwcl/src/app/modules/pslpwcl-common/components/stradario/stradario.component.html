@@ -1,0 +1,160 @@
+<!--
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ -->
+<form [formGroup]="form">
+<ng-container formGroupName="indirizzo" >
+  <div class="row">
+    <div *ngIf="!idChiamante" class="col-sm-12 col-md-3 text-center">
+      <figure style="width: 80%; margin: auto;">
+        <img src="assets/img/residenza.svg" alt="" style="width: -webkit-fill-available;">
+      </figure>
+    </div>
+    <div class="col 9">
+      <ng-container formGroupName="luogo">
+        <div class="row">
+          <!-- Luogo residenza -->
+          <div class="mb-5 col-sm-12 col-md-4">
+            <fieldset>
+              <legend>Luogo  {{!idChiamante?'di residenza':''}}<span class="oblg" *ngIf="!idChiamante">*</span></legend><br>
+              <div *ngFor="let category of [{key:'Italia',id:'I'},{key:'Estero',id:'E'}]"
+                class="mb-3 col-auto form-check form-check-inline">
+                <input class="form-check-input" formControlName="flgLuogoItalia" [value]="category.id"
+                  (change)="setLuogoResidenzaControl()" type="radio" id="{{category.key}}res"
+                  [attr.aria-labelledby]="category.key">
+                <label class="form-check-label" for="{{category.key}}res">{{category.key}}</label>
+
+              </div>
+            </fieldset>
+          </div>
+          <!-- provincia -->
+          <ng-container formGroupName="comune">
+            <div formGroupName="silTProvincia" class="mb-5 col-sm-12 col-md-4">
+              <label for="provinciaResidenza">Provincia </label>
+              <p-dropdown inputId="provinciaResidenza" [emptyMessage]="'Nessun dato trovato'"
+                (onChange)="onFilterComune($event)" [autoDisplayFirst]="false" [options]="province"
+                formControlName="idSilTProvincia" optionLabel="name" class=" p-form-select" placeholder=""
+                optionLabel="descr" optionValue="id" labelForId="provincia"
+                ariaLabel="seleziona la provincia di residenza">
+              </p-dropdown>
+              <span style="color: red;"> <app-control-messages
+                  [control]="form.get('indirizzo.luogo.comune.silTProvincia.idSilTProvincia')"></app-control-messages></span>
+            </div>
+          </ng-container>
+          <!-- Comune -->
+          <div formGroupName="comune" class="mb-5 col-sm-12 col-md-4">
+
+            <label for="comune">Comune <span *ngIf="setRequiredResidenza()" class="oblg">*</span></label>
+            <p-dropdown inputId="comune" [emptyMessage]="'Nessun dato trovato'"
+              [autoDisplayFirst]="false" (onChange)="onSelectComune()" [options]="comuni"
+              formControlName="id" optionLabel="name" class=" p-form-select" placeholder="" optionLabel="descr"
+              optionValue="id" labelForId="comune" ariaLabel="seleziona il comune di residenza">
+            </p-dropdown>
+            <span style="color: red;"> <app-control-messages
+                [control]="form.get('indirizzo.luogo.comune.id')"></app-control-messages></span>
+          </div>
+          <!--div formGroupName="comune" class="mb-5 col-sm-12 col-md-4">
+            <label for="comune">Comune</label>
+            <p-dropdown inputId="comune" [filter]="true" (onFilter)="onFilterComune($event)"
+              [emptyMessage]="'Nessun dato trovato'" [autoDisplayFirst]="false" [options]="comuni" formControlName="id"
+              ariaLabel="comune" class=" p-form-select" placeholder="" optionLabel="descr"
+              optionValue="id" (onChange)="onSelectComune()">
+
+            </p-dropdown>
+            <span style="color: red;"> <app-control-messages
+                [control]="form.get('indirizzo.luogo.comune.id')"></app-control-messages></span>
+          </div-->
+          <ng-container *ngIf="attivaStradario && form.get('indirizzo.luogo.comune.id').value && mod!='view'">
+            <div class="row">
+              <div class="col-9">
+                <label for="stradarioRes">Ricerca indirizzo</label>
+                <p-dropdown #str inputId="comuneResidenza"
+                  [emptyMessage]="'Inserire almeno 6 caratteri per iniziare la ricerca'"
+                  [autoDisplayFirst]="false" [filter]="true" (onFilter)="onCercaStradario($event)"
+                  ngbTooltip="Inserire almeno 6 caratteri per iniziare la ricerca"
+                  (onChange)="selezionaIndirizzo($event)" [options]="stradario" class=" p-form-select"
+                  optionLabel="descrizione" labelForId="stradarioRes"
+                  ariaLabel="ricerca l'indirizzo: Inserire almeno 6 caratteri per iniziare la ricerca">
+                </p-dropdown>
+              </div>
+            </div>
+          </ng-container>
+
+          <!-- Stato -->
+          <div formGroupName="stato" class="mb-5 col-sm-12 col-md-4" [hidden]="form.get('indirizzo.luogo.flgLuogoItalia').value == 'I'">
+            <label for="statoEsteroResidenza">Stato estero</label>
+            <p-dropdown inputId="statoEsteroResidenza" [emptyMessage]="'Nessun dato trovato'"
+              [autoDisplayFirst]="false" [options]="statosEstero" formControlName="idSilTNazione"
+              optionLabel="name" class=" p-form-select" placeholder="" optionLabel="descr" optionValue="id"
+              labelForId="statoEstero" ariaLabel="seleziona lo stato estero">
+            </p-dropdown>
+            <span style="color: red;"> <app-control-messages
+                [control]="form.get('indirizzo.luogo.stato.idSilTNazione')"></app-control-messages></span>
+          </div>
+        </div>
+      </ng-container>
+
+      <div class="row mt-3">
+        <!-- Toponimo -->
+        <div formGroupName="toponimo" class="mb-5 col-sm-12 col-md-4">
+          <label for="toponimoResidenza">Toponimo</label>
+          <p-dropdown inputId="toponimoResidenza" [emptyMessage]="'Nessun dato trovato'"
+            [autoDisplayFirst]="false" [options]="toponimos" formControlName="id" optionLabel="name"
+            class=" p-form-select" placeholder="" optionLabel="descr" optionValue="id" labelForId="toponimo"
+            ariaLabel="seleziona toponimo">
+          </p-dropdown>
+          <span style="color: red;"> <app-control-messages
+              [control]="form.get('indirizzo.toponimo.id')"></app-control-messages></span>
+        </div>
+
+        <!-- Indirizzo -->
+        <div class="mb-5 col-sm-12 col-md-4">
+          <label for="indirizzoResidenza">Indirizzo</label>
+          <input type="text" pInputText class="form-control" formControlName="indirizzo"
+            oninput="this.value = this.value.toUpperCase()" id="indirizzoResidenza" maxlength="100"
+            silplibwclOnlyStrings aria-label="indirizzo"  [disabled]="!isSelectedComune || attivaStradario">
+          <span style="color: red;"> <app-control-messages
+              [control]="form.get('indirizzo.indirizzo')"></app-control-messages></span>
+        </div>
+
+        <!-- numero civico -->
+        <div class="mb-5 col-sm-12 col-md-4">
+          <label for="numeroCivicoResidenza">Numero civico</label>
+          <input type="text" pInputText class="form-control" formControlName="numeroCivico"
+            oninput="this.value = this.value.toUpperCase()" id="numeroCivicoResidenza" maxlength="15"
+            aria-label="numero civico">
+          <span style="color: red;"> <app-control-messages
+              [control]="form.get('indirizzo.numeroCivico')"></app-control-messages></span>
+        </div>
+      </div>
+
+      <div class="row" *ngIf="!idChiamante">
+        <!-- Località -->
+        <div class="mb-5 col-sm-12 col-md-4">
+          <label for="localitaResidenza">Località</label>
+          <input type="text" pInputText class="form-control" formControlName="localita"
+            oninput="this.value = this.value.toUpperCase()" id="localitaResidenza" maxlength="100"
+            silplibwclOnlyStrings aria-label="località">
+          <span style="color: red;"> <app-control-messages
+              [control]="form.get('indirizzo.localita')"></app-control-messages></span>
+        </div>
+
+        <!-- Cap -->
+        <div class="mb-5 col-sm-12 col-md-4">
+          <label for="capResidenza">CAP<span *ngIf="setRequiredResidenza()" class="oblg">*</span></label>
+          <input type="text" pInputText class="form-control" silplibwclOnlyNumbers formControlName="cap"
+            oninput="this.value = this.value.toUpperCase()" id="capResidenza" maxlength="5" aria-label="cap">
+          <span style="color: red;"> <app-control-messages
+              [control]="form.get('indirizzo.cap')"></app-control-messages></span>
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+
+</ng-container>
+</form>

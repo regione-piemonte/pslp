@@ -1,0 +1,23 @@
+/*
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ */
+::ng-deep .cal-month-view .cal-events {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  ::ng-deep .cal-month-view .cal-event {
+    width: 28px; // Aumenta dimensione
+    height: 28px;
+    border-radius: 50%;
+    margin: 2px;
+  }
+
+  .cal-events-badge,
+  .cal-day-badge {
+    display: none !important;
+  }

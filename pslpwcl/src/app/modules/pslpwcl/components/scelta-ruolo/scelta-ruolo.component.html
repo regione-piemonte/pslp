@@ -1,0 +1,72 @@
+<!--
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ -->
+<div class="container m-auto w-70">
+  <p-table #dt [value]="ruoliList " dataKey="id" styleClass="p-datatable-customers" [rowHover]="true" [rows]="10"
+    [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50]" responsiveLayout="scroll" [paginator]="true"
+    currentPageReportTemplate="{first} di {last}, su {totalRecords} righe">
+    <ng-template pTemplate="caption">
+      <div class="table-header d-flex">
+        <span>Elenco Ruoli Disponibili</span>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="header">
+      <tr>
+        <th >
+          <div class="flex justify-content-between align-items-center">
+            Sel.
+
+
+          </div>
+        </th>
+        <th >
+          <div class="flex justify-content-between align-items-center">
+            Denominazione
+
+
+          </div>
+        </th>
+        <th >
+          <div class="flex justify-content-between align-items-center">
+            Ruolo
+
+
+          </div>
+        </th>
+        <th >
+          <div class="flex justify-content-between align-items-center">
+            Codice fiscale
+
+          </div>
+        </th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" [formGroup]="form" let-ruolo>
+
+      <tr>
+        <td>
+          <input class="ruolo-check-input ml-3" type="radio" [value]="ruolo.id" formControlName="ruoloScelto"
+            name="ruoloScelto">
+        </td>
+        <td>
+          <span class="p-column-title">Denominazione</span>
+          {{ruolo.nome}}
+        </td>
+        <td>
+          <span class="p-column-title">Ruolo</span>
+          {{ruolo.denominazioneRuolo}}
+        </td>
+        <td>
+          <span class="p-column-title">Codice Fiscale</span>
+          {{ruolo.denominazioneUtente}}
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+    <button (click)="onSelezionaRuolo()" [attr.aria-label]="ruoloSelezionatoLabel" type="button" class="btn btn-primary btn-sm mt-3">SELEZIONA RUOLO</button>
+</div>

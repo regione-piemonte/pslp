@@ -1,0 +1,19 @@
+{
+  "APP": {
+    "LOADING": "Caricamento..."
+  },
+  "ERROR": {
+    "ERROR_TITLE": "Stiamo Lavorando per voi"
+  },
+  "PAGINATED_TABLE": {
+    "LABEL": {
+      "END": "Fine",
+      "ITEMS_FOR_PAGE": "Elementi per pagina",
+      "NEXT": "Succ.",
+      "NO_DATA": "Non ci sono dati",
+      "PREV": "Prec.",
+      "START": "Inizio"
+    }
+  },
+  "PIPPO": "Test"
+}

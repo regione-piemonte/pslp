@@ -1,0 +1,52 @@
+<!--
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ -->
+<div class="container">
+  <div role="alert" class="alert alert-info ng-star-inserted">
+    <p [innerHTML]="messaggioIntestazione?.testo"></p>
+  </div>
+  <div class="row mb-3" *ngIf="isAutenticato">
+    <pslpwcl-card-info-utente [sezione]='sezione'>
+    </pslpwcl-card-info-utente>
+  </div>
+  <div class="mt-40 row justify-content-center">
+    <div *ngIf="!isAutenticato" class="row">
+      <div class="col mt-3">
+        <button type="button" (click)="onClickAnnulla()" class="btn btn-outline-secondary btn-lg mb-5"
+          aria-label="annulla inserimento">INDIETRO</button>
+      </div>
+      <!-- <div class="col-auto mt-3">
+      <button type="button" (click)="onClickCerca()" class="btn btn-primary ml-auto btn-lg" [disabled]="!form?.valid"
+        [attr.aria-disabled]="!form?.valid" aria-label="Cerca annunci">CERCA</button>
+    </div> -->
+    </div>
+    <div class="col-md-6 col-lg-4 d-flex p-0 elenco-card">
+      <a href="javascript:void(0)" style="color: black;" (click)="onGoToProfili()"
+        [attr.aria-label]="'vai a Consultare annunci per profili ricercati'">
+        <div class="card-block row">
+          <img class="col-4" src="assets/img/gestionecv.png" alt="profili ricercati"
+            style="width: 5em; border-radius: 5px;">
+          <h4 class="card-title pb-2 col-8">Consulta annunci per profili ricercati</h4>
+          <p class="card-text col-12 mt-3">Consulta annunci per profili ricercati</p>
+        </div>
+      </a>
+    </div>
+
+    <div class="col-md-6 col-lg-4 d-flex p-0 elenco-card">
+      <a href="javascript:void(0)" style="color: black;" (click)="onGoToEURES()"
+        [attr.aria-label]="'vai a Annunci EURES'">
+        <div class="card-block row">
+          <img class="col-4" src="assets/img/anunci.png" alt="annunci EURES" style="width: 5em; border-radius: 5px;">
+          <h4 class="card-title pb-2 col-8">Consulta annunci EURES</h4>
+          <p class="card-text col-12 mt-3">Consulta annunci EURES</p>
+        </div>
+      </a>
+    </div>
+
+  </div>
+</div>
+<router-outlet></router-outlet>

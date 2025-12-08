@@ -1,0 +1,180 @@
+<!--
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ -->
+<div class="modal-header">
+    <h4 class="modal-title" id="modal-annulla-title">Titoli di studio</h4>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss()">
+    <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+
+<div class="modal-body">
+    <div>
+        <div class="mt-3 row">
+      
+          <h3 class="mb-3 title">DETTAGLIO TITOLI DI STUDIO</h3>
+          <div class="card-mb-5">
+      
+            <div class="card-body">
+      
+              <ul ngbNav [roles]="false" #nav="ngbNav" class="nav-tabs">
+      
+                <li [ngbNavItem]="0">
+                  <a ngbNavLink>Titolo di studio</a>
+                  <ng-template ngbNavContent>
+                    <div class="row">
+                      <div class="mb-5 col-sm-12 col-md-6">
+                        <h4>Grado</h4>
+                        <input pInputText type="text" class="form-control" [value]="titoloDiStudio?.gradoStudio.descr | uppercase" disabled>
+                      </div>
+                      <!-- <div class="mb-5 col-sm-12 col-md-3">
+                        <h4>Codice</h4>
+                        <span pInputText class="form-control disabled">{{titoloDiStudio?.codice}}</span>
+                      </div> -->
+                      <div class="mb-5 col-sm-12 col-md-6">
+                        <h4>Tipo scuola</h4>
+                        <input pInputText type="text" class="form-control" [value]="titoloDiStudio?.lavTitoloStudio.silTStudio.dsTipoScuola | uppercase" disabled>
+                      </div>
+                      <div class="mb-5 col-sm-12 col-md-9">
+                        <h4>Descrizione</h4>
+                        <input pInputText type="text" class="form-control" [value]="titoloDiStudio?.lavTitoloStudio.silTStudio.descr | uppercase" disabled>
+                      </div>
+                      <!-- <div class="mb-5 col-sm-12 col-md-3">
+                        <h4>Selezionabile per profiling</h4>
+                        <span pInputText class="form-control disabled">{{(titoloDiStudio?.flgProfQuant =="S"?"SI":"NO")}}</span>
+                      </div> -->
+                      <div class="mb-5 col-sm-12 col-md-3">
+                        <h4>Anno</h4>
+                        <input pInputText type="text" class="form-control" [value]="titoloDiStudio?.lavTitoloStudio.dsAnnoCompletato || '--'" disabled>
+                      </div>
+                      <div class="mb-5 col-sm-12 col-md-3">
+                        <h4>Voto</h4>
+                        <input pInputText type="text" class="form-control" [value]="titoloDiStudio?.lavTitoloStudio.dsVoto || '--'" disabled>
+                      </div>
+                      <div class="mb-5 col-sm-12 col-md-3">
+                        <h4>Laude</h4>
+                        <input pInputText type="text" class="form-control" [value]='titoloDiStudio?.lavTitoloStudio.flgCumLaude ? (titoloDiStudio?.lavTitoloStudio.flgCumLaude =="S"?"SI":"NO") : "--"' disabled>
+                      </div>
+                      <div class="mb-5 col-sm-12 col-md-3">
+                        <h4>In corso/abbandono</h4>
+                        <input pInputText type="text" class="form-control" [value]='titoloDiStudio?.lavTitoloStudio.flgCompletato !="S" ? (titoloDiStudio?.lavTitoloStudio.idSilTTStatoTitoloStudio =="A"?"ABBANDONO":"IN CORSO") : "--"' disabled>
+                      </div>
+                      <div class="mb-5 col-sm-12 col-md-3">
+                        <h4>Ultimo anno freq./Anno di freq.</h4>
+                        <input pInputText type="text" class="form-control" [value]="titoloDiStudio.lavTitoloStudio.annoDiFrequenza || '--' " disabled>
+                      </div>
+                      <div class="mb-5 col-sm-12 col-md-3">
+                        <h4>N. ann. freq.</h4>
+                        <input pInputText type="text" class="form-control" [value]="titoloDiStudio.lavTitoloStudio.numAnniFrequentati || '--' " disabled>
+                      </div>
+                      <div class="mb-5 col-sm-12 col-md-3">
+                        <h4>Ultima classe freq.</h4>
+                        <input pInputText type="text" class="form-control" [value]="titoloDiStudio.lavTitoloStudio.ultimaClasseFrequentata || '--' | uppercase " disabled>
+                      </div>
+                      <div class="mb-5 col-sm-12 col-md-3">
+                        <h4>N. esami sostenuti</h4>
+                        <input pInputText type="text" class="form-control" [value]="titoloDiStudio.lavTitoloStudio.numEsamiSostenuti || '--' " disabled>
+                      </div>
+                      <div class="mb-5 col-sm-12 col-md-3">
+                        <h4>Riconosciuto in Italia</h4>
+                        <input pInputText type="text" class="form-control" [value]='titoloDiStudio?.lavTitoloStudio.flgRiconosciutoItalia ? (titoloDiStudio?.lavTitoloStudio.flgRiconosciutoItalia =="S"?"SI":"NO") : "--"' disabled>
+                      </div>
+                      <div class="mb-5 col-sm-12 col-md-3">
+                        <h4>Tipo apprendistato</h4>
+                        <input pInputText type="text" class="form-control" [value]="titoloDiStudio?.lavTitoloStudio.silTTipoApprendistato?.dsBreveTipoApprendistato || '--' | uppercase " disabled>
+                      </div>
+                    </div>
+                  </ng-template>
+                </li>
+      
+      
+                <li [ngbNavItem]="1">
+                  <a ngbNavLink>Informazioni aggiuntive</a>
+                  <ng-template ngbNavContent>
+                    <!--INFORMAZIONE AGGIUNTIVE-->
+                    <div class="row">
+                      <div class="mb-5 col-sm-12 col-md-3">
+                        <h4>Denominazione</h4>
+                        <input pInputText type="text" class="form-control" [value]="lavTitoloStudioAltro?.dsDenominazioneIst || '--' | uppercase" disabled>
+                      </div>
+                      <div class="mb-5 col-sm-12 col-md-3">
+                        <h4>Luogo</h4>
+                        <input pInputText type="text" class="form-control" [value]="lavTitoloStudioAltro?.flgLuogoIst ? (lavTitoloStudioAltro?.flgLuogoIst=='E'?'Estero':'Italia') : '--' | uppercase" disabled>
+                      </div>
+                      <div class="mb-5 col-sm-12 col-md-3">
+                        <h4>Comune</h4>
+                        <input pInputText type="text" class="form-control" [value]="lavTitoloStudioAltro?.silTComuneIst?.descr || '--' | uppercase" disabled>
+                      </div>
+                      <div class="mb-5 col-sm-12 col-md-3">
+                        <h4>Stato estero</h4>
+                        <input pInputText type="text" class="form-control" [value]="lavTitoloStudioAltro?.silTNazioneIst?.siglaInternazionale || '--' | uppercase" disabled>
+                      </div>
+                      <div class="mb-5 col-sm-12 col-md-3">
+                        <h4>Indirizzo</h4>
+                        <input pInputText type="text" class="form-control" [value]="indirizzoInst || '--' | uppercase" disabled>
+                      </div>
+                      <div class="mb-5 col-sm-12 col-md-3">
+                        <h4>Titolo tesi</h4>
+                        <input pInputText type="text" class="form-control" [value]="lavTitoloStudioAltro?.dsTitoloTesi || '--' | uppercase" disabled>
+                      </div>
+                      <div class="mb-5 col-sm-12 col-md-3">
+                        <h4>Relatore</h4>
+                        <input pInputText type="text" class="form-control" [value]="lavTitoloStudioAltro?.dsRelatore || '--' | uppercase" disabled>
+                      </div>
+                      <div class="mb-5 col-sm-12 col-md-3">
+                        <h4>Stage finale</h4>
+                        <input pInputText type="text" class="form-control" [value]="lavTitoloStudioAltro?.flgStageFinale ? (lavTitoloStudioAltro?.flgStageFinale=='S'?'SI':'NO') : '--' " disabled>
+                      </div>
+                      <div class="mb-5 col-sm-12 col-md-3">
+                        <h4>Note</h4>
+                        <input pInputText type="text" class="form-control" [value]="lavTitoloStudioAltro?.dsNote || '--' | uppercase" disabled>
+                      </div>
+                    </div>
+                  </ng-template>
+                </li>
+      
+      
+                <li [ngbNavItem]="2">
+                  <a ngbNavLink>Azienda stage/tirocinio</a>
+                  <ng-template ngbNavContent>
+                    <!--INFORMAZIONE AGGIUNTIVE-->
+                    <div class="row">
+                      <div class="mb-5 col-sm-12 col-md-3">
+                        <h4>Denominazione azienda</h4>
+                        <input pInputText type="text" class="form-control" [value]="lavTitoloStudioAltro?.dsDenominazioneAziStage || '--' | uppercase" disabled>
+                      </div>
+                      <div class="mb-5 col-sm-12 col-md-3">
+                        <h4>Durata</h4>
+                        <input pInputText type="text" class="form-control" [value]="lavTitoloStudioAltro?.durataStage || '--'" disabled>
+                      </div>
+                      <div class="mb-5 col-sm-12 col-md-3">
+                        <h4>Tipo durata</h4>
+                        <input pInputText type="text" class="form-control" [value]="lavTitoloStudioAltro?.codTipologiaDurataStage || '--'" disabled>
+                      </div>
+                      <div class="mb-5 col-sm-12 col-md-3">
+                        <h4>Indirizzo</h4>
+                        <input pInputText type="text" class="form-control" [value]="indirizzoAz || '--' | uppercase" disabled>
+                      </div>
+                      <div class="mb-5 col-sm-12 col-md-3">
+                        <h4>Comune/Stato estero</h4>
+                        <input pInputText type="text" class="form-control" [value]="lavTitoloStudioAltro?.silTComuneAziStage != null ? lavTitoloStudioAltro?.silTComuneAziStage?.descr:
+                          lavTitoloStudioAltro?.silTNazioneAziStage?.dsSilTNazione  || '--' | uppercase" disabled>
+                      </div>
+                    </div>
+                  </ng-template>
+                </li>
+              </ul>
+      
+              <div [ngbNavOutlet]="nav" class="mt-2"></div>
+            </div>
+      
+          </div>
+      
+        </div>
+      </div>
+
+</div>

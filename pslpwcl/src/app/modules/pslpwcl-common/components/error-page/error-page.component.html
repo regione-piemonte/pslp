@@ -1,0 +1,15 @@
+<!--
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ -->
+<ngb-alert [type]="'danger'" [dismissible]="false">
+    <h4>Errore di sistema</h4>
+    <input type="hidden" name="" [value]="'status: '+apiMessage?.code+
+    apiMessage?.message">
+    <p>I servizi non sono momentaneamente disponibili. Riprovare più tardi o contattare l'amministratore di sistema</p>
+
+
+</ngb-alert>

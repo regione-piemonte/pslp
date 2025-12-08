@@ -1,0 +1,127 @@
+<!--
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ -->
+<ng-container [formGroup]="form">
+  <ng-container formGroupName="luogo">
+    <div class="row">
+      <div class="mb-5 col-sm-12 col-md-3">
+        <label for="luogoResidenza">{{label}}<span *ngIf="required === true" class="oblg">*</span></label><br>
+        <div class="mb-3 col-auto form-check form-check-inline">
+          <input class="form-check-input" formControlName="flgLuogoItalia" [value]="'I'" (change)="setFlgItalia()"  type="radio"
+            id="flgItaliaRes">
+          <label class="form-check-label">Italia</label>
+        </div>
+        <div class="mb-3 col-auto form-check form-check-inline">
+          <input class="form-check-input" formControlName="flgLuogoItalia" [value]="'E'" (change)="setFlgItalia()"  type="radio"
+            id="flgEsteroRes">
+          <label class="form-check-label">Estero</label>
+        </div>
+      </div>
+      <ng-container formGroupName="comune">
+        <div formGroupName="silTProvincia" class="mb-5 col-sm-12 col-md-3">
+          <label for="provincia">Provincia<span *ngIf="required === true" class="oblg">*</span></label>
+          <p-dropdown inputId="provinciaResidenza" [emptyMessage]="'Nessun dato trovato'"
+                    [filter]="true" (onFilter)="onSearchProvincia($event.term)" 
+                    (onChange)="setProvincia($event)" [autoDisplayFirst]="false" [options]="provincie"
+                    formControlName="idSilTProvincia" optionLabel="name" class=" p-form-select" placeholder=""
+                    optionLabel="descr" optionValue="idSilTProvincia" labelForId="provincia"
+                    (onClear)="onClearProvincia()"
+                    ariaLabel="seleziona la provincia">
+                  </p-dropdown>
+          <!-- <ng-select (search)="onSearchProvincia($event.term)"  formControlName="idSilTProvincia" [items]="provincie" 
+           bindLabel="descr" bindValue="idSilTProvincia" class="form-select"
+            (clear)="onClearProvincia()" labelForId="provincia" (change)="setProvincia($event)">
+          </ng-select> -->
+        </div>
+      </ng-container>
+      <div formGroupName="comune" class="mb-5 col-sm-12 col-md-3">
+        <label for="comuneProv">Comune<span *ngIf="required === true" class="oblg">*</span></label>
+        <p-dropdown inputId="comuneResidenza" [emptyMessage]="'Nessun dato trovato'"
+                  [autoDisplayFirst]="false" (onChange)="setComune($event)" [options]="comunesProv"
+                  [filter]="true" (onFilter)="onSearchComune($event.term)" 
+                  formControlName="id" optionLabel="name" class=" p-form-select" placeholder="" optionLabel="descr"
+                  (onClear)="onClearComune()"
+                  optionValue="id" labelForId="comuneProv" ariaLabel="seleziona il comune di residenza">
+                </p-dropdown>
+        <!-- <ng-select (search)="onSearchComune($event.term)"  formControlName="id" [items]="comunesProv" bindLabel="descr" 
+         bindValue="id" class="form-select"
+          (clear)="onClearComune()" labelForId="comuneProv" (change)="setComune($event)">
+        </ng-select> -->
+      </div>
+      <div formGroupName="stato" class="mb-5 col-sm-12 col-md-3">
+        <label for="statoNascita">Stato estero<span *ngIf="required === false" class="oblg">*</span></label>
+        <p-dropdown inputId="statoEsteroResidenza" [emptyMessage]="'Nessun dato trovato'"
+                  [autoDisplayFirst]="false" [options]="statosEstero" formControlName="idSilTNazione"
+                  optionLabel="name" class=" p-form-select" placeholder="" optionLabel="descr" optionValue="id"
+                  labelForId="statoNascita" ariaLabel="seleziona lo stato di residenza">
+                </p-dropdown>
+        <!-- <ng-select formControlName="idSilTNazione" [items]="statosEstero" bindLabel="descr" bindValue="id"
+          class="form-select" labelForId="statoNascita">
+        </ng-select> -->
+      </div>
+    </div>
+  </ng-container>
+  <div class="row">
+    <div class="mb-5 col-12" *ngIf="stradarioAttivo && piemonte && !VIEW_MODE">
+      <label for="indirizzo">
+        Ricerca indirizzo
+        <span *ngIf="campiObbligatori === true" class="oblg">*</span>
+        <i class="fas fa-info-circle" placement="top" ngbTooltip="Inserire almeno 6 caratteri per iniziare la ricerca"></i>
+      </label>
+      <p-dropdown #str inputId="comuneResidenza"
+                      [emptyMessage]="'Inserire almeno 6 caratteri per iniziare la ricerca'"
+                      [autoDisplayFirst]="false" [filter]="true" (onFilter)="onSearchIndirizzo($event)" 
+                      ngbTooltip="Inserire almeno 6 caratteri per iniziare la ricerca"
+                      (onChange)="setIndirizzo($event)" [options]="indirizzi" class=" p-form-select"
+                      formControlName="ricerca"
+                      optionLabel="descrizione" labelForId="indirizzo"
+                      ariaLabel="ricerca l'indirizzo di residenza: Inserire almeno 6 caratteri per iniziare la ricerca">
+                    </p-dropdown>
+      <!-- <ng-select (search)="onSearchIndirizzo($event)" [searchFn]="customSearchFunction" [items]="indirizzi" class="form-select"
+        formControlName="ricerca" bindLabel="descrizione" bindValue="descrizione" 
+        (change)="setIndirizzo($event)" labelForId="indirizzo">
+      </ng-select> -->
+    </div>
+  </div>
+  <div class="row">
+    <div formGroupName="toponimo" class="mb-5 col-sm-12 col-md-3">
+      <label for="toponimo">Toponimo<span *ngIf="campiObbligatori === true" class="oblg">*</span></label>
+      <p-dropdown inputId="toponimoResidenza" [emptyMessage]="'Nessun dato trovato'"
+                [autoDisplayFirst]="false" [options]="toponimos" formControlName="id" optionLabel="name"
+                class=" p-form-select" placeholder="" optionLabel="descr" optionValue="id" labelForId="toponimo"
+                ariaLabel="seleziona toponimo">
+              </p-dropdown>
+      <!-- <ng-select formControlName="id" [items]="toponimos" bindLabel="descr" bindValue="id" class="form-select"
+        labelForId="toponimo">
+      </ng-select> -->
+    </div>
+    <div class="mb-5 col-sm-12 col-md-6">
+      <label for="indirizzo">Indirizzo<span *ngIf="campiObbligatori === true" class="oblg">*</span></label>
+      <input type="text" class="form-control" formControlName="indirizzo"
+                oninput="this.value = this.value.toUpperCase()" id="indirizzo" maxlength="80">
+    </div>
+    <div class="mb-5 col-sm-12 col-md-2">
+      <label for="numeroCivico">Numero civico<span *ngIf="campiObbligatori === true" class="oblg">*</span></label>
+      <input type="text" class="form-control" formControlName="numeroCivico"
+        oninput="this.value = this.value.toUpperCase()" id="numeroCivico" maxlength="10">
+    </div>
+  </div>
+  <div class="row">
+    <ng-container *ngIf="!hideLocalita">
+      <div class="mb-5 col-sm-12 col-md-3" *ngIf="localitaAbb">
+        <label for="località">Località</label>
+        <input type="text" class="form-control" formControlName="localita"
+          oninput="this.value = this.value.toUpperCase()" id="localita" maxlength="100" silplibwclOnlyStrings>
+      </div>
+    </ng-container>
+    <div class="mb-5 col-sm-12 col-md-2" *ngIf="capAbb">
+      <label for="cap">CAP<span *ngIf="campiObbligatori" class="oblg">*</span></label>
+      <input type="text" class="form-control" pslpwclOnlyNumber formControlName="cap"
+        oninput="this.value = this.value.toUpperCase()" id="cap" maxlength="5">
+    </div>
+  </div>
+</ng-container>

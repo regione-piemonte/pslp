@@ -1,0 +1,805 @@
+<!--
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ -->
+<form [formGroup]="form">
+
+  <!-- START PRIMO ACCORDION -->
+  <ngb-accordion formGroupName="datiPersonali" #accordionDatiPersonali activeIds="panelDatiPersonali0"
+    id="accordion-dati-personali" [closeOthers]="true" [destroyOnHide]="false">
+    <ngb-panel title="DATI PERSONALI" id="panelDatiPersonali0">
+      <ng-template ngbPanelContent let-opened="opened">
+        <div class="row">
+          <div class="col-sm-12 col-md-3 text-center">
+            <figure style="width: 80%; margin: auto;">
+              <img *ngIf="genere=='M'" src="assets/img/male_user.svg" alt="">
+              <img *ngIf="genere=='F'" src="assets/img/female_user.svg" alt="">
+            </figure>
+          </div>
+
+          <div class="col-sm-12 col-md-9">
+            <div class="row">
+              <!-- genere -->
+              <div formGroupName="genere" class="mb-5 col-sm-12 col-md-4">
+
+                <fieldset>
+                  <legend><strong> Genere </strong></legend>
+                  <div *ngFor="let genere of [{key:'Maschio',id:'M'},{key:'Femmina',id:'F'}]"
+                    class="mb-3 col-auto form-check form-check-inline">
+                    <input [attr.aria-labelledby]="genere.key" class="form-check-input" name="id" formControlName="id"
+                      [value]="genere.id" type="radio" id="{{genere.key}}" (click)="cambioGenere(genere.id)">
+                    <label class="form-check-label" for="{{genere.key}}">
+                      {{genere.key}}
+                    </label>
+
+                  </div>
+                </fieldset>
+              </div>
+
+              <!-- Stato civile -->
+              <div class="mb-5 col-sm-12 col-md-4">
+                <div formGroupName="statoCivile">
+                  <label for="statoCivile">Stato civile</label>
+                  <p-dropdown inputId="statoCivile" [emptyMessage]="'Nessun dato trovato'" [autoDisplayFirst]="false"
+                    [options]="statiCivili" formControlName="id" class=" p-form-select" placeholder=""
+                    optionLabel="descr" optionValue="id" ariaLabel="seleziona stato civile" [attr.id]="'statoCivile'">
+
+                  </p-dropdown>
+                </div>
+              </div>
+
+              <!-- Cittadinanza -->
+              <div formGroupName="cittadinanza" class="mb-5 col-sm-12 col-md-4">
+                <label for="cittadinanza">Cittadinanza<span class="oblg">*</span></label>
+                <p-dropdown inputId="cittadinanza" [emptyMessage]="'Nessun dato trovato'" [autoDisplayFirst]="false"
+                  (onChange)="enableNotizieCittadiniStranieri()" [options]="cittadinanze" formControlName="id"
+                  class=" p-form-select" placeholder="" optionLabel="descr" optionValue="id"
+                  ariaLabel="seleziona la cittadinanza">
+                </p-dropdown>
+                <span style="color: red;"> <app-control-messages
+                    [control]="formDatiPersonali.get('cittadinanza.id')"></app-control-messages></span>
+              </div>
+
+              <!-- Data di nascita -->
+              <div class="mb-5 col-sm-12 col-md-4">
+                <label for="dataNascita">Data di nascita<span class="oblg">*</span></label>
+                <p-calendar (change)="formDatiPersonali?.controls['dataDiNascita']?.updateValueAndValidity()"
+                  class="p-form-date" id="dataNascita" placeholder="Data nascita" formControlName="dataDiNascita"
+                  [minDate]="minDate" dateFormat="dd/mm/yy" [maxDate]="sysDate" aria-labelledby="dataNascita"
+                  ariaLabelledBy="dataNascita">
+
+                </p-calendar>
+                <span style="color: red;"> <app-control-messages
+                    [control]="formDatiPersonali.get('dataDiNascita')"></app-control-messages></span>
+              </div>
+
+              <ng-container formGroupName="luogoDiNascita">
+                <!-- Luogo di nascita -->
+                <div class="mb-5 col-sm-12 col-md-5">
+                  <fieldset>
+                    <legend>Luogo di nascita<span class="oblg">*</span></legend><br>
+                    <div *ngFor="let category of [{key:'Italia',id:'I'},{key:'Estero',id:'E'}]"
+                      class="mb-3 col-auto form-check form-check-inline">
+                      <input [attr.aria-labelledby]="category.key" class="form-check-input"
+                        formControlName="flgLuogoItalia" [value]="category.id" (change)="setLuogoNascitaControl()"
+                        type="radio" id="{{category.key}}">
+                      <label class="form-check-label" for="{{category.key}}">{{category.key}}</label>
+                    </div>
+                  </fieldset>
+                </div>
+                <!-- provincia -->
+                <ng-container formGroupName="comune">
+                  <div formGroupName="silTProvincia" class="mb-5 col-sm-12 col-md-4">
+                    <label for="provinciNascita">Provincia di nascita *</label>
+                    <p-dropdown inputId="provinciNascita" [emptyMessage]="'Nessun dato trovato'"
+                      (onChange)="onFilterComune($event)" [autoDisplayFirst]="false" [options]="province"
+                      formControlName="idSilTProvincia" optionLabel="name" class=" p-form-select" placeholder=""
+                      optionLabel="descr" optionValue="id" ariaLabel="seleziona provincia di nascita"
+                      labelForId="provincia">
+                    </p-dropdown>
+                    <span style="color: red;"> <app-control-messages
+                        [control]="formDatiPersonali.get('luogoDiNascita.comune.silTProvincia.idSilTProvincia')"></app-control-messages></span>
+                  </div>
+                </ng-container>
+                <!-- Comune Nascita -->
+                <div formGroupName="comune" class="mb-5 col-sm-12 col-md-4">
+                  <label for="comuneNascita">Comune di nascita <span *ngIf="setRequired()" class="oblg">*</span></label>
+                  <p-dropdown inputId="comuneNascita" [emptyMessage]="'Nessun dato trovato'" [autoDisplayFirst]="false"
+                    [options]="comuniNascita" formControlName="id" optionLabel="name" class=" p-form-select"
+                    placeholder="" optionLabel="descr" optionValue="id" ariaLabel="seleziona comune di nascita"
+                    labelForId="comuneNascita">
+
+                  </p-dropdown>
+                  <span style="color: red;"> <app-control-messages
+                      [control]="formDatiPersonali.get('luogoDiNascita.comune.id')"></app-control-messages></span>
+                </div>
+                <div formGroupName="stato" class="mb-5 col-sm-12 col-md-4">
+                  <label for="statoNascita">Stato di nascita<span *ngIf="!setRequired()" class="oblg">*</span></label>
+                  <p-dropdown inputId="statoNascita" [emptyMessage]="'Nessun dato trovato'" [autoDisplayFirst]="false"
+                    [options]="statiNascita" formControlName="idSilTNazione" optionLabel="name" class=" p-form-select"
+                    placeholder="" optionLabel="descr" optionValue="id" ariaLabel="seleziona stato di nascita"
+                    labelForId="statoNascita">
+                  </p-dropdown>
+                  <span style="color: red;"> <app-control-messages
+                      [control]="formDatiPersonali.get('luogoDiNascita.stato.idSilTNazione')"></app-control-messages></span>
+                </div>
+              </ng-container>
+            </div>
+
+          </div>
+        </div>
+
+
+
+
+      </ng-template>
+    </ngb-panel>
+  </ngb-accordion>
+  <!-- END  PRIMO ACCORDION -->
+
+
+  <!-- START SECONDO ACCORDION -->
+  <ngb-accordion formGroupName="notizieCittadiniStranieri" activeIds="panelCittadiniStranieri" [destroyOnHide]="false"
+    #accordionCittadiniStranieri id="accordion-cittadini-stranieri">
+    <ngb-panel title="NOTIZIE SUI CITTADINI STRANIERI" id="panelCittadiniStranieri">
+      <ng-template ngbPanelContent let-opened="opened">
+        <ng-container formGroupName="permessoDiSoggiorno">
+          <div class="row">
+            <div class="col-sm-12 col-md-3 text-center">
+              <figure style="width: 80%; margin: auto;">
+                <img src="assets/img/altro.svg" alt="" style="width: -webkit-fill-available;">
+              </figure>
+            </div>
+            <div class="col 9">
+
+              <div class="row">
+                <!-- Titolo soggiorno -->
+                <div formGroupName="titolo" class="mb-5 col-sm-12 col-md-4">
+                  <label for="titoloSOggiorno">Titolo di soggiorno<span class="oblg">*</span></label>
+                  <p-dropdown inputId="titoloSOggiorno" [emptyMessage]="'Nessun dato trovato'"
+                    [autoDisplayFirst]="false" [options]="titoliSoggiorno" formControlName="id" optionLabel="name"
+                    class=" p-form-select" placeholder="" optionLabel="descr" optionValue="id" labelForId="titolo"
+                    ariaLabel="seleziona titolo di soggiorno">
+                  </p-dropdown>
+                  <span style="color: red;"> <app-control-messages
+                      [control]="formNotizieCittadiniStranieri.get('permessoDiSoggiorno.titolo.id')"></app-control-messages></span>
+                </div>
+
+                <!-- Numero titolo soggiorno -->
+                <div class="mb-5 col-sm-12 col-md-4">
+                  <label for="numeroTitSoggiorno">N. titolo di soggiorno<span class="oblg">*</span></label>
+                  <input type="text" pInputText class="form-control" formControlName="numero"
+                    oninput="this.value = this.value.toUpperCase().trim()" id="numeroTitSoggiorno" maxlength="15"
+                    aria-label="numero titolo di soggiorno">
+                  <span style="color: red;"> <app-control-messages
+                      [control]="formNotizieCittadiniStranieri.get('permessoDiSoggiorno.numero')"></app-control-messages></span>
+                </div>
+
+                <!--Data scadenza  -->
+                <div class="mb-5 col-sm-12 col-md-4">
+                  <label for="dataScadenza">Scadenza titolo di soggiorno<span class="oblg">*</span></label>
+                  <div class="input-group">
+                    <p-calendar class="p-form-date" id="dataScadenza" placeholder="Data scadenza titolo"
+                      formControlName="dataScadenza" dateFormat="dd/mm/yy" ariaLabelledBy="dataScadenza">
+
+                    </p-calendar>
+
+
+                  </div>
+                  <span style="color: red;"> <app-control-messages
+                      [control]="formNotizieCittadiniStranieri.get('permessoDiSoggiorno.dataScadenza')"></app-control-messages></span>
+                </div>
+              </div>
+
+              <div class="row">
+                <div formGroupName="questura" class="mb-5 col-sm-12 col-md-4">
+                  <label for="questura">Questura titolo di soggiorno<span class="oblg">*</span></label>
+                  <p-dropdown inputId="questura" [emptyMessage]="'Nessun dato trovato'" [autoDisplayFirst]="false"
+                    [options]="questure" formControlName="id" optionLabel="name" class=" p-form-select" placeholder=""
+                    optionLabel="descr" optionValue="id" labelForId="questTitSoggiorno"
+                    ariaLabel="seleziona questura che ha rilasciato il titolo di soggiorno">
+                  </p-dropdown>
+                  <span style="color: red;"> <app-control-messages
+                      [control]="formNotizieCittadiniStranieri.get('permessoDiSoggiorno.questura.id')"></app-control-messages></span>
+                </div>
+                <ng-container formGroupName="motivoRilascio">
+                  <div formGroupName="silTCatMotRilPerm" class="mb-5 col-sm-12 col-md-4">
+                    <label for="categoriaPermesso">Categoria permesso<span class="oblg">*</span></label>
+                    <p-dropdown inputId="categoriaPermesso" [emptyMessage]="'Nessun dato trovato'"
+                      [autoDisplayFirst]="false" [options]="categorieMotiviRilasci" (onChange)="filtraMotivoRilascio($event)"
+                      formControlName="idSilTCatMotRilPerm" optionLabel="name" class=" p-form-select" placeholder=""
+                      optionLabel="descr" optionValue="id" labelForId="motTitSoggiorno"
+                      ariaLabel="seleziona la categoria del permesso di soggiorno">
+                      <!-- (change)="setCategoriaFormControl()" -->
+                    </p-dropdown>
+                    <span style="color: red;"> <app-control-messages
+                        [control]="formNotizieCittadiniStranieri.get('permessoDiSoggiorno.motivoRilascio.silTCatMotRilPerm.idSilTCatMotRilPerm')"></app-control-messages></span>
+                  </div>
+                  <div class="mb-5 col-sm-12 col-md-4">
+                    <label for="motivoPermesso">Descrizione motivo permesso<span class="oblg">*</span></label>
+                    <p-dropdown inputId="motivoPermesso" [emptyMessage]="'Nessun dato trovato'"
+                      [autoDisplayFirst]="false" [options]="decrizioneMotiviPermessoFiltrati" formControlName="idSilTMotRilPerm"
+                      optionLabel="name" class=" p-form-select" placeholder="" optionLabel="descr" optionValue="id"
+                      labelForId="motTitSoggiorno" ariaLabel="seleziona la descrizione del motivo del permesso">
+                    </p-dropdown>
+                    <span style="color: red;"> <app-control-messages
+                        [control]="formNotizieCittadiniStranieri.get('permessoDiSoggiorno.motivoRilascio.idSilTMotRilPerm')"></app-control-messages></span>
+                  </div>
+                </ng-container>
+              </div>
+
+            </div>
+          </div>
+
+
+        </ng-container>
+      </ng-template>
+    </ngb-panel>
+  </ngb-accordion>
+  <!-- END SECONDO ACCORDION -->
+
+
+  <!-- START TERZO ACCORDION -->
+  <ngb-accordion formGroupName="residenza" #accordionResidenza activeIds="panelResidenza0" id="accordion-residenza"
+    [closeOthers]="true" [destroyOnHide]="false">
+    <ngb-panel title="RESIDENZA" id="panelResidenza0">
+      <ng-template formGroupName="indirizzo" ngbPanelContent let-opened="opened">
+        <div class="row">
+          <div class="col-sm-12 col-md-3 text-center">
+            <figure style="width: 80%; margin: auto;">
+              <img src="assets/img/residenza.svg" alt="" style="width: -webkit-fill-available;">
+            </figure>
+          </div>
+          <div class="col 9">
+            <ng-container formGroupName="luogo">
+              <div class="row">
+                <!-- Luogo residenza -->
+                <div class="mb-5 col-sm-12 col-md-4">
+                  <fieldset>
+                    <legend>Luogo di residenza<span class="oblg">*</span></legend><br>
+                    <div *ngFor="let category of [{key:'Italia',id:'I'},{key:'Estero',id:'E'}]"
+                      class="mb-3 col-auto form-check form-check-inline">
+                      <input class="form-check-input" formControlName="flgLuogoItalia" [value]="category.id"
+                        (change)="setLuogoResidenzaControl()" type="radio" id="{{category.key}}res"
+                        [attr.aria-labelledby]="category.key">
+                      <label class="form-check-label" for="{{category.key}}res">{{category.key}}</label>
+
+                    </div>
+                  </fieldset>
+                </div>
+                <!-- provincia -->
+                <ng-container formGroupName="comune">
+                  <div formGroupName="silTProvincia" class="mb-5 col-sm-12 col-md-4">
+                    <label for="provinciaResidenza">Provincia <span *ngIf="setRequiredResidenza()"
+                        class="oblg">*</span></label>
+                    <p-dropdown inputId="provinciaResidenza" [emptyMessage]="'Nessun dato trovato'"
+                      (onChange)="onFilterComune($event,'residenza')" [autoDisplayFirst]="false" [options]="province"
+                      formControlName="idSilTProvincia" optionLabel="name" class=" p-form-select" placeholder=""
+                      optionLabel="descr" optionValue="id" labelForId="provincia"
+                      ariaLabel="seleziona la provincia di residenza">
+                    </p-dropdown>
+                    <span style="color: red;"> <app-control-messages
+                        [control]="formResidenza.get('indirizzo.luogo.comune.silTProvincia.idSilTProvincia')"></app-control-messages></span>
+                  </div>
+                </ng-container>
+                <!-- Comune -->
+                <div formGroupName="comune" class="mb-5 col-sm-12 col-md-4">
+
+                  <label for="comuneResidenza">Comune <span *ngIf="setRequiredResidenza()" class="oblg">*</span></label>
+                  <p-dropdown inputId="comuneResidenza" [emptyMessage]="'Nessun dato trovato'"
+                    [autoDisplayFirst]="false" (onChange)="onSelectComune(true)" [options]="comunesProvRes"
+                    formControlName="id" optionLabel="name" class=" p-form-select" placeholder="" optionLabel="descr"
+                    optionValue="id" labelForId="comuneProv" ariaLabel="seleziona il comune di residenza">
+                  </p-dropdown>
+                  <span style="color: red;"> <app-control-messages
+                      [control]="formResidenza.get('indirizzo.luogo.comune.id')"></app-control-messages></span>
+                </div>
+                <ng-container *ngIf="attivaStradarioRes && formResidenza.get('indirizzo.luogo.comune.id').value">
+                  <div class="row">
+                    <div class="col-9">
+                      <label for="stradarioRes">Ricerca indirizzo</label>
+                      <p-dropdown #str inputId="comuneResidenza"
+                        [emptyMessage]="'Inserire almeno 6 caratteri per iniziare la ricerca'"
+                        [autoDisplayFirst]="false" [filter]="true" (onFilter)="onCercaStradario($event,true)"
+                        ngbTooltip="Inserire almeno 6 caratteri per iniziare la ricerca"
+                        (onChange)="selezionaIndirizzo($event,true)" [options]="stradarioRes" class=" p-form-select"
+                        optionLabel="descrizione" labelForId="stradarioRes"
+                        ariaLabel="ricerca l'indirizzo di residenza: Inserire almeno 6 caratteri per iniziare la ricerca">
+                      </p-dropdown>
+                    </div>
+                  </div>
+                </ng-container>
+
+                <!-- Stato -->
+                <div formGroupName="stato" class="mb-5 col-sm-12 col-md-4" [hidden]="setRequiredResidenza()">
+                  <label for="statoEsteroResidenza">Stato estero<span *ngIf="!setRequiredResidenza()"
+                      class="oblg">*</span></label>
+                  <p-dropdown inputId="statoEsteroResidenza" [emptyMessage]="'Nessun dato trovato'"
+                    [autoDisplayFirst]="false" [options]="statosEstero" formControlName="idSilTNazione"
+                    optionLabel="name" class=" p-form-select" placeholder="" optionLabel="descr" optionValue="id"
+                    labelForId="statoEstero" ariaLabel="seleziona lo stato di residenza">
+                  </p-dropdown>
+                  <span style="color: red;"> <app-control-messages
+                      [control]="formResidenza.get('indirizzo.luogo.stato.idSilTNazione')"></app-control-messages></span>
+                </div>
+              </div>
+            </ng-container>
+
+            <div class="row mt-3">
+              <!-- Toponimo -->
+              <div formGroupName="toponimo" class="mb-5 col-sm-12 col-md-4">
+                <label for="toponimoResidenza">Toponimo<span *ngIf="setRequiredResidenza()"
+                    class="oblg">*</span></label>
+                <p-dropdown inputId="toponimoResidenza" [emptyMessage]="'Nessun dato trovato'"
+                  [autoDisplayFirst]="false" [options]="toponimos" formControlName="id" optionLabel="name"
+                  class=" p-form-select" placeholder="" optionLabel="descr" optionValue="id" labelForId="toponimo"
+                  ariaLabel="seleziona toponimo">
+                </p-dropdown>
+                <span style="color: red;"> <app-control-messages
+                    [control]="formResidenza.get('indirizzo.toponimo.id')"></app-control-messages></span>
+              </div>
+
+              <!-- Indirizzo -->
+              <div class="mb-5 col-sm-12 col-md-4">
+                <label for="indirizzoResidenza">Indirizzo<span *ngIf="setRequiredResidenza()"
+                    class="oblg">*</span></label>
+                <input type="text" pInputText class="form-control" formControlName="indirizzo"
+                  oninput="this.value = this.value.toUpperCase()" id="indirizzoResidenza" maxlength="100"
+                   aria-label="indirizzo di residenza">
+                <span style="color: red;"> <app-control-messages
+                    [control]="formResidenza.get('indirizzo.indirizzo')"></app-control-messages></span>
+              </div>
+
+              <!-- numero civico -->
+              <div class="mb-5 col-sm-12 col-md-4">
+                <label for="numeroCivicoResidenza">Numero civico<span *ngIf="setRequiredResidenza()"
+                    class="oblg">*</span></label>
+                <input type="text" pInputText class="form-control" formControlName="numeroCivico"
+                  oninput="this.value = this.value.toUpperCase()" id="numeroCivicoResidenza" maxlength="15"
+                  aria-label="numero civico">
+                <span style="color: red;"> <app-control-messages
+                    [control]="formResidenza.get('indirizzo.numeroCivico')"></app-control-messages></span>
+              </div>
+            </div>
+
+            <div class="row">
+              <!-- Località -->
+              <div class="mb-5 col-sm-12 col-md-4">
+                <label for="localitaResidenza">Località</label>
+                <input type="text" pInputText class="form-control" formControlName="localita"
+                  oninput="this.value = this.value.toUpperCase()" id="localitaResidenza" maxlength="100"
+                   aria-label="località">
+                <span style="color: red;"> <app-control-messages
+                    [control]="formResidenza.get('indirizzo.localita')"></app-control-messages></span>
+              </div>
+
+              <!-- Cap -->
+              <div class="mb-5 col-sm-12 col-md-4">
+                <label for="capResidenza">CAP<span *ngIf="setRequiredResidenza()" class="oblg">*</span></label>
+                <input type="text" pInputText class="form-control" silplibwclOnlyNumbers formControlName="cap"
+                  oninput="this.value = this.value.toUpperCase()" id="capResidenza" maxlength="5" aria-label="cap">
+                <span style="color: red;"> <app-control-messages
+                    [control]="formResidenza.get('indirizzo.cap')"></app-control-messages></span>
+              </div>
+            </div>
+
+
+          </div>
+        </div>
+
+      </ng-template>
+    </ngb-panel>
+  </ngb-accordion>
+  <!-- END TERZO ACCORDION -->
+
+
+
+  <!-- START QUARTO ACCORDION -->
+  <ngb-accordion formGroupName="domicilio" #accordionDomicilio activeIds="panelDomicilio" id="accordion-domicilio">
+    <ngb-panel title="DOMICILIO" id="panelDomicilio">
+      <ng-template ngbPanelContent let-opened="opened">
+        <div class="row">
+          <div class="col-sm-12 col-md-3 text-center">
+            <figure style="width: 80%; margin: auto;">
+              <img src="assets/img/domicilio.svg" alt="" style="width: -webkit-fill-available;">
+            </figure>
+          </div>
+          <div class="col 9">
+            <div class="row">
+              <div class="mb-5 col-sm-12 col-md-5">
+                <fieldset>
+                  <legend>Domicilio uguale a Residenza<span class="oblg">*</span></legend><br>
+                  <div *ngFor="let control of [{key:'Uguale',id:true},{key:'Diverso',id:false}]"
+                    class="mb-3 col-auto form-check form-check-inline">
+                    <input class="form-check-input" name="ugualeAResidenza" formControlName="ugualeAResidenza"
+                      [value]="control.id" (change)="setDomicilioControl()" type="radio" id="{{control.key}}Dom"
+                      attr.aria-labelledby="{{control.key}}Dom">
+                    <label class="form-check-label" for="{{control.key}}Dom">{{control.key}}</label>
+                  </div>
+                </fieldset>
+              </div>
+            </div>
+          <div  >
+
+            <ng-container formGroupName="indirizzo" >
+              <ng-container formGroupName="luogo">
+                <div class="row">
+                  <div class="mb-5 col-sm-12 col-md-4">
+                    <fieldset>
+                      <legend>Luogo di domicilio<span class="oblg">*</span></legend><br>
+                      <div *ngFor="let category of [{key:'Italia',id:'I'},{key:'Estero',id:'E'}]"
+                        class="mb-3 col-auto form-check form-check-inline">
+                        <input class="form-check-input" name="flgLuogoItalia" formControlName="flgLuogoItalia"
+                          [value]="category.id" (change)="setLuogoDomicilioControl()" type="radio"
+                          id="{{category.key}}Dom" [attr.aria-labelledby]="category.key+'Dom'">
+                        <label class="form-check-label" for="{{category.key}}Dom">{{category.key}}</label>
+                      </div>
+                    </fieldset>
+                  </div>
+                  <!-- provincia -->
+                  <ng-container formGroupName="comune">
+                    <div formGroupName="silTProvincia" class="mb-5 col-sm-12 col-md-4">
+                      <label for="provinciaDomicilio">Provincia <span *ngIf="setRequiredDomicilio()"
+                          class="oblg">*</span></label>
+                      <p-dropdown inputId="provinciaDomicilio" [emptyMessage]="'Nessun dato trovato'"
+                        (onChange)="onFilterComune($event,'domicilio')" [autoDisplayFirst]="false" [options]="province"
+                        formControlName="idSilTProvincia" optionLabel="name" class=" p-form-select" placeholder=""
+                        optionLabel="descr" optionValue="id" labelForId="provincia"
+                        ariaLabel="seleziona provincia di domicilio">
+                      </p-dropdown>
+                      <span style="color: red;"> <app-control-messages
+                          [control]="formDomicilio.get('indirizzo.luogo.comune.silTProvincia.idSilTProvincia')"></app-control-messages></span>
+                    </div>
+                  </ng-container>
+                  <div formGroupName="comune" class="mb-5 col-sm-12 col-md-4">
+                    <label for="comuneDomicilio">Comune <span *ngIf="setRequiredDomicilio()"
+                        class="oblg">*</span></label>
+                    <p-dropdown inputId="comuneDomicilio" [emptyMessage]="'Nessun dato trovato'"
+                      [autoDisplayFirst]="false" [options]="!formDomicilio.get('ugualeAResidenza').value?comunesProvDom:comunesProvRes" formControlName="id" optionLabel="name"
+                      class=" p-form-select" (onChange)="onSelectComune(false)" placeholder="" optionLabel="descr"
+                      optionValue="id" labelForId="comuneDom" ariaLabel="seleziona comune di domicilio">
+                    </p-dropdown>
+                    <span style="color: red;"> <app-control-messages
+                        [control]="formDomicilio.get('indirizzo.luogo.comune.id')"></app-control-messages></span>
+                  </div>
+                  <ng-container *ngIf="attivaStradarioDom && formDomicilio.get('indirizzo.luogo.comune.id').value">
+                    <div class="row mb-3">
+                      <div class="col-9">
+                        <label for="stradarioDom">Ricerca indirizzo</label>
+                        <p-dropdown inputId="stradarioDom"
+                          [emptyMessage]="'Inserire almeno 6 caratteri per iniziare la ricerca'"
+                          [autoDisplayFirst]="true" [filter]="true" filterBy="descrizione" (onFilter)="onCercaStradario($event,false)"
+                          (onChange)="selezionaIndirizzo($event,false)" [options]="stradarioDom"
+                          class=" p-form-select" optionLabel="descrizione" labelForId="stradarioRes"
+                          ariaLabel="ricerca l'indirizzo di domicilio: Inserire almeno 6 caratteri per iniziare la ricerca">
+                        </p-dropdown>
+                      </div>
+                    </div>
+
+                  </ng-container>
+                  <div formGroupName="stato" class="mb-5 col-sm-12 col-md-4" [hidden]="setRequiredDomicilio()">
+                    <label for="statoEsteroDomicilio">Stato estero<span *ngIf="!setRequiredDomicilio()"
+                        class="oblg">*</span></label>
+                    <p-dropdown inputId="statoEsteroDomicilio" [emptyMessage]="'Nessun dato trovato'"
+                      [autoDisplayFirst]="false" [options]="statosEstero" formControlName="idSilTNazione"
+                      optionLabel="name" class=" p-form-select" placeholder="" optionLabel="descr" optionValue="id"
+                      labelForId="statoNascita" ariaLabel="seleziona stato estero di domicilio">
+                    </p-dropdown>
+                    <span style="color: red;"> <app-control-messages
+                        [control]="formDomicilio.get('indirizzo.luogo.stato.idSilTNazione')"></app-control-messages></span>
+                  </div>
+                </div>
+              </ng-container>
+
+              <div class="row">
+                <div formGroupName="toponimo" class="mb-5 col-sm-12 col-md-4">
+                  <label for="toponimoDomicilio">Toponimo<span *ngIf="setRequiredDomicilio()"
+                      class="oblg">*</span></label>
+                  <p-dropdown inputId="toponimoDomicilio" [emptyMessage]="'Nessun dato trovato'"
+                    [autoDisplayFirst]="false" [options]="toponimos" formControlName="id" optionLabel="name"
+                    class=" p-form-select" placeholder="" optionLabel="descr" optionValue="id" [id]="'toponimo'"
+                    labelForId="toponimo" ariaLabel="toponimo">
+                  </p-dropdown>
+                  <span style="color: red;"> <app-control-messages
+                      [control]="formDomicilio.get('indirizzo.toponimo.id')"></app-control-messages></span>
+                </div>
+                <div class="mb-5 col-sm-12 col-md-4">
+                  <label for="indirizzoDomicilio">Indirizzo<span *ngIf="setRequiredDomicilio()"
+                      class="oblg">*</span></label>
+                  <input type="text" pInputText class="form-control" formControlName="indirizzo"
+                    oninput="this.value = this.value.toUpperCase()" id="indirizzoDomicilio" maxlength="100"
+                     aria-label="indirizzo del domicilio">
+                  <span style="color: red;"> <app-control-messages
+                      [control]="formDomicilio.get('indirizzo.indirizzo')"></app-control-messages></span>
+                </div>
+                <div class="mb-5 col-sm-12 col-md-4">
+                  <label for="numeroCivicoDomicilio">Numero civico<span *ngIf="setRequiredDomicilio()"
+                      class="oblg">*</span></label>
+                  <input type="text" pInputText class="form-control" formControlName="numeroCivico"
+                    oninput="this.value = this.value.toUpperCase().trim()" id="numeroCivicoDomicilio" maxlength="15"
+                    aria-label="numero civico domicilio">
+                  <span style="color: red;"> <app-control-messages
+                      [control]="formDomicilio.get('indirizzo.numeroCivico')"></app-control-messages></span>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="mb-5 col-sm-12 col-md-4">
+                  <label for="localitaDomicilio">Località</label>
+                  <input type="text" pInputText class="form-control" formControlName="localita"
+                    oninput="this.value = this.value.toUpperCase()" id="localitaDomicilio" maxlength="100"
+                     aria-label="località domicilio">
+                  <span style="color: red;"> <app-control-messages
+                      [control]="formDomicilio.get('indirizzo.localita')"></app-control-messages></span>
+                </div>
+                <div class="mb-5 col-sm-12 col-md-4">
+                  <label for="capDomicilio">CAP<span *ngIf="setRequiredDomicilio()" class="oblg">*</span></label>
+                  <input type="text" pInputText class="form-control" silplibwclOnlyNumbers formControlName="cap"
+                    oninput="this.value = this.value.toUpperCase().trim()" id="capDomicilio" maxlength="5"
+                    aria-label="cap domocilio">
+                  <span style="color: red;"> <app-control-messages
+                      [control]="formDomicilio.get('indirizzo.cap')"></app-control-messages></span>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+          </div>
+        </div>
+
+      </ng-template>
+    </ngb-panel>
+  </ngb-accordion>
+  <!-- END QUARTO ACCORDION -->
+
+  <!-- START QUINTO ACCORDION -->
+  <ngb-accordion formGroupName="recapito" #accordionRecapiti activeIds="panelRecapiti" id="accordion-recapiti">
+    <ngb-panel title="RECAPITI" id="panelRecapiti">
+      <ng-template ngbPanelContent let-opened="opened">
+        <ng-container>
+          <div class="row">
+            <div class="col-sm-12 col-md-3 text-center">
+              <figure style="width: 80%; margin: auto;">
+                <img src="assets/img/contact.svg" alt="" style="width: -webkit-fill-available;">
+              </figure>
+            </div>
+            <div class="col 9">
+              <div class="row">
+                <div class="mb-5 col-sm-12 col-md-4">
+                  <label for="cellulare1">Cellulare 1<span class="oblg">*</span></label>
+                  <input pInputText type="text" class="form-control" formControlName="cellulare"
+                    id="cellulare1" maxlength="15" aria-label="numero di cellulare" >
+                  <span style="color: red;"> <app-control-messages
+                      [control]="formRecapito.controls['cellulare']"></app-control-messages></span>
+                </div>
+                <div class="mb-5 col-sm-12 col-md-4">
+                  <label for="cellulare2">Cellulare 2</label>
+                  <input pInputText type="text" class="form-control" formControlName="cellulare2"
+                    id="cellulare2" maxlength="15" aria-label="numero di cellulare alternativo" >
+                    <div *ngIf="formRecapito.controls['cellulare2']?.invalid" class="text-danger">
+                      <span style="color: red;"> <app-control-messages
+                          [control]="formRecapito.controls['cellulare2']"></app-control-messages></span>
+                    </div>
+                </div>
+                <div class="mb-5 col-sm-12 col-md-4">
+                  <label for="telefonoAbitazione">Telefono abitazione</label>
+                  <input pInputText type="text" class="form-control"
+                    formControlName="telefonoAbitazione" id="telefonoAbitazione" maxlength="15"
+                    aria-label="telefon dell'abitazione">
+                    <div *ngIf="formRecapito.controls['telefonoAbitazione']?.invalid" class="text-danger">
+                      <span style="color: red;"> <app-control-messages
+                          [control]="formRecapito.controls['telefonoAbitazione']"></app-control-messages></span>
+                    </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="mb-5 col-sm-12 col-md-4">
+                  <label for="email">Mail</label>
+                  <input pInputText type="text" class="form-control" formControlName="email"
+                    oninput="this.value = this.value.trim()" id="email" maxlength="50" aria-label="indirizzo email">
+                  <div *ngIf="formRecapito.controls['email']?.invalid" class="text-danger">
+                    <span style="color: red;"> <app-control-messages
+                        [control]="formRecapito.controls['email']"></app-control-messages></span>
+                  </div>
+                </div>
+                <div class="mb-5 col-sm-12 col-md-4">
+                  <label for="indirizzoDigitale">PEC</label>
+                  <input pInputText type="text" class="form-control" formControlName="indirizzoDigitale"
+                    oninput="this.value = this.value.trim()" id="indirizzoDigitale" maxlength="254"
+                    aria-label="indirizz pec">
+                  <div *ngIf="formRecapito.controls['indirizzoDigitale']?.invalid" class="text-danger">
+                    <span style="color: red;"> <app-control-messages
+                        [control]="formRecapito.controls['indirizzoDigitale']"></app-control-messages></span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </ng-container>
+      </ng-template>
+    </ngb-panel>
+  </ngb-accordion>
+  <!-- END QUINTO ACCORDION -->
+
+</form>
+
+<span style="color: red;" *ngIf="!form.valid">è necessario compilare tutti i campi correttamente</span>
+
+<!-- DEBUG DIV per controllo domicilio Per mostrare il debug lasciare display:flex altrimenti mettere display:none
+<div
+     style="margin-top: 20px; padding: 15px; background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 5px; display: none;">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+
+    <h5 style="color: #495057; margin: 0;">🔍 DEBUG - Controllo Domicilio</h5>
+    <div>
+      <button type="button" class="btn btn-sm btn-outline-primary me-2" (click)="updateDebugData()">
+        🔄 Aggiorna Dati
+      </button>
+      <button type="button" class="btn btn-sm btn-outline-success" (click)="chkDomicilio()">
+         Test Controllo
+      </button>
+      <button type="button" class="btn btn-sm btn-outline-warning ms-2" (click)="testControlloE34()">
+        🚨 Test E34
+      </button>
+    </div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; font-size: 12px;">
+
+
+    <div>
+      <h6 style="color: #6c757d; margin-bottom: 10px;">📋 Dati Base</h6>
+      <div style="margin-bottom: 5px;"><strong>Timestamp:</strong> {{ debugDomicilioData.timestamp }}</div>
+      <div style="margin-bottom: 5px;"><strong>Inizializzato:</strong> {{ debugDomicilioData.isInitialized }}</div>
+      <div style="margin-bottom: 5px;"><strong>Domicilio modificato:</strong> {{ debugDomicilioData.isDomicilioModified }}</div>
+      <div style="margin-bottom: 5px;"><strong>Uguale a residenza:</strong> {{ debugDomicilioData.formValues?.ugualeAResidenza }}</div>
+      <div style="margin-bottom: 5px;"><strong>Può cambiare regione:</strong> {{ debugDomicilioData.canChangeRegioneDomicilio }}</div>
+      <div style="margin-bottom: 5px;"><strong>Può cambiare provincia:</strong> {{ debugDomicilioData.canChangeProvinciaDomicilio }}</div>
+    </div>
+
+    <div>
+      <h6 style="color: #6c757d; margin-bottom: 10px;">🗺️ Regioni e Province</h6>
+      <div style="margin-bottom: 5px;"><strong>Codice regione politica A02:</strong> {{ debugDomicilioData.codiceRegionePoliticaA02 }}</div>
+      <div style="margin-bottom: 5px;"><strong>Regione nuova:</strong> {{ debugDomicilioData.regioneNew }}</div>
+      <div style="margin-bottom: 5px;"><strong>Provincia residenza:</strong> {{ debugDomicilioData.formValues?.provinciaResidenza }}</div>
+      <div style="margin-bottom: 5px;"><strong>Provincia domicilio:</strong> {{ debugDomicilioData.formValues?.provinciaDomicilio }}</div>
+      <div style="margin-bottom: 5px;"><strong>Provincia iscrizione coll. mirato:</strong> {{ debugDomicilioData.provinciaIscrizioneCollMirato }}</div>
+    </div>
+
+
+    <div>
+      <h6 style="color: #6c757d; margin-bottom: 10px;">⚙️ Controlli</h6>
+      <div style="margin-bottom: 5px;"><strong>Controllo uguale a residenza:</strong> {{ debugDomicilioData.controlloUgualeAResidenza }}</div>
+      <div style="margin-bottom: 5px;"><strong>Provincia originale:</strong> {{ debugDomicilioData.provinciaOriginale }}</div>
+      <div style="margin-bottom: 5px;"><strong>Provincia nuova:</strong> {{ debugDomicilioData.provinciaNuova }}</div>
+      <div style="margin-bottom: 5px;"><strong>Province diverse:</strong> {{ debugDomicilioData.provinceDiverse }}</div>
+    </div>
+
+
+    <div>
+      <h6 style="color: #6c757d; margin-bottom: 10px;">👤 Utente</h6>
+      <div style="margin-bottom: 5px;"><strong>Nome:</strong> {{ debugDomicilioData.utente?.nome }}</div>
+      <div style="margin-bottom: 5px;"><strong>Cognome:</strong> {{ debugDomicilioData.utente?.cognome }}</div>
+      <div style="margin-bottom: 5px;"><strong>CF:</strong> {{ debugDomicilioData.utente?.cfUtente }}</div>
+      <div style="margin-bottom: 5px;"><strong>Fascicolo presente:</strong> {{ debugDomicilioData.fascicolo ? 'Sì' : 'No' }}</div>
+    </div>
+
+
+    <div *ngIf="debugDomicilioData.controlloE34" style="grid-column: 1 / -1; margin-top: 10px;">
+      <h6 style="color: #6c757d; margin-bottom: 10px;">🚨 Controllo E34 (Politica A02)</h6>
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; font-size: 11px;">
+        <div>
+          <div style="margin-bottom: 3px;"><strong>Condizione 1:</strong>
+            <span [style.color]="debugDomicilioData.controlloE34.condizione1 ? 'green' : 'red'">
+              {{ debugDomicilioData.controlloE34.condizione1 ? ' Politica A02 presente' : '❌ Politica A02 assente' }}
+            </span>
+          </div>
+          <div style="margin-bottom: 3px;"><strong>Codice regione politica:</strong> {{ debugDomicilioData.controlloE34.codiceRegionePoliticaA02 }}</div>
+        </div>
+        <div>
+          <div style="margin-bottom: 3px;"><strong>Condizione 2:</strong>
+            <span [style.color]="debugDomicilioData.controlloE34.condizione2 ? 'green' : 'red'">
+              {{ debugDomicilioData.controlloE34.condizione2 ? ' Non può cambiare regione' : '❌ Può cambiare regione' }}
+            </span>
+          </div>
+          <div style="margin-bottom: 3px;"><strong>Può cambiare regione:</strong> {{ debugDomicilioData.controlloE34.canChangeRegioneDomicilio }}</div>
+        </div>
+        <div>
+          <div style="margin-bottom: 3px;"><strong>Condizione 3:</strong>
+            <span [style.color]="debugDomicilioData.controlloE34.condizione3 ? 'green' : 'red'">
+              {{ debugDomicilioData.controlloE34.condizione3 ? ' Regioni diverse' : '❌ Regioni uguali' }}
+            </span>
+          </div>
+          <div style="margin-bottom: 3px;"><strong>Regione nuova:</strong> {{ debugDomicilioData.controlloE34.regioneNew }}</div>
+        </div>
+      </div>
+      <div style="margin-top: 10px; padding: 8px; border-radius: 3px;"
+           [style.background-color]="debugDomicilioData.controlloE34.tutteCondizioni ? '#f8d7da' : '#d4edda'"
+           [style.border]="debugDomicilioData.controlloE34.tutteCondizioni ? '1px solid #f5c6cb' : '1px solid #c3e6cb'">
+        <strong>🎯 Risultato Controllo E34:</strong>
+        <span [style.color]="debugDomicilioData.controlloE34.tutteCondizioni ? '#721c24' : '#155724'">
+          {{ debugDomicilioData.controlloE34.tutteCondizioni ? '❌ MESSAGGIO E34 DOVREBBE APPARIRE' : ' Controllo superato' }}
+        </span>
+
+        <div *ngIf="debugDomicilioData.controlloE34.eseguito" style="margin-top: 5px; font-size: 11px;">
+          <div><strong>Controllo eseguito:</strong> {{ debugDomicilioData.controlloE34.eseguito ? 'Sì' : 'No' }}</div>
+          <div><strong>Messaggio mostrato:</strong>
+            <span [style.color]="debugDomicilioData.controlloE34.messaggioMostrato ? 'red' : 'green'">
+              {{ debugDomicilioData.controlloE34.messaggioMostrato ? 'Sì' : 'No' }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div *ngIf="debugDomicilioData.controlloE34?.analisiPolitiche" style="grid-column: 1 / -1; margin-top: 10px;">
+      <h6 style="color: #6c757d; margin-bottom: 10px;">📊 Analisi Politiche Attive</h6>
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px; font-size: 11px;">
+        <div style="text-align: center; padding: 5px; background-color: #e9ecef; border-radius: 3px;">
+          <div style="font-weight: bold; font-size: 14px;">{{ debugDomicilioData.controlloE34.analisiPolitiche.totali }}</div>
+          <div>Totali</div>
+        </div>
+        <div style="text-align: center; padding: 5px; background-color: #fff3cd; border-radius: 3px;">
+          <div style="font-weight: bold; font-size: 14px;">{{ debugDomicilioData.controlloE34.analisiPolitiche.politicheA02 }}</div>
+          <div>A02</div>
+        </div>
+        <div style="text-align: center; padding: 5px; background-color: #d1ecf1; border-radius: 3px;">
+          <div style="font-weight: bold; font-size: 14px;">{{ debugDomicilioData.controlloE34.analisiPolitiche.politicheDID }}</div>
+          <div>DID (05)</div>
+        </div>
+        <div style="text-align: center; padding: 5px; background-color: #d4edda; border-radius: 3px;">
+          <div style="font-weight: bold; font-size: 14px;">{{ debugDomicilioData.controlloE34.analisiPolitiche.politicheAperte }}</div>
+          <div>Aperte</div>
+        </div>
+      </div>
+
+      <div *ngIf="debugDomicilioData.controlloE34.analisiPolitiche.dettagliPoliticheAperte?.length > 0" style="margin-top: 10px;">
+        <div style="font-size: 11px; font-weight: bold; margin-bottom: 5px;">Dettagli Politiche Aperte:</div>
+        <div style="margin-left: 10px; font-family: monospace; font-size: 10px;">
+          <div *ngFor="let p of debugDomicilioData.controlloE34.analisiPolitiche.dettagliPoliticheAperte">
+            Codice: {{ p.codice }} | Tipo: {{ p.tipoProgetto }} | Regione: {{ p.regione }} | Stato: {{ p.stato }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div *ngIf="debugDomicilioData.provinceCount" style="grid-column: 1 / -1; margin-top: 10px;">
+      <h6 style="color: #6c757d; margin-bottom: 10px;">🗺️ Dettagli Province</h6>
+      <div style="font-size: 11px;">
+        <div style="margin-bottom: 5px;"><strong>Numero province caricate:</strong> {{ debugDomicilioData.provinceCount }}</div>
+        <div style="margin-bottom: 5px;"><strong>Prime 3 province:</strong></div>
+        <div style="margin-left: 10px; font-family: monospace; font-size: 10px;">
+          <div *ngFor="let p of debugDomicilioData.provinceSample">
+            ID: {{ p.id }} - Nome: {{ p.name }} - Special: {{ p.special }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+
+  <div style="margin-top: 15px; padding: 10px; border-radius: 3px;"
+       [style.background-color]="debugDomicilioData.result?.includes('fallito') ? '#f8d7da' : '#d4edda'"
+       [style.border]="debugDomicilioData.result?.includes('fallito') ? '1px solid #f5c6cb' : '1px solid #c3e6cb'">
+    <h6 style="margin-bottom: 5px; color: #495057;">📊 Risultato Controllo</h6>
+    <div style="font-weight: bold; color: #495057;">{{ debugDomicilioData.result }}</div>
+    <div *ngIf="debugDomicilioData.errorMessage" style="margin-top: 5px; color: #721c24;">
+      <strong>Messaggio errore:</strong> {{ debugDomicilioData.errorMessage }}
+    </div>
+  </div>
+
+
+  <details style="margin-top: 15px;">
+    <summary style="cursor: pointer; color: #6c757d; font-weight: bold;">📄 Dati JSON completi</summary>
+    <pre style="margin-top: 10px; padding: 10px; background-color: #e9ecef; border-radius: 3px; font-size: 11px; overflow-x: auto;">{{ debugDomicilioData | json }}</pre>
+  </details>
+
+</div>  -->

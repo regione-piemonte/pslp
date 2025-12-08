@@ -1,0 +1,163 @@
+/*
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ */
+/**
+  foglio di stile per sezione a pie di pagina
+  link istituzionali
+*/
+
+footer{
+    font-size: 18px;
+  }
+  h5 {
+    font-size: 18px;
+    margin: 0;
+    font-weight: bold;
+  }
+  p {
+    padding: 0;
+    margin: 0;
+  }
+  
+  p.mt-40{margin-top: 40px !important;}
+  .footer p.small{
+    margin-bottom: -20px;
+    font-size: 13px;
+  }
+  p.border-w {
+    border-bottom: 1px solid #727786;
+    border-left: 0;
+    border-right: 0;
+  }
+  img {
+    height: 85px;
+  }
+  .pre-footer {
+    background:#006CB4;
+    padding: 46px 0 40px 0;
+  }
+  .pre-footer img {
+    height: 85px;
+  }
+  .pre-footer .text-right img {
+    height: 56px;
+  }
+  .col-right{text-align: right;}
+  
+  .mr-img{
+    margin-right: 30px;
+  }
+  
+  .footer {
+    padding: 40px 0 20px 0;
+    background:#213366;
+    color:#fff;
+  }
+  .footer .logo-piemonte-tu img{ height: 96px;}
+  p.h5 {
+    font-size: 18px;
+  }
+  .footer a {
+    color:#fff;
+    text-decoration: underline;
+  }
+  
+  .footer .pad{
+    padding: 40px 0 28px 0;
+  }
+  .cont-footer {
+    padding: 10px 0;
+  }
+  .logo-csi {
+    text-align: right;
+  }
+  .logo-csi img{
+   height: 75px;
+  }
+  .footer-author {
+    font-size: 14px;
+  }
+  .justify-space-between {
+    justify-content: space-between !important;
+  }
+  
+  @media (max-width: 1199.98px){
+    .pre-footer img, .pre-footer .text-right img {
+      height:55px;
+    }
+  }
+  
+  @media (max-width: 991.98px){
+  
+    .pre-footer img, .pre-footer .text-right img {
+      height:45px;
+    }
+    .sm-center{text-align: center;    margin-bottom: 25px;}
+  }
+  
+  @media (max-width: 767.98px){
+    .footer p.small{
+      margin-bottom: -10px;
+      font-size: 7px;
+    }
+    .footer .pad{
+      padding: 20px 0 20px 0;
+    }
+    .col-right{text-align: center;}
+  
+    .pre-footer .pt-3 {
+      padding: 0 !important;
+    }
+    .col-sm-4 {
+      flex: 0 0 33.33333%;
+      max-width: 33.33333%;
+    }
+    .col-sm-8 {
+      flex: 0 0 66.66667%;
+      max-width: 66.66667%;
+    }
+  
+    .footer .logo-csi img{ height: 36px;}
+  
+    footer {
+      padding: 35px 0 0px 0;
+      font-size: 12px;
+    }
+    p.h5, p {
+      font-size: 14px;
+    }
+    .sm-t{
+      margin-top: 20px;
+    }
+    .col-sm-6 {
+      -webkit-box-flex: 0;
+      flex: 0 0 50%;
+      max-width: 50%;
+    }
+    .logo-csi {
+      margin-top: 0 !important;
+    }
+    img, .logo-csi img {
+      height: 40px;
+    }
+    .footer .logo-piemonte-tu img{ height: 45px;}
+    .mr-img {
+      margin-right: 65px;
+    }
+  }
+  @media (max-width: 575.98px){
+    img {
+      height: 20px;
+    }
+    .pre-footer{
+    padding: 26px 0 20px 0;
+    }
+    .pre-footer img, .pre-footer .text-right img {
+      height: 35px;
+    }
+  }
+  

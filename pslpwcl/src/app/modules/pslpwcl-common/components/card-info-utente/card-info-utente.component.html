@@ -1,0 +1,37 @@
+<!--
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ -->
+<div class="row mb-3">
+    <p-card class="col-sm-12 col-md-12 col-lg-6 col-xl-6" >
+      <div class="row">
+        <div class="col-3" style=" display: flex;
+                                   justify-content: center;
+                                   align-items: center;">
+          <!-- <i class="far fa-user-circle" style="transform: scale(6);"></i> -->
+          <img src="assets/img/user_card.png" alt="user_privacy_deleghe" style="border: #2d86c2 3px solid;
+          max-height: 7rem;
+          transform: scale(1.5);
+          border-radius: 50%;
+          background-color: white;">
+        </div>
+        <div class="col-9">
+          <div class="row"><h4>{{utente?.nome}} {{utente?.cognome}}</h4></div>
+          <div class="row mb-3">
+            <div class="col">
+                <span><strong>Codice Fiscale:</strong><br> {{utente?.cfUtente}}</span>
+            </div>
+            <div class="col">
+                <span><strong>Identificativo SILP:</strong> <br> {{utente?.idSilLavAnagrafica}}</span>
+            </div>
+          </div>
+        </div>
+        <div class="row mt-3 justify-content-center" >
+          <div class="d-flex gap-1 justify-content-center">
+            <button *ngFor="let item of items" [hidden]="!item.visible" class="btn-link--primary" [attr.aria-label]="'vai a gestione privacy' + item.url" (click)="navigateTo(item.url)">{{item.label}}</button>
+          </div>
+        </div>
+      </div>

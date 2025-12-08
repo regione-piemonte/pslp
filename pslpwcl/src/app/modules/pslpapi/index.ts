@@ -1,0 +1,12 @@
+/*
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ */
+export * from './api/api';
+export * from './model/models';
+export * from './variables';
+export * from './configuration';
+export * from './api.module';

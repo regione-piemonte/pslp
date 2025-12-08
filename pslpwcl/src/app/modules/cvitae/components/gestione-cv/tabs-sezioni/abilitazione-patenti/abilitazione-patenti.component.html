@@ -1,0 +1,315 @@
+<!--
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ -->
+<ul ngbNav [roles]="false" #nav="ngbNav" class="nav-tabs">
+  <li [ngbNavItem]="0">
+
+    <a ngbNavLink>Patenti</a>
+    <!-- Patenti -->
+    <ng-template ngbNavContent>
+      <ngb-accordion activeIds="panelPatenti,panelPatentiCv"
+      #acc="ngbAccordion" id="accordion-patenti" [closeOthers]="false" [destroyOnHide]="false">
+      <ngb-panel title="{{messaggioPatentiFasc?.testo}}" id="panelPatenti">
+        <ng-template ngbPanelContent let-opened="opened">
+          <table class="mt-3 mb-5 scrollbar-table scrollbar-primary">
+            <thead>
+              <tr>
+                <th>Patenti</th>
+                <th *ngIf="canModifica">Azione</th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngIf="patentiFascicoloFiltrate.length > 0 ; else noData">
+                <tr *ngFor="let patente of patentiFascicoloFiltrate; index as i">
+                  <td>{{ patente?.descr | uppercase }}</td>
+                  <td class="col-md-1">
+                    <a tabindex="0" (click)="aggiungiPatenteDaFascicolo(patente)"
+                      (keydown.enter)="aggiungiPatenteDaFascicolo(patente)" style="color: #016CB4"
+                      aria-label="Azione: aggiungi patente a cv" title="Aggiungere patente a cv" *ngIf="canModifica">
+                      <i class="fas fa-file-download"></i>
+                    </a>
+                  </td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+          <ng-template #noData>
+            {{messaggioNonCiSonoDati?.testo | uppercase}}
+          </ng-template>
+        </ng-template>
+      </ngb-panel>
+
+
+      <ngb-panel title="{{messaggioPatentiCv?.testo}}" id="panelPatentiCv">
+        <ng-template ngbPanelContent let-opened="opened">
+          <table class="mt-3 mb-5 scrollbar-table scrollbar-primary">
+            <thead>
+              <tr>
+                <th>Patenti</th>
+                <th *ngIf="canModifica">Azione</th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngIf="patentiCv.length > 0 ; else noData">
+                <tr *ngFor="let patente of patentiCv; index as i">
+                  <td>{{ patente?.idTipoPatente?.descrTipoPatente| uppercase }}</td>
+                  <td class="col-md-1">
+                    <a tabindex="0" (click)="onClickEliminaInfoCv(patente.id,'patente')"
+                      aria-label="Azione: eliminare patente" title="Eliminare patente" *ngIf="canModifica">
+                      <i class="fas fa-trash-alt"></i>
+                    </a>
+                  </td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+          <ng-template #noData>
+            Non ci sono dati
+          </ng-template>
+          <div>
+            <button (click)="showFormPatenti = !showFormPatenti" type="button" class="btn btn-primary btn-sm"
+              [disabled]="!canModifica">INSERISCI PATENTE</button>
+          </div>
+          <div *ngIf="showFormPatenti">
+              <form [formGroup]="formPatente" (ngSubmit)="onClickConferma('patente')" *ngIf="canModifica">
+                <div class="mt-3 row">
+                  <div class="mb-5 col-sm-12 col-md-6">
+                    <label for="tipoPatente">Tipo patente<span class="oblg">*</span></label>
+
+                    <p-dropdown optionLabel="descr" optionValue="id" inputId="tipoPatente"
+                      [emptyMessage]="'Nessun dato trovato'" [autoDisplayFirst]="false" [options]="patentiFIltrate"
+                      formControlName="id" aria-label="tipo patente" class=" p-form-select" placeholder="" bindLabel="descr">
+                    </p-dropdown>
+                  </div>
+                </div>
+                <div class="mt-3 row">
+                  <div class="col mt-3">
+                      <button type="button" (click)="onAnnulla('patente')"
+                          class="btn btn-outline-secondary btn-sm" aria-label="annulla inserimento">ANNULLA</button>
+                  </div>
+                  <div class="col-auto mt-3">
+                      <button type="submit" class="btn btn-primary ml-auto btn-lg" [disabled]="!formPatente?.valid"
+                        aria-label="conferma inserimento">CONFERMA</button>
+                  </div>
+                </div>
+              </form>
+
+          </div>
+        </ng-template>
+      </ngb-panel>
+
+      </ngb-accordion>
+    </ng-template>
+  </li>
+
+  <!-- Patentini -->
+  <li [ngbNavItem]="1">
+
+    <a ngbNavLink>Patentini</a>
+    <ng-template ngbNavContent>
+      <ngb-accordion activeIds="panelPatentini,panelPatentiniCv"
+        #acc="ngbAccordion" id="accordion-patentini" [closeOthers]="false" [destroyOnHide]="false">
+
+        <ngb-panel title="{{messaggioPatentiniFasc?.testo}}" id="panelPatentini">
+          <ng-template ngbPanelContent let-opened="opened">
+            <table class="mt-3 mb-5 scrollbar-table scrollbar-primary">
+              <thead>
+                <tr>
+                  <th>Patentini</th>
+                  <th *ngIf="canModifica">Azione</th>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngIf="patentiniFascicoloFiltrate.length > 0 ; else noData">
+                  <tr *ngFor="let patente of patentiniFascicoloFiltrate; index as i">
+                    <td>{{ patente?.descr | uppercase }}</td>
+                    <td class="col-md-1">
+                      <a tabindex="0" (click)="aggiungiAbilitazioneDaFascicolo(patente)"
+                        (keydown.enter)="aggiungiAbilitazioneDaFascicolo(patente)" style="color: #016CB4"
+                        aria-label="Azione: aggiungi patentino a cv" title="Aggiungere patentino a cv" *ngIf="canModifica">
+                        <i class="fas fa-file-download"></i>
+                      </a>
+                    </td>
+                  </tr>
+
+                </ng-container>
+              </tbody>
+            </table>
+            <ng-template #noData>
+              {{messaggioNonCiSonoDati?.testo | uppercase}}
+            </ng-template>
+
+          </ng-template>
+        </ngb-panel>
+        <ngb-panel title="{{messaggioPatentiniCv?.testo}}" id="panelPatentiniCv">
+          <ng-template ngbPanelContent let-opened="opened">
+            <table class="mt-3 mb-5 scrollbar-table scrollbar-primary">
+              <thead>
+                <tr>
+                  <th>Patentini</th>
+                  <th *ngIf="canModifica">Azione</th>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngIf="patentiniCv.length > 0 ; else noData">
+                  <tr *ngFor="let patentino of patentiniCv; index as i">
+                    <td>{{ patentino?.idTipoAbilitazione?.descrTipoAbilitazione| uppercase }}</td>
+                    <td class="col-md-1">
+                      <a tabindex="0" (click)="onClickEliminaInfoCv(patentino.id,'abilitazione')"
+                        aria-label="Azione: eliminare patente" title="Eliminare patentino" *ngIf="canModifica">
+                        <i class="fas fa-trash-alt"></i></a>
+                    </td>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
+            <ng-template #noData>
+              Non ci sono dati
+            </ng-template>
+            <div>
+              <button (click)="showFormAbilitazioni = !showFormAbilitazioni" type="button" class="btn btn-primary btn-sm"
+                aria-label="inserisci un patentino" [disabled]="!canModifica">INSERISCI PATENTINO</button>
+            </div>
+            <div *ngIf="showFormAbilitazioni">
+
+              <form [formGroup]="formAbilitazione" (ngSubmit)="onClickConferma('abilitazione')" *ngIf="canModifica">
+                <div class="mt-3 row">
+                  <div class="mb-5 col-sm-12 col-md-6">
+                    <label for="tipoPatentino">Tipo patentino<span class="oblg">*</span></label>
+
+                    <p-dropdown optionLabel="descr" optionValue="id" inputId="tipoPatentino"
+                      [emptyMessage]="'Nessun dato trovato'" [autoDisplayFirst]="false" [options]="abilitazioniFiltrate"
+                      formControlName="id" ariaLabel="tipo patentino" class=" p-form-select" placeholder="" bindLabel="descr">
+                    </p-dropdown>
+                  </div>
+                </div>
+
+                <div class="mt-3 row">
+                  <div class="col mt-3">
+                    <button type="button" (click)="onAnnulla('abilitazione')"
+                        class="btn btn-outline-secondary btn-sm" aria-label="annulla inserimento">ANNULLA</button>
+                </div>
+                  <div class="col-auto mt-3">
+                    <button type="submit" class="btn btn-primary ml-auto btn-lg" [disabled]="!formAbilitazione?.valid"
+                      aria-label="conferma inserimento">CONFERMA</button>
+                  </div>
+                </div>
+              </form>
+
+            </div>
+
+
+          </ng-template>
+        </ngb-panel>
+
+      </ngb-accordion>
+    </ng-template>
+  </li>
+  <li [ngbNavItem]="2">
+
+    <a ngbNavLink>Albi</a>
+    <!-- Albi -->
+    <ng-template ngbNavContent>
+
+      <ngb-accordion activeIds="panelAlbi, panelAlbiCv"
+        #acc="ngbAccordion" id="accordion-albi" [closeOthers]="false" [destroyOnHide]="false">
+        <ngb-panel title="{{messaggioAlbiFasc?.testo}}" id="panelAlbi">
+          <ng-template ngbPanelContent let-opened="opened">
+            <table class="mt-3 mb-5 scrollbar-table scrollbar-primary">
+              <thead>
+                <tr>
+                  <th>Albi</th>
+                  <th *ngIf="canModifica">Azione</th>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngIf="albiFascicoloFiltrati.length > 0 ; else noData">
+                  <tr *ngFor="let albo of albiFascicoloFiltrati; index as i">
+                    <td>{{ albo?.id.silTAlbi.descr| uppercase }}</td>
+                    <td class="col-md-1">
+                      <a tabindex="0" (click)="aggiungiAlboDaFascicolo(albo)" (keydown.enter)="aggiungiAlboDaFascicolo(albo)"
+                        style="color: #016CB4" aria-label="Azione: aggiungi albo" title="Aggiungere albo"
+                        *ngIf="canModifica">
+                        <i class="fas fa-file-download"></i></a>
+                    </td>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
+            <ng-template #noData>
+              {{messaggioNonCiSonoDati?.testo | uppercase}}
+            </ng-template>
+
+            </ng-template>
+          </ngb-panel>
+
+          <ngb-panel title="{{messaggioAlbiCv?.testo}}" id="panelAlbiCv">
+            <ng-template ngbPanelContent let-opened="opened">
+            <table class="mt-3 mb-5 scrollbar-table scrollbar-primary">
+              <thead>
+                <tr>
+                  <th>Albi</th>
+                  <th *ngIf="canModifica">Azione</th>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngIf="albiCv.length > 0 ; else noData">
+                  <tr *ngFor="let albo of albiCv; index as i">
+                    <td>{{ albo?.idAlbo?.descrAlbo| uppercase }}</td>
+                    <td class="col-md-1">
+                      <a tabindex="0" (click)="onClickEliminaInfoCv(albo.id,'albo')" aria-label="Azione: eliminare albo"
+                        title="Eliminare albo" *ngIf="canModifica">
+                        <i class="fas fa-trash-alt"></i></a>
+                    </td>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
+            <ng-template #noData>
+              Non ci sono dati
+            </ng-template>
+
+            <div>
+              <button (click)="showFormAlbi = !showFormAlbi" type="button" class="btn btn-primary btn-sm"
+                [disabled]="!canModifica">INSERISCI ALBO</button>
+            </div>
+            <div *ngIf="showFormAlbi">
+              <form [formGroup]="formAlbo" (ngSubmit)="onClickConferma('albo')" *ngIf="canModifica">
+
+                <div class="mt-3 row">
+                  <div class="mb-5 col-sm-12 col-md-6">
+                    <label for="tipoAlbo">Tipo albo<span class="oblg">*</span></label>
+
+                    <p-dropdown optionLabel="descr" optionValue="id" inputId="tipoAlbo" [emptyMessage]="'Nessun dato trovato'"
+                      [autoDisplayFirst]="false" [options]="albiFiltrati" formControlName="id" aria-label="tipo albo"
+                      class=" p-form-select" placeholder="" bindLabel="descr">
+                    </p-dropdown>
+                  </div>
+                </div>
+
+                <div class="mt-3 row">
+                  <div class="col mt-3">
+                    <button type="button" (click)="onAnnulla('albo')"
+                        class="btn btn-outline-secondary btn-sm" aria-label="annulla inserimento">ANNULLA</button>
+                </div>
+                  <div class="col-auto mt-3">
+                    <button type="submit" class="btn btn-primary ml-auto btn-lg" [disabled]="!formAlbo?.valid"
+                      aria-label="conferma inserimento">CONFERMA</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </ng-template>
+        </ngb-panel>
+      </ngb-accordion>
+    </ng-template>
+  </li>
+</ul>
+
+<div [ngbNavOutlet]="nav" class="mt-2"></div>
+
+

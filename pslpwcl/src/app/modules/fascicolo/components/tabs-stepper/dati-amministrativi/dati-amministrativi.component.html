@@ -1,0 +1,85 @@
+<!--
+ * ========================LICENSE_START=================================
+ * Copyright (C) 2025 Regione Piemonte
+ * SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+ * SPDX-License-Identifier: EUPL-1.2
+ * =========================LICENSE_END==================================
+ -->
+
+
+<ngb-accordion #acc="ngbAccordion" [activeIds]="activeIds">
+  <ngb-panel title="POSIZIONE NEL MERCATO LAVORO" id="posizione">
+    <ng-template ngbPanelContent>
+      <div class="row">
+        <div class="col col-md-4">
+          <h4>Data DID</h4>
+          <p pInputText class="form-control disabled">{{(posizione?.dataDid | date:'dd/MM/yyyy') || '--'}}</p>
+        </div>
+        <div class="col col-md-4">
+          <h4>Stato occupazione</h4>
+          <p pInputText class="form-control disabled">{{posizione?.statoOccupazionale?.descr ||posizione?.statoOccupazionale?.codice || '--'}}</p>
+        </div>
+        <div class="col col-md-4">
+          <h4>Condizione occupazionale</h4>
+          <p pInputText class="form-control disabled">{{posizione?.condizioneOccupazionale?.descr ||posizione?.condizioneOccupazionale?.codice || '--'}}</p>
+        </div>
+      </div>
+    </ng-template>
+  </ngb-panel>
+  <ngb-panel id="ultimaIscrizioneDisagile">
+    <ng-template ngbPanelTitle>
+      <span>ULTIMA ISCRIZIONE DISABILE</span>
+    </ng-template>
+    <ng-template ngbPanelContent>
+      <div class="row">
+        <div class="col col-md-4">
+          <h4>Data iscrizione</h4>
+          <p pInputText class="form-control disabled">{{(disabile?.dataIscrizione | date:"dd/MM/yyyy")  ||'--'}}</p>
+        </div>
+        <div class="col col-md-4">
+          <h4>Data anzianità</h4>
+          <p pInputText class="form-control disabled">{{(disabile?.dataAnzianitaDal | date:"dd/MM/yyyy" ) ||'--'}}</p>
+        </div>
+        <div class="col col-md-4">
+          <h4>Data fine</h4>
+          <p pInputText class="form-control disabled">{{(disabile?.dataCancellazione | date:"dd/MM/yyyy" ) ||'--'}}</p>
+        </div>
+        <div class="col col-md-4">
+          <h4>Provincia</h4>
+          <p pInputText class="form-control disabled">{{disabile?.dsProvincia ||'--'}}</p>
+        </div>
+        <div class="col col-md-4">
+          <h4>Stato iscrizione</h4>
+          <p pInputText class="form-control disabled">{{disabile?.dsStatoIscrCatProt ||'--'}}</p>
+        </div>
+      </div>
+    </ng-template>
+  </ngb-panel>
+  <ngb-panel title="ULTIMA ISCRIZIONE CATEGORIA PROTETTA" id="ultimaIscrizioneCatProtetta">
+    <ng-template ngbPanelContent>
+      <div class="row">
+        <div class="col col-md-4">
+          <h4>Data iscrizione</h4>
+          <p pInputText class="form-control disabled">{{(protetta?.dataIscrizione | date:"dd/MM/yyyy" )||'--'}}</p>
+        </div>
+        <div class="col col-md-4">
+          <h4>Data anzianità</h4>
+          <p pInputText class="form-control disabled">{{(protetta?.dataAnzianitaDal | date:"dd/MM/yyyy") ||'--'}}</p>
+        </div>
+        <div class="col col-md-4">
+          <h4>Data fine</h4>
+          <p pInputText class="form-control disabled">{{(protetta?.dataCancellazione | date:"dd/MM/yyyy")  ||'--'}}</p>
+        </div>
+        <div class="col col-md-4">
+          <h4>Provincia</h4>
+          <p pInputText class="form-control disabled">{{protetta?.dsProvincia ||'--'}}</p>
+        </div>
+        <div class="col col-md-4">
+          <h4>Stato iscrizione</h4>
+          <p pInputText class="form-control disabled"> {{protetta?.dsStatoIscrCatProt ||'--'}}</p>
+        </div>
+      </div>
+    </ng-template>
+  </ngb-panel>
+</ngb-accordion>
+

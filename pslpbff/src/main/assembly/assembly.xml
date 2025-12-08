@@ -1,0 +1,17 @@
+<!-- ##################################################### -->
+<!-- # Copyright Regione Piemonte - 2025                 # -->
+<!-- # SPDX-License-Identifier: EUPL-1.2-or-later        # -->
+<!-- ##################################################### -->
+<assembly>
+    <id>bundle</id> 
+    <includeBaseDirectory>false</includeBaseDirectory>
+    <formats>
+        <format>tar.gz</format>
+    </formats>
+    <fileSets>
+        <fileSet>
+            <directory>target/quarkus-app/</directory>
+            <outputDirectory>.</outputDirectory>
+        </fileSet>
+	</fileSets>
+</assembly>

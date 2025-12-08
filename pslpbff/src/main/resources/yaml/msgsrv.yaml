@@ -1,0 +1,401 @@
+###
+# ========================LICENSE_START=================================
+# Copyright (C) 2025 Regione Piemonte
+# SPDX-FileCopyrightText: Copyright 2025 | Regione Piemonte
+# SPDX-License-Identifier: EUPL-1.2
+# =========================LICENSE_END==================================
+###
+swagger: "2.0"
+info:
+  description: "API per msgsrv"
+  version: "1.0.0"
+  title: "msgsrv"
+host: "localhost:8080"
+basePath: "/msgsrv/api"
+tags:
+- name: "Servizi"
+schemes:
+- "http"
+paths:
+  /ping:
+    get:
+      operationId: ping
+      description: ritorna una descrizione in risposta di conferma della chiamata
+      tags:
+        - ping
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        default:
+          description: Errore generico.
+          schema:
+            $ref: '#/definitions/ApiError'
+  /msg/batch/mail:
+    get:
+      operationId: invioMailBatch
+      description: esegue il batch di invio mail immediatamente
+      tags:
+        - ping
+      produces:
+        - application/text
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        default:
+          description: Errore generico.
+          schema:
+            $ref: '#/definitions/ApiError'
+  /msg/batch/sms:
+    get:
+      operationId: invioSMSBatch
+      description: esegue il batch di invio sms immediatamente
+      tags:
+        - ping
+      produces:
+        - application/text
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        default:
+          description: Errore generico.
+          schema:
+            $ref: '#/definitions/ApiError'
+  /msg/batch/appio:
+    get:
+      operationId: invioAppIOBatch
+      description: esegue il batch di invio al notificatore immediatamente
+      tags:
+        - ping
+      produces:
+        - application/text
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: string
+        default:
+          description: Errore generico.
+          schema:
+            $ref: '#/definitions/ApiError'
+  /msg/invia_messaggio:
+    post:
+      parameters:
+        - in: body
+          name: param
+          schema:
+             $ref: '#/definitions/Messaggio'
+      operationId: inviaMessaggio
+      description: invia un messaggio
+      tags:
+        - messaggi
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/EsitoMessaggio'
+        default:
+          description: Errore generico.
+          schema:
+            $ref: '#/definitions/ApiError'
+  /msg/ricerca_messaggi:
+    post:
+      parameters:
+        - in: body
+          name: param
+          schema:
+             $ref: '#/definitions/ParametriRicercaMessaggi'
+      operationId: ricercaMessaggi
+      description: ricerca i messaggi inviati
+      tags:
+        - messaggi
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/EsitoRicercaMessaggi'
+        default:
+          description: Errore generico.
+          schema:
+            $ref: '#/definitions/ApiError'
+  /msg/{caller}/{idMessaggio}:
+    get:
+      tags:
+      - "messaggi"
+      description: restituisce il dettaglio di un messaggio
+      operationId: "dettaglioMessaggio"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "caller"
+        in: "path"
+        required: true
+        type: "string"
+      - name: "idMessaggio"
+        in: "path"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "Dati registrati su sistema."
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/EsitoDettaglioMessaggio"
+        default:
+          description: "Errore generico."
+          schema:
+            $ref: "#/definitions/ApiError"
+
+definitions:
+  Messaggio:
+    type: object
+    properties:
+      caller:
+        type: string
+      titolo:
+        type: string
+      flgImmediato:
+        type: string
+        enum: ["S", "N"]
+      destinatari:
+        type: array
+        items:
+          $ref: '#/definitions/Destinatario'
+      datiSMS:
+        $ref: '#/definitions/DatiSMS'
+      datiMail:
+        $ref: '#/definitions/DatiMail'
+      datiAppIO:
+        $ref: '#/definitions/DatiAppIO'
+  Destinatario:
+    type: object
+    properties:
+      codiceFiscale:
+        type: string
+      cognome:
+        type: string
+      nome:
+        type: string
+      ente:
+        type: string
+      mail:
+        type: string
+      cellulare:
+        type: string
+      idLavoratore:
+        type: integer
+        format: int64
+  DatiSMS:
+    type: object
+    properties:
+      testo:
+        type: string
+  DatiMail:
+    type: object
+    properties:
+      indirizzoMittente:
+        type: string
+      descrizioneMittente:
+        type: string
+      oggetto:
+        type: string
+      testo:
+        type: string
+      flagHtml:
+        type: string
+        enum: ["S","N"]
+  DatiAppIO:
+    type: object
+    properties:
+      sommario:
+        type: string
+      descrizione:
+        type: string
+      datiConvocazione:
+        $ref: '#/definitions/DatiAppIOConvocazione'
+      datiInformazione:
+        $ref: '#/definitions/DatiAppIOInformazione'
+  DatiAppIOConvocazione:
+    type: object
+    properties:
+      dataConvocazione:
+        type: string
+        format: date-time
+      organizzatore:
+        type: string
+  DatiAppIOInformazione:
+    type: object
+    properties:
+      data:
+        type: string
+        format: date-time
+  EsitoMessaggio:
+    type: object
+    properties:
+      idMessaggio:
+        type: string
+      errori:
+        type: array
+        items:
+          $ref: '#/definitions/DettaglioErrore'
+      destinatari:
+        type: array
+        items:
+          $ref: '#/definitions/EsitoDestinatario'
+  EsitoDestinatario:
+    type: object
+    properties:
+      destinatario:
+        $ref: '#/definitions/Destinatario'
+      esitoSMS:
+        $ref: '#/definitions/DettaglioEsito'
+      esitoMail:
+        $ref: '#/definitions/DettaglioEsito'
+      esitoAppIO:
+        $ref: '#/definitions/DettaglioEsito'
+  DettaglioEsito:
+    type: object
+    properties:
+      codice:
+        type: string
+        enum: ["OK", "KO", "EL"]
+      descrizione:
+        type: string
+  DettaglioErrore:
+    type: object
+    properties:
+      codice:
+        type: string
+      descrizione:
+        type: string
+  ParametriRicercaMessaggi:
+    type: object
+    properties:
+      caller:
+        type: string
+      titolo:
+        type: string
+      destinatario:
+        $ref: '#/definitions/Destinatario'
+      canali:
+        type: array
+        items:
+          type: string
+          enum: ["SMS","Mail","AppIO Informazione","AppIO Convocazione"]
+      statiSMS:
+        type: array
+        items:
+          type: string
+          enum: ["OK", "KO", "EL"]
+      statiMail:
+        type: array
+        items:
+          type: string
+          enum: ["OK", "KO", "EL"]
+      statiAppIO:
+        type: array
+        items:
+          type: string
+          enum: ["OK", "KO", "EL"]
+      dataDa:
+        type: string
+        format: date-time
+      dataA:
+        type: string
+        format: date-time
+      recordPerPagina:
+        type: integer
+      pagina:
+        type: integer
+      colonnaOrdinamento:
+        type: string
+        enum: [idMessaggio, titolo, data, codiceFiscale, cognome, nome, statoSMS, statoMail, statoAppIO]
+      tipoOrdinamento:
+        type: string
+        enum: [asc, desc]
+  EsitoRicercaMessaggi:
+    type: object
+    properties:
+      errori:
+        type: array
+        items:
+          $ref: '#/definitions/DettaglioErrore'
+      recordTotali:
+        type: integer
+      datiInvio:
+        type: array
+        items:
+          $ref: '#/definitions/DatiInvio'
+  DatiInvio:
+    type: object
+    properties:
+      idMessaggio:
+        type: string
+      titolo:
+        type: string
+      idCanale:
+        type: integer
+        format: int64
+      data:
+        type: string
+        format: date-time
+      destinatario:
+        $ref: '#/definitions/Destinatario'
+      esitoSMS:
+        $ref: '#/definitions/DettaglioEsito'
+      esitoMail:
+        $ref: '#/definitions/DettaglioEsito'
+      esitoAppIO:
+        $ref: '#/definitions/DettaglioEsito'
+  EsitoDettaglioMessaggio:
+    type: object
+    properties:
+      idMessaggio:
+        type: string
+      flgImmediato:
+        type: string
+        enum: ["S", "N"]
+      titolo:
+        type: string
+      data:
+        type: string
+        format: date-time
+      errori:
+        type: array
+        items:
+          $ref: '#/definitions/DettaglioErrore'
+      destinatari:
+        type: array
+        items:
+          $ref: '#/definitions/EsitoDestinatario'
+      datiSMS:
+        $ref: '#/definitions/DatiSMS'
+      datiMail:
+        $ref: '#/definitions/DatiMail'
+      datiAppIO:
+        $ref: '#/definitions/DatiAppIO'
+  ApiError:
+    type: object
+    properties:
+      code:
+        type: string
+      message:
+        type: string

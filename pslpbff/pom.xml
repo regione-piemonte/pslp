@@ -1,0 +1,718 @@
+<!-- ##################################################### -->
+<!-- # Copyright Regione Piemonte - 2025                 # -->
+<!-- # SPDX-License-Identifier: EUPL-1.2-or-later        # -->
+<!-- ##################################################### -->
+<?xml version='1.0' encoding='UTF-8'?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>it.csi.pslp</groupId>
+  <artifactId>pslpbff</artifactId>
+  <version>1.0.1</version>
+  <properties>
+    <compiler-plugin.version>3.12.1</compiler-plugin.version>
+    <failsafe.useModulePath>false</failsafe.useModulePath>
+    <maven.compiler.release>17</maven.compiler.release>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
+    <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
+    <quarkus.platform.version>3.6.3</quarkus.platform.version>
+    <surefire-plugin.version>3.0.0-M5</surefire-plugin.version>
+    <swagger-codegen-maven-plugin-version>3.0.34</swagger-codegen-maven-plugin-version>
+    <dependencies.version.mapstruct>1.5.5.Final</dependencies.version.mapstruct>
+    <dependencies.version.swagger-core.v3>2.2.8</dependencies.version.swagger-core.v3>
+    <dependencies.version.util-perf>1.0.1</dependencies.version.util-perf>
+    <dependencies.version.csi-core>1.4.6</dependencies.version.csi-core>
+    
+    <openhtml.version>1.0.9</openhtml.version>
+	<dependencies.version.jexcelapi>2.6.12</dependencies.version.jexcelapi>
+	<dependencies.version.apache.poi>4.1.2</dependencies.version.apache.poi>
+   
+  	<repository.url>http://repository-artefatti.organizzazione.it/artifactory/maven2</repository.url>
+   </properties>
+  
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>${quarkus.platform.group-id}</groupId>
+        <artifactId>${quarkus.platform.artifact-id}</artifactId>
+        <version>${quarkus.platform.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+     <dependency>
+        <groupId>${quarkus.platform.group-id}</groupId>
+        <artifactId>quarkus-camel-bom</artifactId>
+        <version>${quarkus.platform.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  
+  <repositories>
+		<repository>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<id>central</id>
+			<name>maven2</name>
+			<url>${repository.url}</url>
+		</repository>
+		<repository>
+			<snapshots></snapshots>
+			<id>snapshots</id>
+			<name>maven2</name>
+			<url>${repository.url}</url>
+		</repository>
+	</repositories>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<id>central</id>
+			<name>maven2</name>
+			<url>${repository.url}</url>
+		</pluginRepository>
+		<pluginRepository>
+			<snapshots></snapshots>
+			<id>snapshots</id>
+			<name>maven2</name>
+			<url>${repository.url}</url>
+		</pluginRepository>
+	</pluginRepositories>
+	  
+  <dependencies>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-smallrye-health</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-micrometer-registry-prometheus</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-resteasy-jackson</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-resteasy</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-undertow</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.camel.quarkus</groupId>
+      <artifactId>camel-quarkus-vertx-websocket</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-arc</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-junit5</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!-- per eseguire i test simulando i profili di autenticazione -->
+    <dependency>
+	    <groupId>io.quarkus</groupId>
+	    <artifactId>quarkus-test-security</artifactId>
+	    <scope>test</scope>
+	</dependency>
+	<dependency>
+	    <groupId>org.junit.platform</groupId>
+	    <artifactId>junit-platform-suite-engine</artifactId>
+	    <scope>test</scope>
+	</dependency>
+    <dependency>
+	    <groupId>io.quarkus</groupId>
+	    <artifactId>quarkus-hibernate-orm-panache</artifactId>
+	</dependency>
+    <dependency>
+      <groupId>io.rest-assured</groupId>
+      <artifactId>rest-assured</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.logmanager</groupId>
+      <artifactId>log4j-jboss-logmanager</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>it.csi.iridev2</groupId>
+      <artifactId>iridev2-pep-intf</artifactId>
+      <version>2.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>it.csi.csi</groupId>
+      <artifactId>csi-stadapter</artifactId>
+      <version>1.4.6</version>
+    </dependency>
+    <dependency>
+		<groupId>it.csi.util</groupId>
+		<artifactId>util-perf</artifactId>
+		<version>1.0.1</version>
+	</dependency>
+    <!-- datasource -->
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-agroal</artifactId>
+    </dependency>
+     <!-- Hibernate ORM specific dependencies -->
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-hibernate-orm</artifactId>
+    </dependency>
+    <dependency>
+		<groupId>org.mapstruct</groupId>
+		<artifactId>mapstruct</artifactId>
+		<version>${dependencies.version.mapstruct}</version>
+	</dependency>
+	
+    <!-- JDBC driver dependencies -->
+    <dependency>
+		<groupId>io.quarkus</groupId>
+		<artifactId>quarkus-jdbc-postgresql</artifactId>
+	</dependency>
+    <!-- tolgo incluso in quarkus-opentelemetry
+	<dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-opentelemetry-exporter-otlp</artifactId>
+    </dependency>
+    -->
+    <dependency>
+      <groupId>io.quarkus.http</groupId>
+      <artifactId>quarkus-http-servlet</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-rest-client-jackson</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-rest-client</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-resteasy-multipart</artifactId>
+    </dependency>
+   
+    <dependency>
+      <groupId>commons-beanutils</groupId>
+      <artifactId>commons-beanutils</artifactId>
+      
+    </dependency>
+   
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+    </dependency>
+    
+    
+        
+    <!-- swagger -->
+    
+	<dependency>
+	    <groupId>io.swagger.core.v3</groupId>
+	    <artifactId>swagger-annotations-jakarta</artifactId>
+	    <version>2.2.21</version>
+	</dependency>
+
+	<dependency>
+    	<groupId>io.swagger.core.v3</groupId>
+    	<artifactId>swagger-jaxrs2-jakarta</artifactId>
+    	<version>2.2.21</version>
+	</dependency>
+   
+	
+	
+	<!-- openapi -->
+	<dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-smallrye-openapi</artifactId>
+    </dependency>
+
+	
+	
+	 <!-- lombok -->
+	<dependency>
+		<groupId>org.projectlombok</groupId>
+		<artifactId>lombok</artifactId>
+		<version>1.18.22</version>
+		<scope>provided</scope>
+	</dependency>
+	
+
+	<dependency>
+	    <groupId>com.google.code.gson</groupId>
+	    <artifactId>gson</artifactId>
+	</dependency>
+
+	
+	<!-- logging di query con parametri -->
+    <dependency>
+		<groupId>com.googlecode.log4jdbc</groupId>
+		<artifactId>log4jdbc</artifactId>
+		<version>1.2</version>
+	</dependency>
+	
+
+     <!-- Basic auth  tramite file di properties -->
+	<dependency>
+			<groupId>io.quarkus</groupId>
+			<artifactId>quarkus-elytron-security-properties-file</artifactId>
+	</dependency>  
+
+	<!-- EXCEL 
+	<dependency>
+		<groupId>org.apache.poi</groupId>
+		<artifactId>poi-ooxml</artifactId>
+		<version>5.2.2</version>
+	</dependency> -->
+	
+	<dependency>
+		<groupId>org.apache.poi</groupId>
+		<artifactId>poi-ooxml</artifactId>
+		<version>${dependencies.version.apache.poi}</version>
+	</dependency>
+
+	<!-- rest caller -->
+    <dependency>
+	    <groupId>org.glassfish.jersey.core</groupId>
+	    <artifactId>jersey-client</artifactId>
+	    <version>2.25.1</version>
+	</dependency>
+	<dependency>
+	    <groupId>org.glassfish.jersey.media</groupId>
+	    <artifactId>jersey-media-json-jackson</artifactId>
+	    <version>2.25.1</version>
+	     <scope>provided</scope>
+	</dependency>
+	
+	
+	    <!-- html to pdf -->
+    	<!--  PDF  --> 
+		<dependency>
+			<groupId>com.openhtmltopdf</groupId>
+			<artifactId>openhtmltopdf-core</artifactId>
+			<version>${openhtml.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.openhtmltopdf</groupId>
+			<artifactId>openhtmltopdf-pdfbox</artifactId>
+			<version>${openhtml.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.openhtmltopdf</groupId>
+			<artifactId>openhtmltopdf-java2d</artifactId>
+			<version>${openhtml.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.openhtmltopdf</groupId>
+			<artifactId>openhtmltopdf-rtl-support</artifactId>
+			<version>${openhtml.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.openhtmltopdf</groupId>
+			<artifactId>openhtmltopdf-slf4j</artifactId>
+			<version>${openhtml.version}</version>
+		</dependency>
+
+	
+	<dependency>
+	    <groupId>javax.mail</groupId>
+	    <artifactId>mail</artifactId>
+	    <version>1.4</version>
+	</dependency>
+    
+  </dependencies>
+  <build>
+    <plugins>
+				
+		<plugin>
+        <groupId>${quarkus.platform.group-id}</groupId>
+        <artifactId>quarkus-maven-plugin</artifactId>
+        <version>${quarkus.platform.version}</version>
+        <configuration>
+	      <debug>5100</debug>
+	    </configuration>
+        <extensions>true</extensions>
+        <executions>
+          <execution>
+            <goals>
+              <goal>build</goal>
+              <goal>generate-code</goal>
+              <goal>generate-code-tests</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      
+      <plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-compiler-plugin</artifactId>
+			<version>${compiler-plugin.version}</version>
+			<configuration>
+				<source>${maven.compiler.release}</source>
+				<target>${maven.compiler.release}</target>
+				<debug>true</debug>
+				<debuglevel>lines,vars,source</debuglevel>
+				<annotationProcessorPaths>
+					
+					<path>
+						<groupId>org.projectlombok</groupId>
+						<artifactId>lombok</artifactId>
+						<version>1.18.22</version>
+					</path>
+						
+					<path>
+						<groupId>org.mapstruct</groupId>
+						<artifactId>mapstruct-processor</artifactId>
+						<version>${dependencies.version.mapstruct}</version>
+					</path>
+					
+					<path>
+			          <groupId>io.quarkus</groupId>
+			          <artifactId>quarkus-panache-common</artifactId>
+			          <version>${quarkus.platform.version}</version>
+			        </path>
+        
+				</annotationProcessorPaths>
+			</configuration>
+		</plugin>
+		
+		<plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>${surefire-plugin.version}</version>
+        <configuration>
+          <systemPropertyVariables>
+            <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+            <maven.home>${maven.home}</maven.home>
+          </systemPropertyVariables>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+      
+
+
+	 <plugin>
+	    <groupId>io.swagger.core.v3</groupId>
+	    <artifactId>swagger-maven-plugin-jakarta</artifactId>
+	    <version>2.2.20</version>
+	    <configuration>
+	      <outputFileName>pslpbff</outputFileName>
+	      <outputPath>src/main/resources/yaml/</outputPath>
+	      <outputFormat>YAML</outputFormat>
+	      <resourcePackages>            
+	        <package>it.csi.pslp.pslpbff.api</package>
+
+	      </resourcePackages>
+	      <prettyPrint>TRUE</prettyPrint>
+	      <sortOutput>TRUE</sortOutput>
+	    </configuration>
+	    <executions>
+	      <execution>
+	        <phase>compile</phase>
+	        <goals>
+	            <goal>resolve</goal>
+	        </goals>
+	      </execution>
+	    </executions>
+	  </plugin>    
+
+
+
+ <!-- ================================================================ -->
+ <!-- GENERAZIONE ANGULAR WCL DI RIFERIMENTO AL BFF -->
+	 <plugin>
+        <groupId>io.swagger.codegen.v3</groupId>
+        <artifactId>swagger-codegen-maven-plugin</artifactId>
+        <version>${swagger-codegen-maven-plugin-version}</version>
+        <executions>
+           <execution>
+        	<id>pslpbff</id>
+        	<phase>process-classes</phase>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <configuration>
+              <inputSpec>src/main/resources/yaml/pslpbff.yaml</inputSpec>
+              <language>typescript-angular</language>
+			  <output>../pslpwcl/src/app/modules/pslpapi</output>
+                <templateDirectory>${project.basedir}/src/main/resources/codegen</templateDirectory>
+              <configOptions>
+                <sortParamsByRequiredFlag>true</sortParamsByRequiredFlag>
+                <ensureUniqueParams>true</ensureUniqueParams>
+                <allowUnicodeIdentifiers>false</allowUnicodeIdentifiers>
+                <modelPropertyNaming>original</modelPropertyNaming>
+                <supportsES6>false</supportsES6>
+                <npmName>pslpapi</npmName>
+                <npmVersion>1.0.0</npmVersion>
+                <withInterfaces>false</withInterfaces>
+                <taggedUnions>false</taggedUnions>
+                <providedInRoot>false</providedInRoot>
+                <ngVersion>8.0.0</ngVersion>    
+                <useNgPackage>false</useNgPackage>
+              </configOptions>
+            </configuration>
+          </execution>
+		 </executions>
+        <dependencies>
+          <dependency>
+            <groupId>it.csi.apitools</groupId>
+            <artifactId>csi-java-swagger3-codegen</artifactId>
+            <version>1.0.0.003</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+      
+    <!-- ================================================================ -->
+    
+    
+     <!-- ================================================================ -->
+	  <!-- GENERAZIONE SILPAPI -->
+      
+      <plugin>
+        <groupId>io.swagger.codegen.v3</groupId>
+        <artifactId>swagger-codegen-maven-plugin</artifactId>
+        <version>${swagger-codegen-maven-plugin-version}</version>
+        <executions>
+           <execution>
+        	<id>silpapi</id>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <configuration>
+              <inputSpec>${project.basedir}/src/main/resources/yaml/silpapi_Pslp.yaml</inputSpec>
+              <language>csi-jaxrs-resteasy</language>
+              <output>${project.basedir}</output>
+                <templateDirectory>${project.basedir}/src/main/resources/codegen_api</templateDirectory>
+              <apiPackage>${default.package}.handler</apiPackage>
+              <modelPackage>${default.package}.model</modelPackage>
+              <invokerPackage>${default.package}.handler</invokerPackage>
+              <configOptions>
+                <java8>false</java8>
+                <useBeanValidation>true</useBeanValidation>
+                <hideGenerationTimestamp>true</hideGenerationTimestamp>
+                <apiPackage>it.csi.pslp.pslpbff.api.silpapi</apiPackage>
+                <modelPackage>it.csi.pslp.pslpbff.api.dto.silpapi</modelPackage>
+                <invokerPackage>it.csi.pslp.pslpbff.api.silpapi</invokerPackage>
+                <implFolder>implfolder</implFolder>
+                <sourceFolder>target/generated-sources/generated</sourceFolder>
+                <generateJbossDeploymentDescriptor>false</generateJbossDeploymentDescriptor>
+                <generateImplArtifacts>false</generateImplArtifacts>
+                <generateSwaggerMetadata>false</generateSwaggerMetadata>
+                <attributeSerializationStrategy>explicit-as-modeled</attributeSerializationStrategy>
+                <accessHttpHeaders>true</accessHttpHeaders>
+                <accessHttpRequest>true</accessHttpRequest>
+                <jsonLibrary>fasterxml-jackson</jsonLibrary>
+                <jeeLibrary>jakarta</jeeLibrary>
+              </configOptions>
+            </configuration>
+          </execution>
+         
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>it.csi.apitools</groupId>
+            <artifactId>csi-java-swagger3-codegen</artifactId>
+            <version>1.1.0.002</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+	  <!-- GENERAZIONE SILPAPI -->
+	  <!-- ================================================================ -->
+        <!-- ================================================================ -->
+        <!-- GENERAZIONE BLP -->
+
+        <plugin>
+            <groupId>io.swagger.codegen.v3</groupId>
+            <artifactId>swagger-codegen-maven-plugin</artifactId>
+            <version>${swagger-codegen-maven-plugin-version}</version>
+            <executions>
+                <execution>
+                    <id>blp</id>
+                    <goals>
+                        <goal>generate</goal>
+                    </goals>
+                    <configuration>
+                        <inputSpec>${project.basedir}/src/main/resources/yaml/blpapi_Pslp.yaml</inputSpec>
+                        <language>csi-jaxrs-resteasy</language>
+                        <output>${project.basedir}</output>
+                        <apiPackage>${default.package}.handler</apiPackage>
+                        <modelPackage>${default.package}.model</modelPackage>
+                        <invokerPackage>${default.package}.handler</invokerPackage>
+                        <configOptions>
+                            <java8>false</java8>
+                            <useBeanValidation>true</useBeanValidation>
+                            <hideGenerationTimestamp>true</hideGenerationTimestamp>
+                            <apiPackage>it.csi.pslp.pslpbff.api.blp</apiPackage>
+                            <modelPackage>it.csi.pslp.pslpbff.api.dto.blp</modelPackage>
+                            <invokerPackage>it.csi.pslp.pslpbff.api.blp</invokerPackage>
+                            <implFolder>implfolder</implFolder>
+                            <sourceFolder>target/generated-sources/generated</sourceFolder>
+                            <generateJbossDeploymentDescriptor>false</generateJbossDeploymentDescriptor>
+                            <generateImplArtifacts>false</generateImplArtifacts>
+                            <generateSwaggerMetadata>false</generateSwaggerMetadata>
+                            <attributeSerializationStrategy>explicit-as-modeled</attributeSerializationStrategy>
+                            <accessHttpHeaders>true</accessHttpHeaders>
+                            <accessHttpRequest>true</accessHttpRequest>
+                            <jsonLibrary>fasterxml-jackson</jsonLibrary>
+                            <jeeLibrary>jakarta</jeeLibrary>
+                        </configOptions>
+                    </configuration>
+                </execution>
+
+            </executions>
+            <dependencies>
+                <dependency>
+                    <groupId>it.csi.apitools</groupId>
+                    <artifactId>csi-java-swagger3-codegen</artifactId>
+                    <version>1.1.0.002</version>
+                </dependency>
+            </dependencies>
+        </plugin>
+        <!-- GENERAZIONE BLP -->
+        <!-- ================================================================ -->
+
+        <!-- ================================================================ -->
+        <!-- GENERAZIONE SILOS -->
+
+        <plugin>
+            <groupId>io.swagger.codegen.v3</groupId>
+            <artifactId>swagger-codegen-maven-plugin</artifactId>
+            <version>${swagger-codegen-maven-plugin-version}</version>
+            <executions>
+                <execution>
+                    <id>silos</id>
+                    <goals>
+                        <goal>generate</goal>
+                    </goals>
+                    <configuration>
+                        <inputSpec>${project.basedir}/src/main/resources/yaml/msgsrv.yaml</inputSpec>
+                        <language>csi-jaxrs-resteasy</language>
+                        <output>${project.basedir}</output>
+                        <apiPackage>${default.package}.handler</apiPackage>
+                        <modelPackage>${default.package}.model</modelPackage>
+                        <invokerPackage>${default.package}.handler</invokerPackage>
+                        <configOptions>
+                            <java8>false</java8>
+                            <useBeanValidation>true</useBeanValidation>
+                            <hideGenerationTimestamp>true</hideGenerationTimestamp>
+                            <apiPackage>it.csi.pslp.pslpbff.api.silos</apiPackage>
+                            <modelPackage>it.csi.pslp.pslpbff.api.dto.silos</modelPackage>
+                            <invokerPackage>it.csi.pslp.pslpbff.api.silos</invokerPackage>
+                            <implFolder>implfolder</implFolder>
+                            <sourceFolder>target/generated-sources/generated</sourceFolder>
+                            <generateJbossDeploymentDescriptor>false</generateJbossDeploymentDescriptor>
+                            <generateImplArtifacts>false</generateImplArtifacts>
+                            <generateSwaggerMetadata>false</generateSwaggerMetadata>
+                            <attributeSerializationStrategy>explicit-as-modeled</attributeSerializationStrategy>
+                            <accessHttpHeaders>true</accessHttpHeaders>
+                            <accessHttpRequest>true</accessHttpRequest>
+                            <jsonLibrary>fasterxml-jackson</jsonLibrary>
+                            <jeeLibrary>jakarta</jeeLibrary>
+                        </configOptions>
+                    </configuration>
+                </execution>
+
+            </executions>
+            <dependencies>
+                <dependency>
+                    <groupId>it.csi.apitools</groupId>
+                    <artifactId>csi-java-swagger3-codegen</artifactId>
+                    <version>1.1.0.002</version>
+                </dependency>
+            </dependencies>
+        </plugin>
+        <!-- GENERAZIONE BLP -->
+        <!-- ================================================================ -->
+
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>3.3.0</version>
+        <executions>
+          <execution>
+            <id>assembly</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <appendAssemblyId>false</appendAssemblyId>
+              <descriptors>
+                <descriptor>src/main/assembly/assembly.xml</descriptor>
+              </descriptors>
+              <outputDirectory>dist</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+	</plugins>
+  </build>
+ 
+  <profiles>
+    <profile>
+      <id>native</id>
+      <activation>
+        <property>
+          <name>native</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+			
+					
+          <plugin>
+            <artifactId>maven-failsafe-plugin</artifactId>
+            <version>${surefire-plugin.version}</version>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>integration-test</goal>
+                  <goal>verify</goal>
+                </goals>
+                <configuration>
+                  <systemPropertyVariables>
+                    <native.image.path>${project.build.directory}/${project.build.finalName}-runner</native.image.path>
+                    <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+                    <maven.home>${maven.home}</maven.home>
+                  </systemPropertyVariables>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+      
+    
+      <properties>
+        <quarkus.package.type>native</quarkus.package.type>
+      </properties>
+    </profile>
+    <profile>
+        <id>cloud</id>
+        <activation><activeByDefault>false</activeByDefault></activation>
+        <build>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <id>assembly</id>
+                            <phase>none</phase>  <!-- Disabilita l'esecuzione -->
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </build>
+    </profile>
+  </profiles>
+</project>

@@ -13,17 +13,16 @@ dependsOn:
       version: ''
       versionMax: ''
       versionMin: '2'
-    - name: RedHat JBOSS
+    - name: Quarkus
       optional: false
-      version: 6.4.5
+      version: 3.0.0
       versionMax: ''
-      versionMin: ''
-  proprietary:
-    - name: Oracle DBMS
+      versionMin: '3'
+    - name: Postgresql DBMS
       optional: false
-      version: '11.2'
+      version: '15'
       versionMax: ''
-      versionMin: '11'
+      versionMin: '14'
 description:
   it:
     features:
@@ -70,7 +69,7 @@ it:
     spid: true
   riuso:
     codiceIPA: r_piemon
-landingURL: 'https://github.com/regione-piemonte/pslp-2.3.2.git'
+landingURL: 'https://github.com/regione-piemonte/pslp.git'
 legal:
   authorsFile: |-
     https://raw.githubusercontent.com/regione-piemonte/pslp/master/Copyrights.txt

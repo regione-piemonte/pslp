@@ -59,10 +59,13 @@ Il sistema è integrato con:
 - con il servizio di localizzazione LOCCSI:
 - con la piattaforma MS Teams.
 
-Complessivamente l’applicativo prevede moduli di front-end web che interagiscono, tramite API, con moduli di back-end dove risiede la logica di business e che accedono al DB.
-
-Il servizio applicativo è disponibile a questo indirizzo:
+l precedente servizio applicativo era disponibile a questo indirizzo:
 https://secure.sistemapiemonte.it/pslphome/
+
+mentre quello rinnovato è disponibile qui: https://pslp.regione.piemonte.it/pslpwcl/
+
+
+Complessivamente l’applicativo prevede moduli di front-end web che interagiscono, tramite API, con moduli di back-end dove risiede la logica di business e che accedono al DB.
 
 Il prodotto segue quindi il paradigma “SPA – Single Page Application” : la componente di interfaccia Angular ha una corrispondente componente di “BackEnd”, realizzata nel linguaggio Java, e che espone API REST per la componente Angular; il back-end accede al DB.
 

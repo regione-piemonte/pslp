@@ -13,6 +13,11 @@ dependsOn:
       version: ''
       versionMax: ''
       versionMin: '2'
+    - name: Java
+      optional: false
+      version: '17'
+      versionMax: ''
+      versionMin: ''      
     - name: Quarkus
       optional: false
       version: 3.0.0
